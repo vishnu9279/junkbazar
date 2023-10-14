@@ -1,11 +1,23 @@
+require("dotenv").config();
 const express = require("express");
-const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const morgan = require("morgan");
 
-app.get("/", (req, res) => {
-  res.send("Hello, Junk bazzar!");
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+
+const url = process.env.DB_URL;
+mongoose.connect(url).then(() => {
+  console.log("Database is now connected");
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
