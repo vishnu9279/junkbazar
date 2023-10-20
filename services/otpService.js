@@ -1,9 +1,22 @@
+const speakeasy = require("speakeasy");
 const twilio = require("twilio");
 
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
+
+const secret = process.env.OTP_SECRET_KEY;
+
+const generateOTP = () => {
+  const otp = speakeasy.totp({
+    secret: secret,
+    digits: 6,
+    step: 30,
+  });
+
+  return otp;
+};
 
 const sendOTP = async (to, otp) => {
   try {
@@ -19,4 +32,4 @@ const sendOTP = async (to, otp) => {
   }
 };
 
-module.exports = { sendOTP };
+module.exports = { generateOTP, sendOTP };

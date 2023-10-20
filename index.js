@@ -6,8 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const expressAsyncErrors = require("express-async-errors");
-const userRoutes = require("./routes/userRoutes");
-const pickupRoutes = require("./routes/pickupRoutes");
+const customerRoute = require("./routes/customerRoute");
 
 const app = express();
 
@@ -25,8 +24,7 @@ mongoose.connect(url).then(() => {
   console.log("Database is now connected");
 });
 
-app.use("/api/user", userRoutes);
-app.use("/api/pickup", pickupRoutes);
+app.use("/api/customer", customerRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
