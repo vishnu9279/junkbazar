@@ -7,6 +7,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const expressAsyncErrors = require("express-async-errors");
 const customerRoute = require("./routes/customerRoute");
+const vendorRouter = require("./routes/vendorRouter");
 
 const app = express();
 
@@ -25,6 +26,7 @@ mongoose.connect(url).then(() => {
 });
 
 app.use("/api/customer", customerRoute);
+app.use("/api/vendor", vendorRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
