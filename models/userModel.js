@@ -9,9 +9,8 @@ const vendorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    enteredOTP: {
+    OTP: {
         type: String,
-        required: true,
     },
     pincode: {
         type: String,
@@ -29,6 +28,18 @@ const vendorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    password: {
+        type: String,
+        required: true,
+    },
+    verified: {
+        type: Boolean,
+        default: false
+    },
+    isVendor: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
