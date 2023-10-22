@@ -39,8 +39,12 @@ const vendorSchema = new mongoose.Schema({
     isVendor: {
         type: Boolean,
         default: false
-    }
-});
+    },
+    documents: [ {
+        name: { type: String },
+        url: { type: String }
+    } ]
+}, { timestamps: true });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
 

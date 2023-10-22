@@ -10,8 +10,7 @@ exports.createVendor = async (req, res) => {
     try {
         validate(req, res);
 
-        const { fullName, phoneNumber, pincode, address, city, landmark, password } =
-            req.body;
+        const { fullName, phoneNumber, pincode, address, city, landmark, password } = req.body;
         const otp = otpService.generateOTP();
         const otpSent = await otpService.sendOTP(phoneNumber, otp);
         const salt = await bcrypt.genSalt(15);
@@ -83,9 +82,10 @@ exports.createCustomer = async (req, res) => {
     }
 };
 
-exports.verifyVendor = async (req, res) => {
+exports.verifyUser = async (req, res) => {
     try {
-        const vendor = await UserModel.findById(req.query.vendorID);
+        validate(req, res);
+        const vendor = await UserModel.findById(req.query.userID);
         const { otp } = req.body;
 
         if (vendor.OTP != otp) {
@@ -101,8 +101,9 @@ exports.verifyVendor = async (req, res) => {
     }
 };
 
-exports.signInVendor = async (req, res) => {
+exports.signInUser = async (req, res) => {
     try {
+        validate(req, res);
         const { phoneNumber, password } = req.body;
         const user = await UserModel.findOne({ phoneNumber: phoneNumber });
 
@@ -127,5 +128,95 @@ exports.signInVendor = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
         console.log(error);
+    }
+};
+
+exports.forgetPassword = async (req, res) => {
+    try {
+        validate(req, res);
+        const { phoneNumber } = req.body;
+        const user = await UserModel.findOne({ phoneNumber: phoneNumber });
+
+        if (!user) {
+            res.status(400).json({ message: "User does not exist" });
+        }
+        const otp = otpService.generateOTP();
+        const otpSent = await otpService.sendOTP(phoneNumber, otp);
+
+        if (!otpSent) {
+            res.status(400).json({ message: "OTP not sent" });
+        }
+        await UserModel.findByIdAndUpdate(user._id, { OTP: otp }, { new: true });
+
+        res.status(200).json({ message: "An OTP have been sent to Your Phone" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.verify_reset_password_otp = async (req, res) => {
+    try {
+        validate(req, res);
+        const vendor = await UserModel.findById(req.query.userID);
+        const { otp } = req.body;
+
+        if (vendor.OTP != otp) {
+            res.status(400).json({ message: "Invalid OTP" });
+        }
+
+        res.status(200).json({ message: "User verified, You can change your password" });
+
+        res.status(200).json({ message: "User Verification Successful" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        const user = await UserModel.findById(req.query.userID);
+
+        if (user.OTP = "") {
+            res.status(403).json({ message: "You'er not Authorize to perform this action" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(password, salt);
+
+        await UserModel.findByIdAndUpdate(user._id, {
+            OTP: "",
+            password: hashed
+        }, { new: true });
+
+        res.status(200).json({ message: "Password Updated Successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.userDocuments = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.query.userID);
+
+        if (!user)
+            res.status(400).json({ message: "User does not exist" });
+        if (!user.verified) {
+            res.status(400).json({ message: "User is not Verified" });
+        }
+        const files = req.files;
+        if (!files) {
+            res.status(400).json({ message: "Know file Uploaded" });
+        }
+
+        await UserModel.findByIdAndUpdate(user._id, {
+            documents: files
+        }, { new: true });
+
+        res.status(200).json({ message: "Documents as been Uploaded" });
+
+        // console.log(files);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };

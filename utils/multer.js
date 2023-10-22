@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
-        cb(null, new Date().toISOString().replace(/:/g, "-") + ext);
+        cb(null, file.fieldname + "-" + Date.now() + ext);
     },
 });
 
@@ -32,8 +32,9 @@ const fileFilter = (req, file, cb) => {
 
 //m
 const upload = multer({
-    storage,
-    fileFilter,
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 5 },
+    fileFilter: fileFilter,
 });
 
 
