@@ -36,6 +36,10 @@ const connectDB = async () => {
 // app.use("/api/customer", customerRoute);
 app.use("/api/user", userRouter);
 
+app.get("/", (req, res) => {
+  res.send("Welcome to scrap-bazar app");
+});
+
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
