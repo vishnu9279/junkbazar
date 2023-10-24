@@ -39,8 +39,11 @@ const vendorSchema = new mongoose.Schema({
     isVendor: {
         type: Boolean,
         default: false
-    }
-});
+    },
+    avatar: String,
+    pan_card: String,
+    file3: String,
+}, { timestamps: true });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
 

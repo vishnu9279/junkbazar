@@ -4,6 +4,8 @@ const { validationResult } = require("express-validator");
 const { validate } = require("../middleware/validationMiddleware");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../utils/cloudinary");
+const fs = require("fs");
 require("dotenv").config();
 
 exports.createVendor = async (req, res) => {
@@ -46,11 +48,9 @@ exports.createVendor = async (req, res) => {
     }
   } catch (error) {
     console.error("Error Vendor:", error);
-    res
-      .status(500)
-      .json({
-        error: "An error occurred while creating the customer." + error.message,
-      });
+    res.status(500).json({
+      error: "An error occurred while creating the customer." + error.message,
+    });
   }
 };
 exports.createCustomer = async (req, res) => {
@@ -93,11 +93,9 @@ exports.createCustomer = async (req, res) => {
     }
   } catch (error) {
     console.error("Error Vendor:", error);
-    res
-      .status(500)
-      .json({
-        error: "An error occurred while creating the customer." + error.message,
-      });
+    res.status(500).json({
+      error: "An error occurred while creating the customer." + error.message,
+    });
   }
 };
 
