@@ -20,14 +20,28 @@ process.on("unhandledRejection", (ex) => {
   throw ex;
 });
 
-const url = process.env.DB_URL;
-mongoose.connect(url).then(() => {
-  console.log("Database is now connected");
-});
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to database");
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error);
+    process.exit(1);
+  }
+};
 
 // app.use("/api/customer", customerRoute);
 app.use("/api/user", userRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get("/", (req, res) => {
+  res.send("Welcome to scrap-bazar app");
+});
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
