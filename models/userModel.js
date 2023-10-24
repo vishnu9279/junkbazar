@@ -40,10 +40,9 @@ const vendorSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    documents: [ {
-        name: { type: String },
-        url: { type: String }
-    } ]
+    avatar: String,
+    pan_card: String,
+    file3: String,
 }, { timestamps: true });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);

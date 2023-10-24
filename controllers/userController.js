@@ -4,6 +4,8 @@ const { validationResult } = require("express-validator");
 const { validate } = require("../middleware/validationMiddleware");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../utils/cloudinary");
+const fs = require("fs");
 require("dotenv").config();
 
 exports.createVendor = async (req, res) => {
@@ -204,19 +206,33 @@ exports.userDocuments = async (req, res) => {
         if (!user.verified) {
             res.status(400).json({ message: "User is not Verified" });
         }
+
         const files = req.files;
+        // const urls = [];
+        const image = async (path) => await cloudinary.uploads(path, "Images");
+
         if (!files) {
             res.status(400).json({ message: "Know file Uploaded" });
         }
 
-        await UserModel.findByIdAndUpdate(user._id, {
-            documents: files
-        }, { new: true });
+        const updateObject = {};
+
+        for (const fieldName of Object.keys(files)) {
+            const file = files[ fieldName ][ 0 ]; // Access the file object using the field name
+            const { path } = file;
+            const newPath = await image(path);
+
+            updateObject[ fieldName ] = newPath.url;
+            fs.unlinkSync(path);
+        }
+
+        await UserModel.findByIdAndUpdate(user._id, updateObject, { new: true });
 
         res.status(200).json({ message: "Documents as been Uploaded" });
 
         // console.log(files);
     } catch (error) {
         res.status(500).json({ message: error.message });
+        console.log(error);
     }
 };

@@ -10,6 +10,10 @@ router.route("/verify").patch(verifyUser);
 router.route("/forget-password").patch(forgetPassword);
 router.route("/verify-password-otp").patch(verify_reset_password_otp);
 router.route("/reset-password").patch(resetPassword);
-router.route("/upload").post(upload.array("documents"), userDocuments);
+router.route("/upload").post(upload.fields([
+    { name: 'avatar' },
+    { name: 'pan_card' },
+    { name: 'file3' },
+]), userDocuments);
 
 module.exports = router;
