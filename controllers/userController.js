@@ -236,3 +236,37 @@ exports.userDocuments = async (req, res) => {
         console.log(error);
     }
 };
+
+exports.getSingleUser = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.user.id);
+
+        if (!user) {
+            res.status(404).json({ message: "User does not exist" });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            data: user
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getAllUser = async (req, res) => {
+    try {
+        const users = await UserModel.find();
+
+        if (users.length < 1) {
+            res.status(403).json({ message: "No User Found" });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            data: users
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
