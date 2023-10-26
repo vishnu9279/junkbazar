@@ -1,6 +1,18 @@
 const mongoose = require("mongoose");
 
 const vendorSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    },
+    scrapItems: [ {
+        scrapItems: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "scrapItem"
+        },
+        totalPrice: { type: Number },
+        totalQuantity: { type: Number }
+    } ],
     fullName: {
         type: String,
         required: true,
@@ -8,9 +20,6 @@ const vendorSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
         required: true,
-    },
-    OTP: {
-        type: String,
     },
     pincode: {
         type: String,
@@ -28,21 +37,6 @@ const vendorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    password: {
-        type: String,
-        required: true,
-    },
-    verified: {
-        type: Boolean,
-        default: false
-    },
-    isVendor: {
-        type: Boolean,
-        default: false
-    },
-    avatar: String,
-    pan_card: String,
-    file3: String,
 }, { timestamps: true });
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
