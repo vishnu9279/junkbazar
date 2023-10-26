@@ -1,4 +1,5 @@
 const UserModel = require("../models/userModel");
+const ItemModel = require("../models/itemModel");
 const otpService = require("../services/otpService");
 const { validationResult } = require("express-validator");
 const { validate } = require("../middleware/validationMiddleware");
@@ -12,7 +13,15 @@ exports.createVendor = async (req, res) => {
     try {
         validate(req, res);
 
-        const { fullName, phoneNumber, pincode, address, city, landmark, password } = req.body;
+        const {
+            fullName,
+            phoneNumber,
+            pincode,
+            address,
+            city,
+            landmark,
+            password,
+        } = req.body;
         const otp = otpService.generateOTP();
         const otpSent = await otpService.sendOTP(phoneNumber, otp);
         const salt = await bcrypt.genSalt(15);
@@ -28,7 +37,7 @@ exports.createVendor = async (req, res) => {
                 landmark,
                 OTP: otp,
                 password: hashed,
-                isVendor: true
+                isVendor: true,
             });
             await vendor.save();
             console.log(otp);
@@ -40,17 +49,24 @@ exports.createVendor = async (req, res) => {
         }
     } catch (error) {
         console.error("Error Vendor:", error);
-        res
-            .status(500)
-            .json({ error: "An error occurred while creating the customer." + error.message });
+        res.status(500).json({
+            error: "An error occurred while creating the customer." + error.message,
+        });
     }
 };
 exports.createCustomer = async (req, res) => {
     try {
         validate(req, res);
 
-        const { fullName, phoneNumber, pincode, address, city, landmark, password } =
-            req.body;
+        const {
+            fullName,
+            phoneNumber,
+            pincode,
+            address,
+            city,
+            landmark,
+            password,
+        } = req.body;
         const otp = otpService.generateOTP();
         const otpSent = await otpService.sendOTP(phoneNumber, otp);
         const salt = await bcrypt.genSalt(15);
@@ -66,7 +82,7 @@ exports.createCustomer = async (req, res) => {
                 landmark,
                 OTP: otp,
                 password: hashed,
-                isVendor: false
+                isVendor: false,
             });
             await vendor.save();
             console.log(otp);
@@ -78,9 +94,9 @@ exports.createCustomer = async (req, res) => {
         }
     } catch (error) {
         console.error("Error Vendor:", error);
-        res
-            .status(500)
-            .json({ error: "An error occurred while creating the customer." + error.message });
+        res.status(500).json({
+            error: "An error occurred while creating the customer." + error.message,
+        });
     }
 };
 
@@ -94,7 +110,11 @@ exports.verifyUser = async (req, res) => {
             res.status(400).json({ message: "Invalid OTP" });
         }
 
-        await UserModel.findByIdAndUpdate(vendor._id, { OTP: "", verified: true }, { new: true });
+        await UserModel.findByIdAndUpdate(
+            vendor._id,
+            { OTP: "", verified: true },
+            { new: true }
+        );
 
         res.status(200).json({ message: "User Verification Successful" });
     } catch (error) {
@@ -121,11 +141,13 @@ exports.signInUser = async (req, res) => {
             res.status(400).json({ message: "Incorrect Password" });
         }
 
-        const userToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRED_DATE });
+        const userToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRED_DATE,
+        });
 
         res.status(200).json({
             status: "Success",
-            data: userToken
+            data: userToken,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -166,7 +188,9 @@ exports.verify_reset_password_otp = async (req, res) => {
             res.status(400).json({ message: "Invalid OTP" });
         }
 
-        res.status(200).json({ message: "User verified, You can change your password" });
+        res
+            .status(200)
+            .json({ message: "User verified, You can change your password" });
 
         res.status(200).json({ message: "User Verification Successful" });
     } catch (error) {
@@ -179,17 +203,23 @@ exports.resetPassword = async (req, res) => {
         const { password } = req.body;
         const user = await UserModel.findById(req.query.userID);
 
-        if (user.OTP = "") {
-            res.status(403).json({ message: "You'er not Authorize to perform this action" });
+        if ((user.OTP = "")) {
+            res
+                .status(403)
+                .json({ message: "You'er not Authorize to perform this action" });
         }
 
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
 
-        await UserModel.findByIdAndUpdate(user._id, {
-            OTP: "",
-            password: hashed
-        }, { new: true });
+        await UserModel.findByIdAndUpdate(
+            user._id,
+            {
+                OTP: "",
+                password: hashed,
+            },
+            { new: true }
+        );
 
         res.status(200).json({ message: "Password Updated Successfully" });
     } catch (error) {
@@ -201,11 +231,43 @@ exports.userDocuments = async (req, res) => {
     try {
         const user = await UserModel.findById(req.query.userID);
 
-        if (!user)
-            res.status(400).json({ message: "User does not exist" });
+        if (!user) res.status(400).json({ message: "User does not exist" });
         if (!user.verified) {
             res.status(400).json({ message: "User is not Verified" });
         }
+        exports.getSingleUser = async (req, res) => {
+            try {
+                const user = await UserModel.findById(req.user.id);
+
+                if (!user) {
+                    res.status(404).json({ message: "User does not exist" });
+                }
+
+                res.status(200).json({
+                    status: "Success",
+                    data: user
+                });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+        };
+
+        exports.getAllUser = async (req, res) => {
+            try {
+                const users = await UserModel.find();
+
+                if (users.length < 1) {
+                    res.status(403).json({ message: "No User Found" });
+                }
+
+                res.status(200).json({
+                    status: "Success",
+                    data: users
+                });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+        };
 
         const files = req.files;
         // const urls = [];
@@ -234,39 +296,5 @@ exports.userDocuments = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
         console.log(error);
-    }
-};
-
-exports.getSingleUser = async (req, res) => {
-    try {
-        const user = await UserModel.findById(req.user.id);
-
-        if (!user) {
-            res.status(404).json({ message: "User does not exist" });
-        }
-
-        res.status(200).json({
-            status: "Success",
-            data: user
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-exports.getAllUser = async (req, res) => {
-    try {
-        const users = await UserModel.find();
-
-        if (users.length < 1) {
-            res.status(403).json({ message: "No User Found" });
-        }
-
-        res.status(200).json({
-            status: "Success",
-            data: users
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
     }
 };
