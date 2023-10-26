@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const expressAsyncErrors = require("express-async-errors");
 // const customerRoute = require("./routes/customerRoute");
 const userRouter = require("./routes/userRouter");
+const itemRouter = require("./routes/itemRouter");
 
 const app = express();
 
@@ -35,6 +36,7 @@ const connectDB = async () => {
 
 // app.use("/api/customer", customerRoute);
 app.use("/api/user", userRouter);
+app.use("/api/item", itemRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to scrap-bazar app");
