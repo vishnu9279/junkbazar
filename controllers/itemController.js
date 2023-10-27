@@ -42,7 +42,7 @@ exports.createItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
   try {
     // const { name, quantity, price } = req.body;
-    const itemId = req.query.itemId;
+    const itemId = req.query.itemID;
     const userDetails = await UserModel.findById(req.user.id);
 
     if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
@@ -71,7 +71,7 @@ exports.updateItem = async (req, res) => {
 
 exports.deleteItem = async (req, res) => {
   try {
-    const itemId = req.query.itemId;
+    const itemId = req.query.itemID;
 
     const item = await ItemModel.findById(itemId);
 
@@ -103,7 +103,7 @@ exports.getAllItems = async (req, res) => {
 
 exports.getSingleItem = async (req, res) => {
   try {
-    const itemId = req.query.itemId;
+    const itemId = req.query.itemID;
 
     const item = await ItemModel.findById(itemId);
 

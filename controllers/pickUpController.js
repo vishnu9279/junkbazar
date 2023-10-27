@@ -59,6 +59,7 @@ exports.getAllPickUpRequest = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getPickUpRequestDetails = async (req, res) => {
     try {
         const getPickUpDetails = await PickUpModel.findById(req.query.PickUpRequestId);
