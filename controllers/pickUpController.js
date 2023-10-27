@@ -8,7 +8,7 @@ exports.sendPickUpRequest = async (req, res) => {
     try {
         const user = await UserModel.findById(req.user.id);
         if (!user) res.status(404).json("User does not exist");
-        const item = new PickUpModel(req.body);
+        const PickUpRequest = new PickUpModel(req.body);
 
         PickUpRequest.user = user._id;
         PickUpRequest.save();
@@ -16,6 +16,7 @@ exports.sendPickUpRequest = async (req, res) => {
         res.status(201).json({ message: "Pickup Request as been created" });
     } catch (error) {
         res.status(500).json({ message: error.message });
+        console.log(error);
     }
 };
 
@@ -58,6 +59,7 @@ exports.getAllPickUpRequest = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getPickUpRequestDetails = async (req, res) => {
     try {
         const getPickUpDetails = await PickUpModel.findById(req.query.PickUpRequestId);

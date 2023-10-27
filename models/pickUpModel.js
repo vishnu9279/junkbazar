@@ -6,12 +6,12 @@ const vendorSchema = new mongoose.Schema({
         ref: "user"
     },
     scrapItems: [ {
-        scrapItems: {
+        scrapItem: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Item"
         },
-        totalPrice: { type: Number },
-        totalQuantity: { type: Number }
+        price: { type: Number },
+        qty: { type: Number }
     } ],
     fullName: {
         type: String,
@@ -36,10 +36,13 @@ const vendorSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: "Pending"
     },
+    payment_method: { type: String },
+    totalPrice: { type: Number },
+    totalQuantity: { type: Number },
+    notification: { type: Boolean, default: true },
 }, { timestamps: true });
 
-const Vendor = mongoose.model("Vendor", vendorSchema);
+const Vendor = mongoose.model("pickUp", vendorSchema);
 
 module.exports = Vendor;
