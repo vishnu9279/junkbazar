@@ -8,13 +8,13 @@ const {
   getAllItems,
   getSingleItem,
 } = require("../controllers/itemController");
+const auth = require("../utils/auth");
 
-router.route("/").post(upload.single("image"), createItem).get(getAllItems);
+router.route("/create").post(upload.single("image"), auth, createItem);
+router.route("/").get(getAllItems);
 
-router
-  .route("/:itemId")
-  .get(getSingleItem)
-  .put(upload.single("image"), updateItem)
-  .delete(deleteItem);
+router.route("/details").get(getSingleItem);
+router.route("/update").patch(upload.single("image"), auth, updateItem);
+router.route("/delete").delete(deleteItem);
 
 module.exports = router;

@@ -8,6 +8,9 @@ const itemSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  image: {
+    type: String,
+  },
   quantity: {
     type: Number,
     required: true,
@@ -18,7 +21,7 @@ const itemSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "users",
     required: true,
   },
 });

@@ -1,25 +1,34 @@
-const Item = require("../models/itemModel");
+const ItemModel = require("../models/itemModel");
 const cloudinary = require("../utils/cloudinary");
-const upload = require("../utils/multer");
+const mongoose = require("mongoose");
+const UserModel = require("../models/userModel");
 
 exports.createItem = async (req, res) => {
   try {
     const { name, quantity, price } = req.body;
+    const userDetails = await UserModel.findById(req.user.id);
 
-    if (!req.file) {
+    if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
+    const files = req.file;
+
+    if (!files) {
       return res.status(400).json({ error: "Image is required" });
     }
 
-    const result = await cloudinary.uploads(req.file.path, "Images");
+    const result = await cloudinary.uploads(files.path, "Images");
 
-    const item = new Item({
+    const item = new ItemModel({
       name,
       quantity,
       price,
       image: result.url,
     });
 
-    await item.save();
+    item.user = userDetails;
+    item.save();
+
+    userDetails.items.push(new mongoose.Types.ObjectId(item._id));
+    userDetails.save();
 
     return res.status(201).json({ message: "Item created successfully." });
   } catch (error) {
@@ -32,10 +41,13 @@ exports.createItem = async (req, res) => {
 
 exports.updateItem = async (req, res) => {
   try {
-    const { name, quantity, price } = req.body;
-    const itemId = req.params.itemId;
+    // const { name, quantity, price } = req.body;
+    const itemId = req.query.itemId;
+    const userDetails = await UserModel.findById(req.user.id);
 
-    const item = await Item.findById(itemId);
+    if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
+
+    const item = await ItemModel.findById(itemId);
 
     if (!item) {
       return res.status(404).json({ error: "Item not found." });
@@ -46,11 +58,7 @@ exports.updateItem = async (req, res) => {
       item.image = result.url;
     }
 
-    item.name = name;
-    item.quantity = quantity;
-    item.price = price;
-
-    await item.save();
+    await ItemModel.findByIdAndUpdate(item._id, req.body, { new: true });
 
     res.status(200).json({ message: "Item updated successfully." });
   } catch (error) {
@@ -63,15 +71,15 @@ exports.updateItem = async (req, res) => {
 
 exports.deleteItem = async (req, res) => {
   try {
-    const itemId = req.params.itemId;
+    const itemId = req.query.itemId;
 
-    const item = await Item.findById(itemId);
+    const item = await ItemModel.findById(itemId);
 
     if (!item) {
       return res.status(404).json({ error: "Item not found." });
     }
 
-    await item.remove();
+    await ItemModel.findByIdAndDelete(item._id);
 
     res.status(200).json({ message: "Item deleted successfully." });
   } catch (error) {
@@ -84,7 +92,7 @@ exports.deleteItem = async (req, res) => {
 
 exports.getAllItems = async (req, res) => {
   try {
-    const items = await Item.find();
+    const items = await ItemModel.find();
 
     res.status(200).json(items);
   } catch (error) {
@@ -95,9 +103,9 @@ exports.getAllItems = async (req, res) => {
 
 exports.getSingleItem = async (req, res) => {
   try {
-    const itemId = req.params.itemId;
+    const itemId = req.query.itemId;
 
-    const item = await Item.findById(itemId);
+    const item = await ItemModel.findById(itemId);
 
     if (!item) {
       return res.status(404).json({ error: "Item not found." });

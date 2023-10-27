@@ -8,22 +8,19 @@ const vendorSchema = new mongoose.Schema({
     scrapItems: [ {
         scrapItems: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "scrapItem"
+            ref: "Item"
         },
         totalPrice: { type: Number },
         totalQuantity: { type: Number }
     } ],
     fullName: {
         type: String,
-        required: true,
     },
     phoneNumber: {
         type: String,
-        required: true,
     },
     pincode: {
         type: String,
-        required: true,
     },
     address: {
         type: String,
@@ -36,6 +33,10 @@ const vendorSchema = new mongoose.Schema({
     landmark: {
         type: String,
         required: true,
+    },
+    status: {
+        type: String,
+        default: "Pending"
     },
 }, { timestamps: true });
 
