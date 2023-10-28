@@ -17,8 +17,16 @@ const auth = require("../utils/auth");
 
 router.route("/profile").get(auth, getSingleUser);
 router.route("/").get(getAllUser);
-router.post("/register/vendor", createVendor);
-router.post("/register/customer", createCustomer);
+router.post("/register/vendor", upload.fields([
+    { name: 'avatar' },
+    { name: "pan_card" },
+    { name: "file3" },
+]), createVendor);
+router.post("/register/customer", upload.fields([
+    { name: 'avatar' },
+    { name: "pan_card" },
+    { name: "file3" },
+]), createCustomer);
 router.route("/login").post(signInUser);
 router.route("/verify").patch(verifyUser);
 router.route("/forget-password").patch(forgetPassword);

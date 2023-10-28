@@ -41,6 +41,10 @@ const vendorSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        isAdmin: {
+            type: Boolean,
+            default: false,
+        },
         avatar: String,
         pan_card: String,
         file3: String,
