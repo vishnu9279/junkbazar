@@ -47,7 +47,7 @@ const vendorSchema = new mongoose.Schema(
         },
         avatar: String,
         pan_card: String,
-        file3: String,
+        adhar_card: String,
         items: [
             {
                 type: mongoose.Schema.Types.ObjectId,

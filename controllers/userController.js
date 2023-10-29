@@ -27,15 +27,6 @@ exports.createVendor = async (req, res) => {
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);
 
-        for (const fieldName of Object.keys(files)) {
-            const file = files[ fieldName ][ 0 ];
-            const { path } = file;
-            const newPath = await image(path);
-
-            updateObject[ fieldName ] = newPath.url;
-            fs.unlinkSync(path);
-        }
-
         if (otpSent) {
             const vendor = new UserModel({
                 fullName,
@@ -47,7 +38,6 @@ exports.createVendor = async (req, res) => {
                 OTP: otp,
                 password: hashed,
                 isVendor: true,
-                updateObject
             });
             await vendor.save();
             console.log(otp);
@@ -82,15 +72,6 @@ exports.createCustomer = async (req, res) => {
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);
 
-        for (const fieldName of Object.keys(files)) {
-            const file = files[ fieldName ][ 0 ];
-            const { path } = file;
-            const newPath = await image(path);
-
-            updateObject[ fieldName ] = newPath.url;
-            fs.unlinkSync(path);
-        }
-
         if (otpSent) {
             const vendor = new UserModel({
                 fullName,
@@ -102,7 +83,6 @@ exports.createCustomer = async (req, res) => {
                 OTP: otp,
                 password: hashed,
                 isVendor: false,
-                updateObject
             });
             await vendor.save();
             console.log(otp);
@@ -192,7 +172,7 @@ exports.forgetPassword = async (req, res) => {
         }
         await UserModel.findByIdAndUpdate(user._id, { OTP: otp }, { new: true });
 
-        res.status(200).json({ message: "An OTP have been sent to Your Phone", data: user });
+        res.status(200).json({ message: "An OTP have been sent to Your Phone", data: user._id });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
