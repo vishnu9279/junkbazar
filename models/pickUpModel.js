@@ -5,14 +5,16 @@ const vendorSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
-    scrapItems: [ {
-        scrapItem: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Item"
-        },
-        price: { type: Number },
-        qty: { type: Number }
-    } ],
+    vendorID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    },
+    scrapItem: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Item"
+    },
+    price: { type: Number },
+    quantity: { type: Number },
     fullName: {
         type: String,
     },
@@ -37,9 +39,12 @@ const vendorSchema = new mongoose.Schema({
     status: {
         type: String,
     },
+    PickUp_Request_Status: {
+        type: String,
+        default: 'Vendor_Only'
+    },
     payment_method: { type: String },
-    totalPrice: { type: Number },
-    totalQuantity: { type: Number },
+    payment_status: { type: String },
     notification: { type: Boolean, default: true },
 }, { timestamps: true });
 

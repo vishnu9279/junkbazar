@@ -15,7 +15,7 @@ const {
 const upload = require("../utils/multer");
 const auth = require("../utils/auth");
 
-router.route("/profile").get(auth, getSingleUser);
+router.route("/profile").get(getSingleUser);
 router.route("/").get(getAllUser);
 router.post("/register/vendor", createVendor);
 router.post("/register/customer", createCustomer);
