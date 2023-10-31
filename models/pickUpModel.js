@@ -9,14 +9,12 @@ const vendorSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
     },
-    scrapItems: {
-        scrapItem: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Item"
-        },
-        price: { type: Number },
-        qty: { type: Number }
+    scrapItem: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Item"
     },
+    price: { type: Number },
+    quantity: { type: Number },
     fullName: {
         type: String,
     },
