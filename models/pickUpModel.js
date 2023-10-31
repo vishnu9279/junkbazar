@@ -44,6 +44,7 @@ const vendorSchema = new mongoose.Schema({
         default: 'Vendor_Only'
     },
     payment_method: { type: String },
+    payment_status: { type: String },
     notification: { type: Boolean, default: true },
 }, { timestamps: true });
 
