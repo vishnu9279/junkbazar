@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const expressAsyncErrors = require("express-async-errors");
-// const customerRoute = require("./routes/customerRoute");
+
 const userRouter = require("./routes/userRouter");
 const itemRouter = require("./routes/itemRouter");
 const pickUpRouter = require("./routes/pickUpRouter");
