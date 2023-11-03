@@ -142,7 +142,7 @@ exports.signInUser = async (req, res) => {
         }
 
         const userToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRED_DATE,
+            expiresIn: "1d",
         });
 
         res.status(200).json({
