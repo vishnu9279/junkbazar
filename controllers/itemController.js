@@ -5,7 +5,7 @@ const UserModel = require("../models/userModel");
 
 exports.createItem = async (req, res) => {
   try {
-    const { name, quantity, price } = req.body;
+    const { name, kilogram, address, price } = req.body;
     const userDetails = await UserModel.findById(req.user.id);
 
     if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
@@ -19,7 +19,8 @@ exports.createItem = async (req, res) => {
 
     const item = new ItemModel({
       name,
-      quantity,
+      kilogram,
+      address,
       price,
       image: result.url,
     });

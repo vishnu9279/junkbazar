@@ -11,7 +11,14 @@ const itemSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  address: {
+    type: Number,
+    required: true,
+  },
   quantity: {
+    type: Number,
+  },
+  kilogram: {
     type: Number,
     required: true,
   },
