@@ -40,10 +40,9 @@ exports.createVendor = async (req, res) => {
             isVendor: true,
         });
         await vendor.save();
-        console.log(otp);
         res.status(201).json({
-            message: "Vendor created successfully. OTP sent for verification.",
-            data: otp
+            message: "Vendor created successfully. OTP sent for verification." + otp,
+            data: vendor._id
         });
         // } else {
         //     res.status(500).json({ error: "Failed to send OTP.", message: otp });
@@ -88,8 +87,8 @@ exports.createCustomer = async (req, res) => {
         await vendor.save();
         // console.log(otp);
         res.status(201).json({
-            message: "Customer created successfully. OTP sent for verification.",
-            data: otp
+            message: "Customer created successfully. OTP sent for verification." + otp,
+            data: vendor._id
         });
         // } else {
         //     res.status(500).json({ error: "Failed to send OTP.", message: otp });
