@@ -27,26 +27,26 @@ exports.createVendor = async (req, res) => {
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);
 
-        if (otpSent) {
-            const vendor = new UserModel({
-                fullName,
-                phoneNumber,
-                pincode,
-                address,
-                city,
-                landmark,
-                OTP: otp,
-                password: hashed,
-                isVendor: true,
-            });
-            await vendor.save();
-            console.log(otp);
-            res.status(201).json({
-                message: "Vendor created successfully. OTP sent for verification.",
-            });
-        } else {
-            res.status(500).json({ error: "Failed to send OTP.", message: otp });
-        }
+        // if (otpSent) {
+        const vendor = new UserModel({
+            fullName,
+            phoneNumber,
+            pincode,
+            address,
+            city,
+            landmark,
+            OTP: otp,
+            password: hashed,
+            isVendor: true,
+        });
+        await vendor.save();
+        console.log(otp);
+        res.status(201).json({
+            message: "Vendor created successfully. OTP sent for verification.",
+        });
+        // } else {
+        //     res.status(500).json({ error: "Failed to send OTP.", message: otp });
+        // }
     } catch (error) {
         console.error("Error Vendor:", error);
         res.status(500).json({
@@ -72,26 +72,26 @@ exports.createCustomer = async (req, res) => {
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);
 
-        if (otpSent) {
-            const vendor = new UserModel({
-                fullName,
-                phoneNumber,
-                pincode,
-                address,
-                city,
-                landmark,
-                OTP: otp,
-                password: hashed,
-                isVendor: false,
-            });
-            await vendor.save();
-            console.log(otp);
-            res.status(201).json({
-                message: "Vendor created successfully. OTP sent for verification.",
-            });
-        } else {
-            res.status(500).json({ error: "Failed to send OTP.", message: otp });
-        }
+        // if (otpSent) {
+        const vendor = new UserModel({
+            fullName,
+            phoneNumber,
+            pincode,
+            address,
+            city,
+            landmark,
+            OTP: otp,
+            password: hashed,
+            isVendor: false,
+        });
+        await vendor.save();
+        console.log(otp);
+        res.status(201).json({
+            message: "Vendor created successfully. OTP sent for verification.",
+        });
+        // } else {
+        //     res.status(500).json({ error: "Failed to send OTP.", message: otp });
+        // }
     } catch (error) {
         console.error("Error Vendor:", error);
         res.status(500).json({
