@@ -29,6 +29,12 @@ const vendorSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        feedBack: {
+            type: String,
+        },
+        working_hours: {
+            type: String,
+        },
         password: {
             type: String,
             required: true,

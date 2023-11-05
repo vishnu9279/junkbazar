@@ -299,3 +299,24 @@ exports.getAllUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+exports.updateUser = async (req, res) => {
+    try {
+        // const { name, quantity, price } = req.body;
+        const userDetails = await UserModel.findById(req.user.id);
+
+        if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
+
+        if (req.file) {
+            const result = await cloudinary.uploads(req.file.path, "Images");
+            item.image = result.url;
+        }
+
+        await UserModel.findByIdAndUpdate(userDetails._id, req.body, { new: true });
+
+        res.status(200).json({ message: "User updated successfully." });
+    } catch (error) {
+        res
+            .status(500)
+            .json({ error: "An error occurred while updating the User." });
+    }
+};

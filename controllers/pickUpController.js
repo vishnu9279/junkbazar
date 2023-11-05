@@ -3,13 +3,23 @@ const PickUpModel = require("../models/pickUpModel");
 
 const mongoose = require("mongoose");
 
+const generateOrderID = () => {
+    let digits = "0123456789";
+    let OTPCode = "";
+    for (let i = 0; i < 6; i++) {
+        OTPCode += digits[ Math.floor(Math.random() * 10) ];
+    }
+    return OTPCode;
+};
 exports.sendPickUpRequest = async (req, res) => {
     try {
         const user = await UserModel.findById(req.user.id);
         if (!user) res.status(404).json("User does not exist");
+        const orderID = generateOrderID();
         const PickUpRequest = new PickUpModel(req.body);
 
         PickUpRequest.user = user._id;
+        PickUpRequest.orderId = orderID;
         PickUpRequest.save();
 
         res.status(201).json({ message: "Pickup Request as been created" });
