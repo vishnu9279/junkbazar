@@ -43,6 +43,7 @@ exports.createVendor = async (req, res) => {
         console.log(otp);
         res.status(201).json({
             message: "Vendor created successfully. OTP sent for verification.",
+            data: otp
         });
         // } else {
         //     res.status(500).json({ error: "Failed to send OTP.", message: otp });
@@ -50,7 +51,7 @@ exports.createVendor = async (req, res) => {
     } catch (error) {
         console.error("Error Vendor:", error);
         res.status(500).json({
-            error: "An error occurred while creating the customer." + error.message,
+            error: "An error occurred while creating the Vendor." + error.message,
         });
     }
 };
@@ -85,15 +86,16 @@ exports.createCustomer = async (req, res) => {
             isVendor: false,
         });
         await vendor.save();
-        console.log(otp);
+        // console.log(otp);
         res.status(201).json({
-            message: "Vendor created successfully. OTP sent for verification.",
+            message: "Customer created successfully. OTP sent for verification.",
+            data: otp
         });
         // } else {
         //     res.status(500).json({ error: "Failed to send OTP.", message: otp });
         // }
     } catch (error) {
-        console.error("Error Vendor:", error);
+        // console.error("Error Vendor:", error);
         res.status(500).json({
             error: "An error occurred while creating the customer." + error.message,
         });
