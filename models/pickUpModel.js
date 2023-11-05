@@ -28,6 +28,10 @@ const vendorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    orderId: {
+        type: String,
+        required: true,
+    },
     city: {
         type: String,
         required: true,
