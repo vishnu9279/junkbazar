@@ -23,7 +23,7 @@ exports.createVendor = async (req, res) => {
             password,
         } = req.body;
         const otp = otpService.generateOTP();
-        const otpSent = await otpService.sendOTP(phoneNumber, otp);
+        // const otpSent = await otpService.sendOTP(phoneNumber, otp);
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);
 
@@ -45,7 +45,7 @@ exports.createVendor = async (req, res) => {
                 message: "Vendor created successfully. OTP sent for verification.",
             });
         } else {
-            res.status(500).json({ error: "Failed to send OTP." });
+            res.status(500).json({ error: "Failed to send OTP.", message: otp });
         }
     } catch (error) {
         console.error("Error Vendor:", error);
@@ -68,7 +68,7 @@ exports.createCustomer = async (req, res) => {
             password,
         } = req.body;
         const otp = otpService.generateOTP();
-        const otpSent = await otpService.sendOTP(phoneNumber, otp);
+        // const otpSent = await otpService.sendOTP(phoneNumber, otp);
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);
 
@@ -90,7 +90,7 @@ exports.createCustomer = async (req, res) => {
                 message: "Vendor created successfully. OTP sent for verification.",
             });
         } else {
-            res.status(500).json({ error: "Failed to send OTP." });
+            res.status(500).json({ error: "Failed to send OTP.", message: otp });
         }
     } catch (error) {
         console.error("Error Vendor:", error);
