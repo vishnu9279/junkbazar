@@ -1,7 +1,7 @@
 const UserModel = require("../models/userModel");
 const ItemModel = require("../models/itemModel");
 const otpService = require("../services/otpService");
-const { validationResult } = require("express-validator");
+// const { validationResult } = require("express-validator");
 const { validate } = require("../middleware/validationMiddleware");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
