@@ -230,7 +230,7 @@ exports.resetPassword = async (req, res) => {
 
 exports.userDocuments = async (req, res) => {
     try {
-        const user = await UserModel.findById(req.query.userID);
+        const user = await UserModel.findById(req.user.id);
 
         if (!user) res.status(400).json({ message: "User does not exist" });
         if (!user.verified) {
