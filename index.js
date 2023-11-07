@@ -10,6 +10,7 @@ const expressAsyncErrors = require("express-async-errors");
 const userRouter = require("./routes/userRouter");
 const itemRouter = require("./routes/itemRouter");
 const pickUpRouter = require("./routes/pickUpRouter");
+const reportRouter = require("./routes/reportRouter");
 
 const app = express();
 
@@ -39,6 +40,7 @@ const connectDB = async () => {
 app.use("/api/user", userRouter);
 app.use("/api/item", itemRouter);
 app.use("/api/pickup-request", pickUpRouter);
+app.use("/api/report", reportRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to scrap-bazar app");

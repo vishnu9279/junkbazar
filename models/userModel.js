@@ -51,6 +51,10 @@ const vendorSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        status: {
+            type: String,
+            default: "Offline",
+        },
         avatar: String,
         pan_card: String,
         adhar_card: String,

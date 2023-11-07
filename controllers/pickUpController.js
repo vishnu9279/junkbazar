@@ -24,7 +24,7 @@ exports.sendPickUpRequest = async (req, res) => {
 
         res.status(201).json({ message: "Pickup Request as been created" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
         console.log(error);
     }
 };
@@ -38,7 +38,7 @@ exports.updatePickUpRequest = async (req, res) => {
 
         res.status(200).json({ message: "Pickup Request as been Updated" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
     }
 };
 
@@ -51,7 +51,7 @@ exports.deletePickUpRequest = async (req, res) => {
 
         res.status(200).json({ message: "Pickup Request as been Deleted" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
     }
 };
 
@@ -65,7 +65,7 @@ exports.getAllPickUpRequest = async (req, res) => {
             data: getPickUpList
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
     }
 };
 
@@ -79,6 +79,6 @@ exports.getPickUpRequestDetails = async (req, res) => {
             data: getPickUpDetails
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
     }
 };
