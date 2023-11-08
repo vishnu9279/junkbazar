@@ -173,7 +173,7 @@ exports.forgetPassword = async (req, res) => {
         }
         await UserModel.findByIdAndUpdate(user._id, { OTP: otp }, { new: true });
 
-        res.status(200).json({ message: "An OTP have been sent to Your Phone", data: user._id });
+        res.status(200).json({ message: "An OTP have been sent to Your Phone OTP: " + otp, data: user._id });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
