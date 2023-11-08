@@ -166,11 +166,11 @@ exports.forgetPassword = async (req, res) => {
             res.status(400).json({ message: "User does not exist" });
         }
         const otp = otpService.generateOTP();
-        const otpSent = await otpService.sendOTP(phoneNumber, otp);
+        // const otpSent = await otpService.sendOTP(phoneNumber, otp);
 
-        if (!otpSent) {
-            res.status(400).json({ message: "OTP not sent" });
-        }
+        // if (!otpSent) {
+        //     res.status(400).json({ message: "OTP not sent" });
+        // }
         await UserModel.findByIdAndUpdate(user._id, { OTP: otp }, { new: true });
 
         res.status(200).json({ message: "An OTP have been sent to Your Phone", data: user._id });
