@@ -26,7 +26,7 @@ router.route("/update-user").patch(auth, updateUser);
 router.route("/forget-password").patch(forgetPassword);
 router.route("/verify-password-otp").patch(verify_reset_password_otp);
 router.route("/reset-password").patch(resetPassword);
-router.route("/upload").patch(
+router.route("/upload").patch(auth,
     upload.fields([
         { name: 'avatar' },
         { name: "pan_card" },
