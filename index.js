@@ -11,6 +11,7 @@ const userRouter = require("./routes/userRouter");
 const itemRouter = require("./routes/itemRouter");
 const pickUpRouter = require("./routes/pickUpRouter");
 const reportRouter = require("./routes/reportRouter");
+const adminRouter = require("./routes/adminRouter");
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/user", userRouter);
 app.use("/api/item", itemRouter);
 app.use("/api/pickup-request", pickUpRouter);
 app.use("/api/report", reportRouter);
+app.use("/api/user", adminRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to scrap-bazar app");

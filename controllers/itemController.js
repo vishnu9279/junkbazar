@@ -8,7 +8,8 @@ exports.createItem = async (req, res) => {
     const { name, kilogram, address, price } = req.body;
     const userDetails = await UserModel.findById(req.user.id);
 
-    if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
+    if (!userDetails)
+      res.status(400).json({ message: "You can not perform this Operation" });
     const files = req.file;
 
     if (!files) {
@@ -33,9 +34,7 @@ exports.createItem = async (req, res) => {
 
     return res.status(201).json({ message: "Item created successfully." });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: error });
+    res.status(500).json({ error: error });
   }
 };
 
@@ -45,7 +44,8 @@ exports.updateItem = async (req, res) => {
     const itemId = req.query.itemID;
     const userDetails = await UserModel.findById(req.user.id);
 
-    if (!userDetails) res.status(400).json({ message: "You can not perform this Operation" });
+    if (!userDetails)
+      res.status(400).json({ message: "You can not perform this Operation" });
 
     const item = await ItemModel.findById(itemId);
 
@@ -84,9 +84,7 @@ exports.deleteItem = async (req, res) => {
     res.status(200).json({ message: "Item deleted successfully." });
   } catch (error) {
     // console.error("Error deleting item:", error);
-    res
-      .status(500)
-      .json({ error: error });
+    res.status(500).json({ error: error });
   }
 };
 
@@ -114,8 +112,6 @@ exports.getSingleItem = async (req, res) => {
     res.status(200).json(item);
   } catch (error) {
     // console.error("Error fetching item:", error);
-    res
-      .status(500)
-      .json({ error: error });
+    res.status(500).json({ error: error });
   }
 };
