@@ -32,7 +32,7 @@ exports.getAllReportDetails = async (req, res) => {
 
 exports.getSingleReportDetails = async (req, res) => {
     try {
-        const reportDetails = await reportModel(req.query.reportID);
+        const reportDetails = await reportModel.findById(req.query.reportID);
 
         if (!reportDetails) {
             req.status(400).json({ message: "report does not exist" });
@@ -40,13 +40,14 @@ exports.getSingleReportDetails = async (req, res) => {
 
         res.status(200).json({ status: "Success", data: reportDetails });
     } catch (error) {
-        res.status(error).json({ message: error });
+        res.status(500).json({ message: error });
+        console.log(error);
     }
 };
 
 exports.updateReport = async (req, res) => {
     try {
-        const reportDetails = await reportModel(req.query.reportID);
+        const reportDetails = await reportModel.findById(req.query.reportID);
 
         if (!reportDetails) {
             req.status(400).json({ message: "report does not exist" });
@@ -56,13 +57,13 @@ exports.updateReport = async (req, res) => {
 
         res.status(200).json({ message: "Report Updated Successfully" });
     } catch (error) {
-        res.status(error).json({ message: error });
+        res.status(500).json({ message: error });
     }
 };
 
 exports.deleteReport = async (req, res) => {
     try {
-        const reportDetails = await reportModel(req.query.reportID);
+        const reportDetails = await reportModel.findById(req.query.reportID);
 
         if (!reportDetails) {
             req.status(400).json({ message: "report does not exist" });
@@ -72,6 +73,6 @@ exports.deleteReport = async (req, res) => {
 
         res.status(200).json({ message: "Report Deleted Successfully" });
     } catch (error) {
-        res.status(error).json({ message: error });
+        res.status(500).json({ message: error });
     }
 };
