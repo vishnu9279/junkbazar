@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 exports.createReport = async (req, res) => {
     try {
         const getUserDetails = await UserModel.findById(req.user.id);
-        if (!user) {
+        if (!getUserDetails) {
             res.status(400).json({ message: "User does not exist" });
         }
         const newReport = new reportModel(req.body);
@@ -15,6 +15,7 @@ exports.createReport = async (req, res) => {
 
         res.status(201).json({ message: "Report was sent to the Admin" });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: error });
     }
 };
