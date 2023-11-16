@@ -5,7 +5,7 @@ const UserModel = require("../models/userModel");
 
 exports.createItem = async (req, res) => {
   try {
-    const { name, kilogram, address, price } = req.body;
+    const { name, kilogram, address, price, category } = req.body;
     const userDetails = await UserModel.findById(req.user.id);
 
     if (!userDetails)
@@ -23,6 +23,7 @@ exports.createItem = async (req, res) => {
       kilogram,
       address,
       price,
+      category,
       image: result.url,
     });
 
