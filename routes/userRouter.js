@@ -22,7 +22,7 @@ router.post("/register/vendor", createVendor);
 router.post("/register/customer", createCustomer);
 router.route("/login").post(signInUser);
 router.route("/verify").patch(verifyUser);
-router.route("/update-user").patch(upload.single("image"), auth, updateUser);
+router.route("/update-user").patch(upload.single("avatar"), auth, updateUser);
 router.route("/forget-password").patch(forgetPassword);
 router.route("/verify-password-otp").patch(verify_reset_password_otp);
 router.route("/reset-password").patch(resetPassword);

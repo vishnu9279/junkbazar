@@ -309,15 +309,16 @@ exports.updateUser = async (req, res) => {
 
         if (req.file) {
             const result = await cloudinary.uploads(req.file.path, "Images");
-            item.image = result.url;
+            userDetails.avatar = result.url;
         }
 
         await UserModel.findByIdAndUpdate(userDetails._id, req.body, { new: true });
 
         res.status(200).json({ message: "User updated successfully." });
     } catch (error) {
+        console.log(error);
         res
             .status(500)
-            .json({ error: "An error occurred while updating the User." });
+            .json({ error: error });
     }
 };
