@@ -16,9 +16,6 @@ exports.createVendor = async (req, res) => {
         const {
             fullName,
             phoneNumber,
-            pincode,
-            address,
-            city,
             landmark,
             password,
         } = req.body;
@@ -31,9 +28,6 @@ exports.createVendor = async (req, res) => {
         const vendor = new UserModel({
             fullName,
             phoneNumber,
-            pincode,
-            address,
-            city,
             landmark,
             OTP: otp,
             password: hashed,
@@ -98,6 +92,19 @@ exports.createCustomer = async (req, res) => {
         res.status(500).json({
             error: "An error occurred while creating the customer." + error.message,
         });
+    }
+};
+
+exports.resendOTP = async (req, res) => {
+    try {
+        const userId = req.query.userID;
+        const otp = otpService.generateOTP();
+
+        await UserModel.findByIdAndUpdate(userId, { OTP: otp }, { new: true });
+
+        res.status(200).json({ message: "The otp as been send to your phone number: " + otp });
+    } catch (error) {
+        res.status(500).json({ error: error });
     }
 };
 
@@ -217,6 +224,27 @@ exports.resetPassword = async (req, res) => {
             user._id,
             {
                 OTP: "",
+                password: hashed,
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ message: "Password Updated Successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.updatePassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        const user = await UserModel.findById(req.query.userID);
+
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(password, salt);
+
+        await UserModel.findByIdAndUpdate(
+            user._id,
+            {
                 password: hashed,
             },
             { new: true }

@@ -57,7 +57,7 @@ exports.deletePickUpRequest = async (req, res) => {
 
 exports.getAllPickUpRequest = async (req, res) => {
     try {
-        const getPickUpList = await PickUpModel.find();
+        const getPickUpList = await PickUpModel.find().populate("scrapItem");
         if (getPickUpList < 1) res.status(400).json({ message: "Know Pickup Request Foundt" });
 
         res.status(200).json({
