@@ -26,6 +26,7 @@ process.on("unhandledRejection", (ex) => {
 
 const connectDB = async () => {
   try {
+    console.log('Mongo is connecting');
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
