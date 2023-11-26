@@ -6,6 +6,7 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
+
 const secret = process.env.OTP_SECRET_KEY;
 
 const generateOTP = () => {
