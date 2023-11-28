@@ -43,7 +43,7 @@ app.use("/api/user", userRouter);
 app.use("/api/item", itemRouter);
 app.use("/api/pickup-request", pickUpRouter);
 app.use("/api/report", reportRouter);
-app.use("/api/user", adminRouter);
+app.use("/api/admin", adminRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to scrap-bazar app");

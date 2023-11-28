@@ -49,6 +49,7 @@ exports.createVendor = async (req, res) => {
     }
 };
 exports.createCustomer = async (req, res) => {
+    console.log('body',req.body);
     try {
         validate(req, res);
 
@@ -61,7 +62,8 @@ exports.createCustomer = async (req, res) => {
             landmark,
             password,
         } = req.body;
-        const otp = otpService.generateOTP();
+        // const otp = otpService.generateOTP();
+        const otp = 111111;
         // const otpSent = await otpService.sendOTP(phoneNumber, otp);
         const salt = await bcrypt.genSalt(15);
         const hashed = await bcrypt.hash(password, salt);

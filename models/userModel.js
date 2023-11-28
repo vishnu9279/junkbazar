@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const RolesEnum = require('../utils/roles')
 const vendorSchema = new mongoose.Schema(
   {
     fullName: {
@@ -43,14 +43,18 @@ const vendorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isVendor: {
-      type: Boolean,
-      default: false,
+    roles:{
+      type:Number,
+      default:RolesEnum.USER
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
+    // isVendor: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // isAdmin: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     status: {
       type: String,
       default: "Offline",
