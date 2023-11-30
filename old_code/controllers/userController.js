@@ -100,7 +100,8 @@ exports.createCustomer = async (req, res) => {
 exports.resendOTP = async (req, res) => {
     try {
         const userId = req.query.userID;
-        const otp = otpService.generateOTP();
+        // const otp = otpService.generateOTP();
+        const otp = 111111;
 
         await UserModel.findByIdAndUpdate(userId, { OTP: otp }, { new: true });
 

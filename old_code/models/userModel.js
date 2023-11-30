@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const RolesEnum = require('../utils/roles')
+const RolesEnum = require('../../src/utils/roles')
 const vendorSchema = new mongoose.Schema(
   {
     fullName: {
