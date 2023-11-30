@@ -10,8 +10,11 @@ class Helper{
             key
         });
         console.log("response object", cache.get(config));
+        const Obj = cache.get(config);
 
-        return cache.get(config)[key];
+        console.log("response object", Obj[key]);
+
+        return Obj[key];
     }
 }
 

@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
             type: String
         },
         OTP: {
-            type: String
+            type: Number
         },
         otpExpiryTime: {
             required: true,
