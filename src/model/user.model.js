@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema(
         OTP: {
             type: String
         },
+        otpExpiryTime: {
+            required: true,
+            type: Number
+        },
         
         phoneNumber: {
             required: true,

@@ -8,9 +8,15 @@ import {
 
 import helper from "../../../utils/helper.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
-const register = asyncHandler (async (req, res) => {
-    console.log("register working", req.body);
+import mongoose from "mongoose";
+
+const login = asyncHandler (async (req, res) => {
+    console.log("login working", req.body);
     let OTP;
+   
+    const session = await mongoose.startSession();
+
+    session.startTransaction();
     const currentTime = new Date().getTime();
 
     try {
@@ -24,32 +30,39 @@ const register = asyncHandler (async (req, res) => {
             phoneNumber
         });
 
-        if (!fieldValidator(user)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerErrorMessage.ERROR_USER_ALREADY_EXIST);
+        if (fieldValidator(user)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_NO_CONTENT, errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT, registerErrorMessage.ERROR_USER_NOT_FOUND);
     
-        const fixOtpUsers = helper.getCacheElement("Config", "FIXED_OTP_USERS");
+        const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
         if (fixOtpUsers.includes(phoneNumber))
-            OTP = helper.getCacheElement("Config", "FIXED_OTP");
+            OTP = helper.getCacheElement("CONFIG", "FIXED_OTP");
 
         OTP = helper.getRandomOTP(100000, 999999);
-        const UserModelObj = new UserModel({
-            dialCode,
-            OTP,
-            otpExpiryTime: currentTime,
+
+        const resp = await UserModel.findOneAndUpdate({
             phoneNumber
+        }, {
+            $set: {
+                OTP,
+                otpExpiryTime: currentTime
+            }
+        }, {
+            new: true,
+            session
         });
 
-        const resp = await UserModelObj.save();
-
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);
+
+        await session.commitTransaction();
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerErrorMessage.SUCCESSFULLY_SAVED)
         );
     }
     catch (error) {
-        console.error("Error while Creating User", error.message);
+        console.error("Error while Login User", error.message);
+        // await session.abortTransaction();
 
         if (error instanceof ApiError) {
             console.log("Api Error instance");
@@ -61,13 +74,17 @@ const register = asyncHandler (async (req, res) => {
         }
         else {
             // Handle other types of errors
-            console.error("Error in registerUser:", error);
+            console.error("Error in loginUser:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
                 error: CommonErrorMessage.SOMETHING_WENT_WRONG 
             });
         }
     }
+    finally {
+        // End the session
+        await session.endSession();
+    }
 });
 
-export default register;
+export default login;

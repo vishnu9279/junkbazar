@@ -10,6 +10,9 @@ import rateLimiter from "./middleware/rateLimit.js";
 import {
     CommonErrorMessage
 } from "./utils/constants.js";
+
+import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFromDb.js";
+
 const app = express();
 
 async function connectTomongoDbConn() {
@@ -18,6 +21,7 @@ async function connectTomongoDbConn() {
     try {
         await db.connect();
         console.log("Connected to the database");
+        await fetchConfigCollectionFromDb();
     }
     catch (error) {
         console.error("Error connecting to the database:", error);
