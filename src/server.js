@@ -1,3 +1,5 @@
+"use strict";
+
 function onSignalInterruptedHandler() {
     console.log("SIGINT signal received. Shutting down gracefully.");
     // Implement graceful shutdown logic here if needed

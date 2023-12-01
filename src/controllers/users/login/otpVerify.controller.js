@@ -1,3 +1,5 @@
+"use strict";
+
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserModel  from "../../../model/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";

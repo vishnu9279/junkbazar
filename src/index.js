@@ -1,3 +1,5 @@
+"use strict";
+
 import app from "./app.js";
 import setupServer from "./server.js";
 import {

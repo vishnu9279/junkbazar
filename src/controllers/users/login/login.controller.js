@@ -1,3 +1,5 @@
+"use strict";
+
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserModel  from "../../../model/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
@@ -11,7 +13,7 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
-import sendSms from "../../../sendSms/sendSms.js";
+import sendSms from "../../../3rdPartyServices/sendSms.js";
 
 const login = asyncHandler (async (req, res) => {
     console.log("login working", req.body);

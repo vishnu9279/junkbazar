@@ -1,3 +1,5 @@
+"use strict";
+
 import cache from "memory-cache";
 import crypto from "crypto";
 

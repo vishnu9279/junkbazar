@@ -1,3 +1,5 @@
+"use strict";
+
 import {
     CommonErrorMessage, statusCodeObject 
 } from "../utils/constants.js";

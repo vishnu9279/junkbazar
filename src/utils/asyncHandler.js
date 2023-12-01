@@ -1,3 +1,5 @@
+"use strict";
+
 const asyncHandler = (requestHandler) => {
     console.log("async handler working");
     

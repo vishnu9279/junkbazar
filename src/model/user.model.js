@@ -1,3 +1,5 @@
+"use strict";
+
 import mongoose from "mongoose";
 import RolesEnum  from "../../src/utils/roles.js";
 const userSchema = new mongoose.Schema(

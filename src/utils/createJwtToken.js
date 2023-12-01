@@ -3,6 +3,8 @@ import {
     basicConfigurationObject
 } from "../utils/constants.js";
 
+"use strict";
+
 import helper from "../utils/helper.js";
 import storeSession from "./storeSession.js";
 import ShortUniqueId from "short-unique-id";

@@ -1,3 +1,5 @@
+"use strict";
+
 import xss from "xss";
 
 // Sanitization middleware using xss

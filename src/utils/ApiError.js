@@ -1,3 +1,5 @@
+"use strict";
+
 class ApiError extends Error {
     constructor(statusCode, errorCode, message = "Something Went Wrong", errors = [], data = null, stack = "") {
         super(message);

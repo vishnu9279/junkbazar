@@ -1,4 +1,4 @@
-"user strict";
+"use strict";
 
 import mongoose from "mongoose";
 const configSchema = new mongoose.Schema({

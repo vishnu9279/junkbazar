@@ -1,3 +1,5 @@
+"use strict";
+
 import Session  from "../model/session.model.js";
 const storeSession = async(data, jwtOption, exipryHr, milliseconds) => {
     // console.log("storeSession working", data);

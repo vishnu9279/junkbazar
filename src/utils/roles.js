@@ -1,3 +1,5 @@
+"use strict";
+
 const RolesEnum = {
     ADMIN: 20,
     READ_ONLY: 0,

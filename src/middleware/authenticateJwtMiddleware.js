@@ -1,36 +1,60 @@
 "use strict";
 
-app.use((req, res, next) => {
+import {
+    basicConfigurationObject, CommonErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration
+} from "../utils/constants.js";
+import ApiError from "../utils/ApiError.js";
+import jsonwebtoken from "jsonwebtoken";
+import helper from "../utils/helper.js";
+
+const authenticateJwtMiddleware =  async(req, res, next) => {
     const authHeader = req.headers.authorization;
   
-    if (!authHeader) {
-        return res.status(401).json({
-            error: "Authorization header is missing" 
-        });
-    }
-  
+    if (!authHeader)  throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Authorization header is missing");
+    
     const tokenParts = authHeader.split(" ");
 
-    if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== "bearer") {
-        return res.status(401).json({
-            error: "Invalid Authorization header format" 
-        });
-    }
+    if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== "bearer") throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Invalid Authorization header format");
   
     const token = tokenParts[1];
-  
+    const currentTime = new Date().getTime();
+
     try {
         // Verify the token using the secret key (replace 'your_secret_key' with your actual secret key)
-        const decoded = jwt.verify(token, "your_secret_key");
-  
+        const decoded = jsonwebtoken.verify(token, basicConfigurationObject.ACCESS_TOKEN_SECRET);
+
+        console.log("decoded", decoded);
+        const encryptObj = helper.decryptAnyData(decoded.encrypt);
+
+        if (currentTime > encryptObj.expiryTime) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Token Expired");
+
         // Attach the decoded payload to the request for later use in routes
-        req.user = decoded;
+        delete encryptObj.originalUrl;
+        req.user = encryptObj;
   
         next();
     }
     catch (error) {
-        return res.status(401).json({
-            error: "Invalid token" 
-        });
+        console.error("Error while Login User", error.message);
+        // await session.abortTransaction();
+
+        if (error instanceof ApiError) {
+            console.log("Api Error instance");
+
+            // Handle ApiError instances with dynamic status code and message
+            return res.status(error.statusCode).json({
+                error: error || CommonErrorMessage.SOMETHING_WENT_WRONG
+            });
+        }
+        else {
+            // Handle other types of errors
+            console.error("Error in loginUser:", error);
+
+            return res.status(statusCodeObject.HTTP_STATUS_UNAUTHORIZED).json({
+                error: "Invalid token" 
+            });
+        }
     }
-});
+};
+
+export default authenticateJwtMiddleware;

@@ -47,6 +47,7 @@
 // }
 
 // export default createDatabaseConn;
+"use strict";
 
 import mongoose from "mongoose";
 import {
