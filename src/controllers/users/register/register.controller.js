@@ -5,7 +5,7 @@ import UserModel  from "../../../model/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonErrorMessage, registerErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration 
+    CommonErrorMessage, registerErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyErrorMessage
 } from "../../../utils/constants.js";
 
 import helper from "../../../utils/helper.js";
@@ -25,7 +25,7 @@ const register = asyncHandler (async (req, res) => {
 
     try {
         const {
-            dialCode, phoneNumber
+            dialCode, phoneNumber, otp
         } = req.body;
 
         if (fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonErrorMessage.ERROR_FIELD_REQUIRED);
@@ -36,7 +36,6 @@ const register = asyncHandler (async (req, res) => {
                     userId: uniqueId
                 },
                 {
-
                     phoneNumber
                 }
             ]
@@ -51,16 +50,33 @@ const register = asyncHandler (async (req, res) => {
             OTP = helper.getCacheElement("CONFIG", "FIXED_OTP");
 
         OTP = helper.getRandomOTP(100000, 999999);
-        session = await getNewMongoSession();
-    
-        session.startTransaction();
-        const UserModelObj = new UserModel({
+        const userSaveObj = {
             dialCode,
             OTP,
             otpGenerateTime: currentTime,
             phoneNumber,
             userId: uniqueId
-        });
+        };
+
+        if (!fieldValidator(otp)){
+            if (!user.OTP)
+                throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyErrorMessage.NO_LOGIN_REQUEST_INITATION);
+
+            if (parseInt(otp) !== parseInt(user.OTP))
+                throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_MISMATCH);
+
+            console.log("otp genrate Time", currentTime - user.otpGenerateTime);
+
+            if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
+                throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_EXPIRE);
+
+            userSaveObj.verified = true;
+        }
+
+        session = await getNewMongoSession();
+    
+        session.startTransaction();
+        const UserModelObj = new UserModel(userSaveObj);
 
         const resp = await UserModelObj.save({
             session
