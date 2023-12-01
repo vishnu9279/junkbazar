@@ -9,11 +9,10 @@ const userSchema = new mongoose.Schema(
         OTP: {
             type: Number
         },
-        otpExpiryTime: {
+        otpGenerateTime: {
             required: true,
             type: Number
         },
-        
         phoneNumber: {
             required: true,
             type: String,
@@ -28,6 +27,12 @@ const userSchema = new mongoose.Schema(
         status: {
             default: "Offline",
             type: String
+        },
+        
+        userId: {
+            required: true,
+            type: String,
+            unique: true
         },
 
         verified: {

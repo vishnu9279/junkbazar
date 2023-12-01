@@ -3,7 +3,7 @@ import UserModel  from "../../../model/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonErrorMessage, registerErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration 
+    CommonErrorMessage, registerErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyErrorMessage
 } from "../../../utils/constants.js";
 
 import helper from "../../../utils/helper.js";
@@ -11,21 +11,24 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
-const login = asyncHandler (async (req, res) => {
-    console.log("login working", req.body);
-    let OTP, session;
+import createJwtToken from "../../../utils/createJwtToken.js";
+
+const otpVerify = asyncHandler (async (req, res) => {
+    console.log("otpVerify working", req.body);
    
+    let session;
     const currentTime = new Date().getTime();
-    
+
     try {
         session = await getNewMongoSession();
     
         session.startTransaction();
         const {
-            dialCode, phoneNumber
+            phoneNumber, otp
         } = req.body;
+        const platform = req.headers.platform;
 
-        if (fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonErrorMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(otp) || fieldValidator(phoneNumber) || fieldValidator(platform)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonErrorMessage.ERROR_FIELD_REQUIRED);
 
         const user = await UserModel.findOne({
             phoneNumber
@@ -33,20 +36,24 @@ const login = asyncHandler (async (req, res) => {
 
         if (fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_NO_CONTENT, errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT, registerErrorMessage.ERROR_USER_NOT_FOUND);
-    
-        const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
+        
+        if (!user.OTP)
+            throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyErrorMessage.NO_LOGIN_REQUEST_INITATION);
 
-        if (fixOtpUsers.includes(phoneNumber))
-            OTP = helper.getCacheElement("CONFIG", "FIX_OTP");
-        else 
-            OTP = helper.getRandomOTP(100000, 999999);
+        if (parseInt(otp) !== parseInt(user.OTP))
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_MISMATCH);
+
+        console.log("otp genrate Time", currentTime - user.otpGenerateTime);
+
+        if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_EXPIRE);
 
         const resp = await UserModel.findOneAndUpdate({
             phoneNumber
         }, {
             $set: {
-                OTP: parseInt(OTP),
-                otpGenerateTime: currentTime
+                OTP: "",
+                otpVerifyTime: currentTime
             }
         }, {
             new: true,
@@ -55,10 +62,20 @@ const login = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);
 
+        const tokenObj = {       
+            phoneNumber,
+            userId: user.userId,
+            userRole: user.roles
+        };
+
+        const token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+
         await session.commitTransaction();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerErrorMessage.SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
+                token
+            }, otpVerifyErrorMessage.USER_LOGGED_IN)
         );
     }
     catch (error) {
@@ -88,4 +105,4 @@ const login = asyncHandler (async (req, res) => {
     }
 });
 
-export default login;
+export default otpVerify;

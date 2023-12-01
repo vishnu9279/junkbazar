@@ -8,6 +8,10 @@ import {
 
 import helper from "../../../utils/helper.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
+import ShortUniqueId from "short-unique-id";
+const uid = new ShortUniqueId();
+const uniqueId = uid.rnd(6);
+
 const register = asyncHandler (async (req, res) => {
     console.log("register working", req.body);
     let OTP;
@@ -21,23 +25,32 @@ const register = asyncHandler (async (req, res) => {
         if (fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonErrorMessage.ERROR_FIELD_REQUIRED);
 
         const user = await UserModel.findOne({
-            phoneNumber
+            $or: [
+                {
+                    userId: uniqueId
+                },
+                {
+
+                    phoneNumber
+                }
+            ]
         });
 
         if (!fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerErrorMessage.ERROR_USER_ALREADY_EXIST);
     
-        const fixOtpUsers = helper.getCacheElement("Config", "FIXED_OTP_USERS");
+        const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
         if (fixOtpUsers.includes(phoneNumber))
-            OTP = helper.getCacheElement("Config", "FIXED_OTP");
+            OTP = helper.getCacheElement("CONFIG", "FIXED_OTP");
 
         OTP = helper.getRandomOTP(100000, 999999);
         const UserModelObj = new UserModel({
             dialCode,
             OTP,
-            otpExpiryTime: currentTime,
-            phoneNumber
+            otpGenerateTime: currentTime,
+            phoneNumber,
+            userId: uniqueId
         });
 
         const resp = await UserModelObj.save();

@@ -6,6 +6,7 @@ export const errorAndSuccessCodeConfiguration = {
     HTTP_STATUS_CONFLICT: 1002,
     HTTP_STATUS_CREATED: 1003,
     HTTP_STATUS_FORBIDDEN: 1004,
+    HTTP_STATUS_GONE: 1009,
     HTTP_STATUS_INTERNAL_SERVER_ERROR: 1005,
     HTTP_STATUS_NO_CONTENT: 1008,
     HTTP_STATUS_NOT_FOUND: 1006,
@@ -17,6 +18,7 @@ export const basicConfigurationObject  = {
     ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY,
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     CORS_ORIGIN: process.env.CORS_ORIGIN,
+    JWT_ISSSUER: process.env.JWT_ISSSUER,
     MONGODB_URI: process.env.MONGODB_URI,
     PASSWORD_SECRET_KEY: process.env.PASSWORD_SECRET_KEY,
     PORT_NUMBER: process.env.PORT,
@@ -29,6 +31,7 @@ export const statusCodeObject = {
     HTTP_STATUS_CONFLICT: 409,
     HTTP_STATUS_CREATED: 201,
     HTTP_STATUS_FORBIDDEN: 403,
+    HTTP_STATUS_GONE: 410,
     HTTP_STATUS_INTERNAL_SERVER_ERROR: 500,
     HTTP_STATUS_NO_CONTENT: 204,
     HTTP_STATUS_NOT_FOUND: 404,
@@ -62,4 +65,11 @@ export const registerErrorMessage = {
     ERROR_USER_ALREADY_EXIST: "User Already Exist",
     ERROR_USER_NOT_FOUND: "User Not Found",
     SUCCESSFULLY_SAVED: "User Registered Successfully"
+};
+
+export const otpVerifyErrorMessage = {
+    NO_LOGIN_REQUEST_INITATION: "No Login request initated",
+    OTP_EXPIRE: "Otp Expire",
+    OTP_MISMATCH: "Otp Mismatch",
+    USER_LOGGED_IN: "User Logged In"
 };

@@ -4,7 +4,9 @@ import helmet from "helmet";
 import morgan from "morgan";
 import userRouter from "./routes/users/user.route.js";
 import loggerLogs from "./utils/loggerLogs.js";
-import mongoDbConn from "./configuration/dbConnection.js";
+import {
+    connect
+} from "./configuration/dbConnection.js";
 import sanitizeMiddleware from "./middleware/xssMiddleware.js";
 import rateLimiter from "./middleware/rateLimit.js";
 import {
@@ -16,10 +18,8 @@ import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFr
 const app = express();
 
 async function connectTomongoDbConn() {
-    const db = new mongoDbConn();
-    
     try {
-        await db.connect();
+        await connect();
         console.log("Connected to the database");
         await fetchConfigCollectionFromDb();
     }
