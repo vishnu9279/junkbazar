@@ -8,13 +8,17 @@ import {
 
 import helper from "../../../utils/helper.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
+import sendSms from "../../../sendSms/sendSms.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 const uniqueId = uid.rnd(6);
 
+import {
+    getNewMongoSession
+} from "../../../configuration/dbConnection.js";
 const register = asyncHandler (async (req, res) => {
     console.log("register working", req.body);
-    let OTP;
+    let OTP, session;
     const currentTime = new Date().getTime();
 
     try {
@@ -45,6 +49,9 @@ const register = asyncHandler (async (req, res) => {
             OTP = helper.getCacheElement("CONFIG", "FIXED_OTP");
 
         OTP = helper.getRandomOTP(100000, 999999);
+        session = await getNewMongoSession();
+    
+        session.startTransaction();
         const UserModelObj = new UserModel({
             dialCode,
             OTP,
@@ -53,9 +60,15 @@ const register = asyncHandler (async (req, res) => {
             userId: uniqueId
         });
 
-        const resp = await UserModelObj.save();
+        const resp = await UserModelObj.save({
+            session
+        });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);
+
+        await sendSms(phoneNumber, OTP);
+        await session.commitTransaction();
+        await session.endSession();
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerErrorMessage.SUCCESSFULLY_SAVED)
@@ -63,6 +76,8 @@ const register = asyncHandler (async (req, res) => {
     }
     catch (error) {
         console.error("Error while Creating User", error.message);
+        await session.abortTransaction();
+        await session.endSession();
 
         if (error instanceof ApiError) {
             console.log("Api Error instance");

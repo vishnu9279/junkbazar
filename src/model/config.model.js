@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 const configSchema = new mongoose.Schema({
     key: {
         required: true,
-        type: String,
-        unique: true
+        type: String
     },
     value: {
         // Allow any type of value

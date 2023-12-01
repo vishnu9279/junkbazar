@@ -23,7 +23,8 @@ export const basicConfigurationObject  = {
     PASSWORD_SECRET_KEY: process.env.PASSWORD_SECRET_KEY,
     PORT_NUMBER: process.env.PORT,
     REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY,
-    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+    TWO_FACTOR_API_SMS_SERVICE: process.env.TWO_FACTOR_API_SMS_SERVICE
 };
 
 export const statusCodeObject = {

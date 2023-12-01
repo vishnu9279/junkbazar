@@ -48,16 +48,20 @@ const otpVerify = asyncHandler (async (req, res) => {
         if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_EXPIRE);
 
+        const userOtpObj = {
+            OTP: "",
+            otpVerifyTime: currentTime
+        };
+
+        if (!user.verified) userOtpObj.verified = true;
+
         const resp = await UserModel.findOneAndUpdate({
             phoneNumber
         }, {
-            $set: {
-                OTP: "",
-                otpVerifyTime: currentTime
-            }
+            $set: userOtpObj
         }, {
             new: true,
-            session
+            session: session
         });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);

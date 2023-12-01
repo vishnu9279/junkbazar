@@ -11,6 +11,8 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
+import sendSms from "../../../sendSms/sendSms.js";
+
 const login = asyncHandler (async (req, res) => {
     console.log("login working", req.body);
     let OTP, session;
@@ -55,6 +57,7 @@ const login = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);
 
+        await sendSms(phoneNumber, OTP);
         await session.commitTransaction();
 
         return res.status(201).json(
@@ -64,6 +67,7 @@ const login = asyncHandler (async (req, res) => {
     catch (error) {
         console.error("Error while Login User", error.message);
         // await session.abortTransaction();
+        await session.abortTransaction();
 
         if (error instanceof ApiError) {
             console.log("Api Error instance");
