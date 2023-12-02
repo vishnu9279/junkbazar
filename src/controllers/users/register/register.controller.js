@@ -5,7 +5,7 @@ import UserModel  from "../../../model/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonErrorMessage, registerErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyErrorMessage
+    CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyMessage
 } from "../../../utils/constants.js";
 
 import helper from "../../../utils/helper.js";
@@ -28,7 +28,7 @@ const register = asyncHandler (async (req, res) => {
             dialCode, phoneNumber, otp
         } = req.body;
 
-        if (fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonErrorMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         const user = await UserModel.findOne({
             $or: [
@@ -42,7 +42,7 @@ const register = asyncHandler (async (req, res) => {
         });
 
         if (!fieldValidator(user)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerErrorMessage.ERROR_USER_ALREADY_EXIST);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerMessage.ERROR_USER_ALREADY_EXIST);
     
         const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
@@ -60,15 +60,15 @@ const register = asyncHandler (async (req, res) => {
 
         if (!fieldValidator(otp)){
             if (!user.OTP)
-                throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyErrorMessage.NO_LOGIN_REQUEST_INITATION);
+                throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyMessage.NO_LOGIN_REQUEST_INITATION);
 
             if (parseInt(otp) !== parseInt(user.OTP))
-                throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_MISMATCH);
+                throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_MISMATCH);
 
             console.log("otp genrate Time", currentTime - user.otpGenerateTime);
 
             if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
-                throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_EXPIRE);
+                throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_EXPIRE);
 
             userSaveObj.verified = true;
         }
@@ -82,14 +82,14 @@ const register = asyncHandler (async (req, res) => {
             session
         });
 
-        if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);
+        if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
         await sendSms(phoneNumber, OTP);
         await session.commitTransaction();
         await session.endSession();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerErrorMessage.SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerMessage.SUCCESSFULLY_SAVED)
         );
     }
     catch (error) {
@@ -102,7 +102,7 @@ const register = asyncHandler (async (req, res) => {
 
             // Handle ApiError instances with dynamic status code and message
             return res.status(error.statusCode).json({
-                error: error || CommonErrorMessage.SOMETHING_WENT_WRONG
+                error: error || CommonMessage.SOMETHING_WENT_WRONG
             });
         }
         else {
@@ -110,7 +110,7 @@ const register = asyncHandler (async (req, res) => {
             console.error("Error in registerUser:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
-                error: CommonErrorMessage.SOMETHING_WENT_WRONG 
+                error: CommonMessage.SOMETHING_WENT_WRONG 
             });
         }
     }

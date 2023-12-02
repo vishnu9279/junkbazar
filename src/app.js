@@ -12,7 +12,7 @@ import {
 import sanitizeMiddleware from "./middleware/xssMiddleware.js";
 import rateLimiter from "./middleware/rateLimit.js";
 import {
-    CommonErrorMessage
+    CommonMessage
 } from "./utils/constants.js";
 
 import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFromDb.js";
@@ -35,7 +35,7 @@ async function connectTomongoDbConn() {
 function errorHandlerMiddleware(err, req, res, next) {
     loggerLogs.error("Error caught by error handling middleware:", err);
     res.status(500).send({
-        error: CommonErrorMessage.ERROR_MESSAGE_INTERNAL_SERVER_ERROR 
+        error: CommonMessage.ERROR_MESSAGE_INTERNAL_SERVER_ERROR 
     });
 }
 async function setupMiddleware() {
@@ -78,7 +78,7 @@ function setRoutes() {
     app.use("/api/v1/users", userRouter);
     app.get("*", (req, res) => {
         res.status(404).send({
-            error: CommonErrorMessage.ERROR_MESSAGE_NOT_FOUND 
+            error: CommonMessage.ERROR_MESSAGE_NOT_FOUND 
         });
     });
 }

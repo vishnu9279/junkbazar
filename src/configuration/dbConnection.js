@@ -62,12 +62,13 @@ async function connect(uri = basicConfigurationObject.MONGODB_URI || "") {
             useUnifiedTopology: true
         };
 
-        const db = await mongoose.connect(uri, options);
+        const _db = await mongoose.connect(uri, options);
 
-        mongooseClient = db;
+        mongooseClient = _db;
+
         console.log("Connected to MongoDB");
 
-        return db;
+        return _db;
     }
     catch (error) {
         console.error("MongoDB connection error:", error);

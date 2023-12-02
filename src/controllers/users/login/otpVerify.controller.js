@@ -5,7 +5,7 @@ import UserModel  from "../../../model/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonErrorMessage, registerErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyErrorMessage
+    CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyMessage
 } from "../../../utils/constants.js";
 
 import helper from "../../../utils/helper.js";
@@ -30,25 +30,25 @@ const otpVerify = asyncHandler (async (req, res) => {
         } = req.body;
         const platform = req.headers.platform;
 
-        if (fieldValidator(otp) || fieldValidator(phoneNumber) || fieldValidator(platform)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonErrorMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(otp) || fieldValidator(phoneNumber) || fieldValidator(platform)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         const user = await UserModel.findOne({
             phoneNumber
         });
 
         if (fieldValidator(user)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_NO_CONTENT, errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT, registerErrorMessage.ERROR_USER_NOT_FOUND);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_NO_CONTENT, errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT, registerMessage.ERROR_USER_NOT_FOUND);
         
         if (!user.OTP)
-            throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyErrorMessage.NO_LOGIN_REQUEST_INITATION);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyMessage.NO_LOGIN_REQUEST_INITATION);
 
         if (parseInt(otp) !== parseInt(user.OTP))
-            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_MISMATCH);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_MISMATCH);
 
         console.log("otp genrate Time", currentTime - user.otpGenerateTime);
 
         if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
-            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyErrorMessage.OTP_EXPIRE);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_EXPIRE);
 
         const userOtpObj = {
             OTP: "",
@@ -66,7 +66,7 @@ const otpVerify = asyncHandler (async (req, res) => {
             session: session
         });
 
-        if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonErrorMessage.SOMETHING_WENT_WRONG);
+        if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
         const tokenObj = {       
             phoneNumber,
@@ -81,7 +81,7 @@ const otpVerify = asyncHandler (async (req, res) => {
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
                 token
-            }, otpVerifyErrorMessage.USER_LOGGED_IN)
+            }, otpVerifyMessage.USER_LOGGED_IN)
         );
     }
     catch (error) {
@@ -93,7 +93,7 @@ const otpVerify = asyncHandler (async (req, res) => {
 
             // Handle ApiError instances with dynamic status code and message
             return res.status(error.statusCode).json({
-                error: error || CommonErrorMessage.SOMETHING_WENT_WRONG
+                error: error || CommonMessage.SOMETHING_WENT_WRONG
             });
         }
         else {
@@ -101,7 +101,7 @@ const otpVerify = asyncHandler (async (req, res) => {
             console.error("Error in loginUser:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
-                error: CommonErrorMessage.SOMETHING_WENT_WRONG 
+                error: CommonMessage.SOMETHING_WENT_WRONG 
             });
         }
     }

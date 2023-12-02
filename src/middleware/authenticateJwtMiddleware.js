@@ -1,7 +1,7 @@
 "use strict";
 
 import {
-    basicConfigurationObject, CommonErrorMessage, statusCodeObject, errorAndSuccessCodeConfiguration
+    basicConfigurationObject, CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration
 } from "../utils/constants.js";
 import ApiError from "../utils/ApiError.js";
 import jsonwebtoken from "jsonwebtoken";
@@ -43,7 +43,7 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
 
             // Handle ApiError instances with dynamic status code and message
             return res.status(error.statusCode).json({
-                error: error || CommonErrorMessage.SOMETHING_WENT_WRONG
+                error: error || CommonMessage.SOMETHING_WENT_WRONG
             });
         }
         else {

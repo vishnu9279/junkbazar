@@ -2,15 +2,18 @@
 
 const AWS = require("aws-sdk");
 
+import {
+    basicConfigurationObject 
+} from "./constants";
 AWS.config.update({
-    accessKeyId: config.get("AWS_S3_ACCESS_KEY_ID"),
-    region: config.get("AWS_S3_REGION"),
-    secretAccessKey: config.get("AWS_S3_SECRET_ACCESS_KEY")
+    accessKeyId: basicConfigurationObject.AWS_S3_ACCESS_KEY_ID,
+    region: basicConfigurationObject.AWS_S3_REGION,
+    secretAccessKey: basicConfigurationObject.AWS_S3_SECRET_ACCESS_KEY
 });
 
 const s3 = new AWS.S3({});
 
-const bucketName = config.get("BUCKET_NAME_AWS");
+const bucketName = basicConfigurationObject.BUCKET_NAME_AWS;
 
 const uploadFile = async (file, user_id, type, access_type) => {
     console.log("uploadFile works  of user_id ", user_id);

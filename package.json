@@ -15,6 +15,7 @@
   "author": "goodluck",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1510.0",
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.0",
     "cors": "^2.8.5",

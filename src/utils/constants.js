@@ -19,6 +19,10 @@ export const errorAndSuccessCodeConfiguration = {
 export const basicConfigurationObject  = {
     ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY,
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+    AWS_S3_ACCESS_KEY_ID: process.env.AWS_S3_ACCESS_KEY_ID,
+    AWS_S3_REGION: process.env.AWS_S3_REGION,
+    AWS_S3_SECRET_ACCESS_KEY: process.env.AWS_S3_SECRET_ACCESS_KEY,
+    BUCKET_NAME_AWS: process.env.BUCKET_NAME_AWS,
     CORS_ORIGIN: process.env.CORS_ORIGIN,
     JWT_ISSSUER: process.env.JWT_ISSSUER,
     MONGODB_URI: process.env.MONGODB_URI,
@@ -43,7 +47,7 @@ export const statusCodeObject = {
     HTTP_STATUS_UNAUTHORIZED: 401
 };
 
-export const CommonErrorMessage = {
+export const CommonMessage = {
     EMAIL_REQUIRED: "Email is Required",
     ERROR_FIELD_REQUIRED: "Field required",
     ERROR_MESSAGE_BAD_REQUEST: "Bad Request",
@@ -62,7 +66,7 @@ export const CommonErrorMessage = {
     USERNAME_VALIDATION_ERROR: "User name must be alphanumeric."
 };
 
-export const registerErrorMessage = {
+export const registerMessage = {
     ERROR_INVALID_EMAIL_VALIDATION: "Invalid email address",
     ERROR_PASSWORD_VALIDATION: "At least 1 uppercase, 1 lowercase, 1 number, 1 special character and minimum 8 characters required.",
     ERROR_USER_ALREADY_EXIST: "User Already Exist",
@@ -70,7 +74,7 @@ export const registerErrorMessage = {
     SUCCESSFULLY_SAVED: "User Registered Successfully"
 };
 
-export const otpVerifyErrorMessage = {
+export const otpVerifyMessage = {
     NO_LOGIN_REQUEST_INITATION: "No Login request initated",
     OTP_EXPIRE: "Otp Expire",
     OTP_MISMATCH: "Otp Mismatch",

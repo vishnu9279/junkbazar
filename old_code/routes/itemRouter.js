@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const upload = require("../utils/multer");
 const {
-  createItem,
-  updateItem,
-  deleteItem,
-  getAllItems,
-  getSingleItem,
+    createItem,
+    updateItem,
+    deleteItem,
+    getAllItems,
+    getSingleItem
 } = require("../controllers/itemController");
 const auth = require("../utils/auth");
 

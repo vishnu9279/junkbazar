@@ -1,7 +1,7 @@
 "use strict";
 
 import {
-    CommonErrorMessage, statusCodeObject 
+    CommonMessage, statusCodeObject 
 } from "../utils/constants.js";
 
 function createRateLimiter() {
@@ -25,7 +25,7 @@ function createRateLimiter() {
 
         if (!clientIP) {
             // Handle the case where clientIP is undefined (e.g., if req.ip is not available)
-            res.status(statusCodeObject.HTTP_STATUS_BAD_REQUEST).send(CommonErrorMessage.ERROR_MESSAGE_BAD_REQUEST);
+            res.status(statusCodeObject.HTTP_STATUS_BAD_REQUEST).send(CommonMessage.ERROR_MESSAGE_BAD_REQUEST);
 
             return;
         }
@@ -44,7 +44,7 @@ function createRateLimiter() {
             entry.lastAccess = Date.now();
 
             if (isRateLimitExceeded(entry)) {
-                res.status(statusCodeObject.HTTP_STATUS_TOO_MANY_REQUESTS).send(CommonErrorMessage.ERROR_MESSAGE_TOO_MANY_REQUESTS);
+                res.status(statusCodeObject.HTTP_STATUS_TOO_MANY_REQUESTS).send(CommonMessage.ERROR_MESSAGE_TOO_MANY_REQUESTS);
 
                 return;
             }
