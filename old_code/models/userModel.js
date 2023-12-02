@@ -1,76 +1,83 @@
 const mongoose = require("mongoose");
-const RolesEnum = require('../../src/utils/roles')
+const RolesEnum = require("../../src/utils/roles");
 const vendorSchema = new mongoose.Schema(
-  {
-    fullName: {
-      type: String,
-      required: true,
+    {
+        address: {
+            type: String
+            // required: true,
+        },
+        city: {
+            type: String
+            // required: true,
+        },
+        feedBack: {
+            type: String
+        },
+        fullName: {
+            required: true,
+            type: String
+        },
+        avatar: String,
+        landmark: {
+            type: String
+            // required: true,
+        },
+        adhar_card: String,
+        OTP: {
+            type: String
+        },
+        items: [
+            {
+                ref: "Item",
+                type: mongoose.Schema.Types.ObjectId
+            }
+        ],
+        password: {
+            required: true,
+            type: String
+        },
+        phoneNumber: {
+            required: true,
+            type: String,
+            unique: true
+        },
+        pan_card: String,
+    
+        pincode: {
+            type: String
+            // required: true,
+        },
+        
+        roles: {
+            default: RolesEnum.USER,
+            type: Number
+        },
+
+        // isVendor: {
+        //   type: Boolean,
+        //   default: false,
+        // },
+        // isAdmin: {
+        //   type: Boolean,
+        //   default: false,
+        // },
+        status: {
+            default: "Offline",
+            type: String
+        },
+
+        verified: {
+            default: false,
+            type: Boolean
+        },
+        
+        working_hours: {
+            type: String
+        }
     },
-    phoneNumber: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    OTP: {
-      type: String,
-    },
-    pincode: {
-      type: String,
-      // required: true,
-    },
-    address: {
-      type: String,
-      // required: true,
-    },
-    city: {
-      type: String,
-      // required: true,
-    },
-    landmark: {
-      type: String,
-      // required: true,
-    },
-    feedBack: {
-      type: String,
-    },
-    working_hours: {
-      type: String,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    verified: {
-      type: Boolean,
-      default: false,
-    },
-    roles:{
-      type:Number,
-      default:RolesEnum.USER
-    },
-    // isVendor: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    // isAdmin: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    status: {
-      type: String,
-      default: "Offline",
-    },
-    avatar: String,
-    pan_card: String,
-    adhar_card: String,
-    items: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Item",
-      },
-    ],
-  },
-  { timestamps: true }
+    {
+        timestamps: true 
+    }
 );
 
 const Vendor = mongoose.model("users", vendorSchema);

@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import Scrap  from "../../../model/users/scrap.model.js";
+import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -10,8 +10,8 @@ import {
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
 
-const getScrap = asyncHandler (async (req, res) => {
-    console.log("getScrap working");
+const getUserPickupAddress = asyncHandler (async (req, res) => {
+    console.log("getUserPickupAddress working");
 
     try {
         const userId = req.decoded.userId;
@@ -25,13 +25,13 @@ const getScrap = asyncHandler (async (req, res) => {
             page = page || 0;
  
         const skip = page * limit;
-        const scrap = await Scrap.find({
+        const scrap = await UserPickAddress.find({
             userId
         }) 
             .skip(skip)
             .limit(limit);
 
-        const totalScrapCount = await Scrap.countDocuments({
+        const totalScrapCount = await UserPickAddress.countDocuments({
             userId 
         });
 
@@ -77,4 +77,4 @@ const getScrap = asyncHandler (async (req, res) => {
     }
 });
 
-export default getScrap;
+export default getUserPickupAddress;

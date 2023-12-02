@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import Scrap  from "../../../model/scrap.model.js";
+import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -29,11 +29,11 @@ const addScrap = asyncHandler (async (req, res) => {
         const userId = req.decoded.userId;
         let scrapName = req.body.scrapName;
         const {
-            address, price, quantityType, stateCode, countryCode
+            price, quantityType, stateCode, countryCode
         } = req.body;
         const files = req.file;
 
-        if (fieldValidator(scrapName) || fieldValidator(address) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(files)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(files)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         scrapName = scrapName.toLowerCase();
         const scrap = await Scrap.findOne({
@@ -52,7 +52,6 @@ const addScrap = asyncHandler (async (req, res) => {
 
         const imageObj =  await uploadFile(files, userId, "scrap");
         const scrapSaveObj = {
-            address,
             countryCode,
             currentTime,
             docId: imageObj.docId,

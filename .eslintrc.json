@@ -121,7 +121,7 @@
       "key-spacing": ["error"],
       "space-infix-ops": ["error"],
       "keyword-spacing": ["error"],
-      "comma-spacing": ["error"],
+    //   "comma-spacing": ["error"],
       "object-curly-newline": ["error", {
           "minProperties": 1
       }],

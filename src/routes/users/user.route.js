@@ -15,6 +15,8 @@ import get_country_state_cities from "../../controllers/users/other_api/get_coun
 import addScrap from "../../controllers/users/scrap/addScrap.controller.js";
 import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
+import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.controller.js";
+import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAddress.controller.js";
 import upload from "../../utils/multer.js";
 
 router.route("/register").post(register);
@@ -24,4 +26,7 @@ router.route("/getCountries").get(get_country_state_cities);
 router.route("/getScrap").get(authenticateJwtMiddleware, getScrap);
 router.route("/addScrap").post(authenticateJwtMiddleware, upload.single("scrapImage"), addScrap);
 router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
+router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
+router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);
+
 export default router;

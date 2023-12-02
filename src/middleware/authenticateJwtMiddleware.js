@@ -6,7 +6,7 @@ import {
 import ApiError from "../utils/ApiError.js";
 import jsonwebtoken from "jsonwebtoken";
 import helper from "../utils/helper.js";
-import UserModel from "../model/user.model.js";
+import UserModel from "../model/users/user.model.js";
 
 const authenticateJwtMiddleware =  async(req, res, next) => {
     const authHeader = req.headers.authorization;

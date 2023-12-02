@@ -31,6 +31,7 @@ const configSchema = new mongoose.Schema({
         type: String
     },
     userId: {
+        ref: "User",
         required: true, 
         type: String
     }

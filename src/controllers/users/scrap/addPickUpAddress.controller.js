@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import Scrap  from "../../../model/users/scrap.model.js";
+import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -9,13 +9,17 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
+import ShortUniqueId from "short-unique-id";
+const uid = new ShortUniqueId();
+const uniqueId = uid.rnd(6);
 
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
-const addScrapQuantity = asyncHandler (async (req, res) => {
-    console.log("addScrapQuantity working", req.body);
+const addPickUpAddress = asyncHandler (async (req, res) => {
+    console.log("UserPickAddress working", req.body);
     let  session;
+    const currentTime = new Date().getTime();
 
     try {
         session = await getNewMongoSession();
@@ -23,28 +27,42 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            scrapId, quantity
+            fullName, scrapId, stateCode, countryCode, pincode, dialCode, phoneNumber, address
         } = req.body;
 
-        if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(fullName) || fieldValidator(scrapId) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const scrap = await Scrap.findOne({
-            scrapId,
-            userId 
+        const scrap = await UserPickAddress.findOne({
+            $or: [
+                {
+                    addressId: uniqueId
+                },
+                {
+                    address
+                }
+            ]
         });
 
         if (!fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const resp = await Scrap.findOneAndUpdate({
+        const scrapSaveObj = {
+            address,
+            addressId: uniqueId,
+            countryCode,
+            currentTime,
+            fullName,
+            phoneNumber,
+            pincode,
             scrapId,
+            stateCode,
             userId
-        }, {
-            $set: {
-                quantity
-            }
-        }, {
-            session: session
+        };
+        
+        const ScrapModelObj = new UserPickAddress(scrapSaveObj);
+
+        const resp = await ScrapModelObj.save({
+            session
         });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
@@ -80,4 +98,4 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
     }
 });
 
-export default addScrapQuantity;
+export default addPickUpAddress;

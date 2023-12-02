@@ -1,7 +1,7 @@
 "use strict";
 
 import mongoose from "mongoose";
-import RolesEnum  from "../../src/utils/roles.js";
+import RolesEnum  from "../../utils/roles.js";
 const userSchema = new mongoose.Schema(
     {
         accountBlocked: {
@@ -51,6 +51,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

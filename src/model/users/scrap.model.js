@@ -62,6 +62,7 @@ const userSchema = new mongoose.Schema(
             type: String
         },
         userId: {
+            ref: "User",
             required: true,
             type: String
         }
@@ -71,6 +72,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const Scrap = mongoose.model("scrap", userSchema);
+const Scrap = mongoose.model("Scrap", userSchema);
 
 export default Scrap;
