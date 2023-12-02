@@ -1,0 +1,72 @@
+"use strict";
+
+import mongoose from "mongoose";
+const userSchema = new mongoose.Schema(
+    {
+        address: {
+            required: true,
+            type: String
+        },
+        countryCode: {
+            required: true,
+            type: String
+        },
+        currentTime: {
+            required: true,
+            type: Number
+        },
+        docId: {
+            required: true,
+            type: String,
+            unique: true
+        },
+        docPath: {
+            required: true,
+            type: String,
+            unique: true
+        },
+        docUrl: {
+            required: true,
+            type: String 
+        },
+        
+        enabled: {
+            default: true,
+            type: Boolean
+        },
+        
+        price: {
+            required: true,
+            type: Number
+        },
+        
+        quantityType: {
+            required: true,
+            type: String
+        },
+
+        scrapId: {
+            required: true,
+            type: String
+        },
+        scrapName: {
+            required: true,
+            type: String   
+        },
+        stateCode: {
+            required: true,
+            type: String
+        },
+        userId: {
+            required: true,
+            type: String
+        }
+    },
+    {
+        timestamps: true 
+    }
+);
+
+const Scrap = mongoose.model("scrap", userSchema);
+
+export default Scrap;

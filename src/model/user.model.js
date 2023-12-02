@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 import RolesEnum  from "../../src/utils/roles.js";
 const userSchema = new mongoose.Schema(
     {
+        accountBlocked: {
+            default: false,
+            type: Boolean 
+        },
         dialCode: {
             required: true,
             type: String
@@ -15,6 +19,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        
         phoneNumber: {
             required: true,
             type: String,
@@ -30,13 +35,12 @@ const userSchema = new mongoose.Schema(
             default: "Offline",
             type: String
         },
-        
+
         userId: {
             required: true,
             type: String,
             unique: true
         },
-
         verified: {
             default: false,
             type: Boolean

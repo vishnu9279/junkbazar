@@ -32,9 +32,15 @@ router.route("/resend-otp").patch(resendOTP);
 router.route("/update-password").patch(updatePassword);
 router.route("/upload").patch(auth,
     upload.fields([
-        { name: 'avatar' },
-        { name: "pan_card" },
-        { name: "adhar_card" },
+        {
+            name: "avatar" 
+        },
+        {
+            name: "pan_card" 
+        },
+        {
+            name: "adhar_card" 
+        }
     ]),
     userDocuments
 );

@@ -80,3 +80,7 @@ export const otpVerifyMessage = {
     OTP_MISMATCH: "Otp Mismatch",
     USER_LOGGED_IN: "User Logged In"
 };
+export const ScrapMessage = {
+    SCRAP_ALREADY_EXIST: "Scrap Already Exist",
+    SCRAP_SUCCESSFULLY_SAVED: "Scrap Saved Successfully"
+};

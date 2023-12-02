@@ -1,10 +1,10 @@
 "use strict";
 
-const AWS = require("aws-sdk");
+import AWS from "aws-sdk";
 
 import {
     basicConfigurationObject 
-} from "./constants";
+} from "./constants.js";
 AWS.config.update({
     accessKeyId: basicConfigurationObject.AWS_S3_ACCESS_KEY_ID,
     region: basicConfigurationObject.AWS_S3_REGION,
@@ -57,4 +57,4 @@ const uploadFile = async (file, user_id, type, access_type) => {
     });
 };
 
-module.exports = uploadFile;
+export default uploadFile;

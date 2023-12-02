@@ -8,8 +8,9 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
+
         cb(null, file.fieldname + "-" + Date.now() + ext);
-    },
+    }
 });
 
 const fileFilter = (req, file, cb) => {
@@ -24,7 +25,8 @@ const fileFilter = (req, file, cb) => {
     )
         cb(null, true);
     else {
-        var newError = new Error("File type is incorrect!");
+        const newError = new Error("File type is incorrect!");
+
         newError.name = "MulterError";
         cb(newError, false);
     }
@@ -32,11 +34,12 @@ const fileFilter = (req, file, cb) => {
 
 //m
 const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1024 * 1024 * 5 },
     fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 5 
+    },
+    storage: storage
 });
 
-
-module.exports = upload
+module.exports = upload;
 

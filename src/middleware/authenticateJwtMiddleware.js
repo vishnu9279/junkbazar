@@ -6,6 +6,7 @@ import {
 import ApiError from "../utils/ApiError.js";
 import jsonwebtoken from "jsonwebtoken";
 import helper from "../utils/helper.js";
+import UserModel from "../model/user.model.js";
 
 const authenticateJwtMiddleware =  async(req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -23,14 +24,22 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         // Verify the token using the secret key (replace 'your_secret_key' with your actual secret key)
         const decoded = jsonwebtoken.verify(token, basicConfigurationObject.ACCESS_TOKEN_SECRET);
 
-        console.log("decoded", decoded);
+        // console.log("decoded", decoded);
         const encryptObj = helper.decryptAnyData(decoded.encrypt);
 
         if (currentTime > encryptObj.expiryTime) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Token Expired");
 
         // Attach the decoded payload to the request for later use in routes
         delete encryptObj.originalUrl;
-        req.user = encryptObj;
+        const user = await UserModel.findOne({
+           
+            userId: encryptObj.userId
+
+        });
+
+        if (user.accountBlocked) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Account Blocked");
+
+        req.decoded = encryptObj;
   
         next();
     }

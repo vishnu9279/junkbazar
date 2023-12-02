@@ -24,6 +24,9 @@ const register = asyncHandler (async (req, res) => {
     const currentTime = new Date().getTime();
 
     try {
+        session = await getNewMongoSession();
+    
+        session.startTransaction();
         const {
             dialCode, phoneNumber, otp
         } = req.body;
@@ -72,10 +75,7 @@ const register = asyncHandler (async (req, res) => {
 
             userSaveObj.verified = true;
         }
-
-        session = await getNewMongoSession();
-    
-        session.startTransaction();
+        
         const UserModelObj = new UserModel(userSaveObj);
 
         const resp = await UserModelObj.save({

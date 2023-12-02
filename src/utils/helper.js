@@ -12,7 +12,7 @@ class Helper{
             config,
             key
         });
-        console.log("response object", cache.get(config));
+        // console.log("response object", cache.get(config));
         const Obj = cache.get(config);
 
         // console.log("response object", Obj[key]);
@@ -26,11 +26,11 @@ class Helper{
         const initVector = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
         const Securitykey = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
 
-        console.log({
-            algorithm,
-            initVector,
-            Securitykey
-        });
+        // console.log({
+        //     algorithm,
+        //     initVector,
+        //     Securitykey
+        // });
         const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
         let encryptedData = cipher.update(JSON.stringify(messages), "utf-8", "hex");
 
@@ -45,11 +45,11 @@ class Helper{
         const initVector = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
         const Securitykey = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
 
-        console.log({
-            algorithm,
-            initVector,
-            Securitykey
-        });
+        // console.log({
+        //     algorithm,
+        //     initVector,
+        //     Securitykey
+        // });
         const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
 
         let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
