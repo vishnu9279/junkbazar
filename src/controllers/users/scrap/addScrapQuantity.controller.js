@@ -9,67 +9,42 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import uploadFile from "../../../utils/uploadFile.js";
-import ShortUniqueId from "short-unique-id";
-const uid = new ShortUniqueId();
-const uniqueId = uid.rnd(6);
 
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
-const addScrap = asyncHandler (async (req, res) => {
-    console.log("addScrap working", req.body);
+const addScrapQuantity = asyncHandler (async (req, res) => {
+    console.log("addScrapQuantity working", req.body);
     let  session;
-    const currentTime = new Date().getTime();
 
     try {
         session = await getNewMongoSession();
     
         session.startTransaction();
         const userId = req.decoded.userId;
-        let scrapName = req.body.scrapName;
         const {
-            address, price, quantityType, stateCode, countryCode
+            scrapId, quantity
         } = req.body;
-        const files = req.file;
 
-        if (fieldValidator(scrapName) || fieldValidator(address) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(files)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        scrapName = scrapName.toLowerCase();
         const scrap = await Scrap.findOne({
-            $or: [
-                {
-                    scrapId: uniqueId
-                },
-                {
-                    scrapName
-                }
-            ]
+            scrapId,
+            userId 
         });
 
         if (!fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const imageObj =  await uploadFile(files, userId, "scrap");
-        const scrapSaveObj = {
-            address,
-            countryCode,
-            currentTime,
-            docId: imageObj.docId,
-            docPath: imageObj.docPath,
-            docUrl: imageObj.url,
-            price,
-            quantityType,
-            scrapId: uniqueId,
-            scrapName,
-            stateCode,
+        const resp = await Scrap.findOneAndUpdate({
+            scrapId,
             userId
-        };
-        
-        const ScrapModelObj = new Scrap(scrapSaveObj);
-
-        const resp = await ScrapModelObj.save({
-            session
+        }, {
+            $set: {
+                quantity
+            }
+        }, {
+            session: session
         });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
@@ -105,4 +80,4 @@ const addScrap = asyncHandler (async (req, res) => {
     }
 });
 
-export default addScrap;
+export default addScrapQuantity;

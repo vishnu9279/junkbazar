@@ -13,6 +13,7 @@ import login from "../../controllers/users/login/login.controller.js";
 import otpVerify from "../../controllers/users/login/otpVerify.controller.js";
 import get_country_state_cities from "../../controllers/users/other_api/get_countries_state_cities.js";
 import addScrap from "../../controllers/users/scrap/addScrap.controller.js";
+import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
 import upload from "../../utils/multer.js";
 
@@ -22,4 +23,5 @@ router.route("/otpVerify").post(otpVerify);
 router.route("/getCountries").get(get_country_state_cities);
 router.route("/getScrap").get(authenticateJwtMiddleware, getScrap);
 router.route("/addScrap").post(authenticateJwtMiddleware, upload.single("scrapImage"), addScrap);
+router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
 export default router;

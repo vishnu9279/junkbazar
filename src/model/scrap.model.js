@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        quantity: {
+            required: false,
+            type: Number
+        },
         
         quantityType: {
             required: true,
