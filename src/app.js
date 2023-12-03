@@ -24,7 +24,6 @@ async function connectTomongoDbConn() {
     try {
         await connect();
         console.log("Connected to the database");
-        await fetchConfigCollectionFromDb();
     }
     catch (error) {
         console.error("Error connecting to the database:", error);
@@ -43,13 +42,6 @@ async function setupMiddleware() {
     try {
         app.use(helmet());
         app.use(express.static("public"));
-        app.use(
-            cors({
-                credentials: true,
-                methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-                origin: helper.getCacheElement("CONFIG", "CORS_ORIGIN")
-            })
-        );
         
         app.use(express.json({
             limit: "16kb" 
@@ -66,6 +58,14 @@ async function setupMiddleware() {
 
         app.use(morgan("combined"));
         await connectTomongoDbConn();
+        await fetchConfigCollectionFromDb();
+        app.use(
+            cors({
+                credentials: true,
+                methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+                origin: helper.getCacheElement("CONFIG", "CORS_ORIGIN")
+            })
+        );
         // Error handling middleware
         app.use(errorHandlerMiddleware);
     }

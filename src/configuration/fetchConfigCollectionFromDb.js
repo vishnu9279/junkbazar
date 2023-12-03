@@ -11,7 +11,8 @@ async function fetchConfigCollectionFromDb() {
         const items = await Config.find();
         const config = combineConfiguration(items);
 
-        // console.log("Configuration Load  ed", config);
+        // console.log("Configuration Load  ed", items);
+
         await cache.put("CONFIG", config);
         // console.log(cache.get("CONFIG"));
     }
