@@ -16,6 +16,7 @@ import {
 } from "./utils/constants.js";
 
 import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFromDb.js";
+import helper from "./utils/helper.js";
 
 const app = express();
 
@@ -46,7 +47,7 @@ async function setupMiddleware() {
             cors({
                 credentials: true,
                 methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-                origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : undefined
+                origin: helper.getCacheElement("CONFIG", "CORS_ORIGIN")
             })
         );
         
