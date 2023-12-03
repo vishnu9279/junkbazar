@@ -17,7 +17,7 @@ import {
 
 import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFromDb.js";
 import helper from "./utils/helper.js";
-
+import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
 const app = express();
 
 async function connectTomongoDbConn() {
@@ -40,6 +40,7 @@ function errorHandlerMiddleware(err, req, res, next) {
 }
 async function setupMiddleware() {
     try {
+        app.use(checkForForceUpdate);
         app.use(helmet());
         app.use(express.static("public"));
         
