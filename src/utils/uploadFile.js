@@ -5,14 +5,19 @@ import AWS from "aws-sdk";
 import {
     basicConfigurationObject 
 } from "./constants.js";
+const customEndpoint = "https://assets.hksoftware.in";
+
 AWS.config.update({
     accessKeyId: basicConfigurationObject.AWS_S3_ACCESS_KEY_ID,
     region: basicConfigurationObject.AWS_S3_REGION,
     secretAccessKey: basicConfigurationObject.AWS_S3_SECRET_ACCESS_KEY
 });
 
-const s3 = new AWS.S3({});
-
+// const s3 = new AWS.S3({});
+const s3 = new AWS.S3({
+    endpoint: customEndpoint,
+    s3ForcePathStyle: true
+});
 const bucketName = basicConfigurationObject.BUCKET_NAME_AWS;
 
 const uploadFile = async (file, user_id, type, access_type) => {
@@ -36,7 +41,7 @@ const uploadFile = async (file, user_id, type, access_type) => {
             ContentType: file.mimetype,
             Key: key
         }, function(err, s3Obj) {
-            console.log("s3Obj", s3Obj);
+            console.log("s3Obj", s3Obj, err);
 
             if (err) {
                 console.error("Error occurred in uploading file => ", err);
@@ -45,8 +50,10 @@ const uploadFile = async (file, user_id, type, access_type) => {
             else if (s3Obj.Location) {
                 console.log("S3 upload URL => ", s3Obj.Location);
                 imageObject.url = s3Obj.Location;
+                imageObject.CustomUrl = `${customEndpoint}/${s3Obj.Key}`;
                 imageObject.docId = currentTime;
                 imageObject.docPath = s3Obj.Key;
+                console.log(imageObject);
                 resolve(imageObject);
             }
             else {

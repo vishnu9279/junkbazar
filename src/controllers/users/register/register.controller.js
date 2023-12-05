@@ -44,6 +44,8 @@ const register = asyncHandler (async (req, res) => {
             ]
         });
 
+        console.log("user", user);
+
         if (!fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerMessage.ERROR_USER_ALREADY_EXIST);
     

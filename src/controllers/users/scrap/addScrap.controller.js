@@ -26,7 +26,8 @@ const addScrap = asyncHandler (async (req, res) => {
         session = await getNewMongoSession();
     
         session.startTransaction();
-        const userId = req.decoded.userId;
+        // const userId = req.decoded.userId;
+        const userId = "rtry7";
         let scrapName = req.body.scrapName;
         const {
             price, quantityType, stateCode, countryCode
