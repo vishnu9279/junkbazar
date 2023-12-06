@@ -1,0 +1,34 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowCopy",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::970952497218:root"
+            },
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::junkbazzarpprod/*",
+                "arn:aws:s3:::junkbazzarpprod"
+            ]
+        },
+        {
+            "Sid": "AllowCloudFrontServicePrincipal",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::junkbazzarpprod/*",
+            "Condition": {
+                "StringEquals": {
+                    "AWS:SourceArn": "arn:aws:s3:::junkbazzarpprod"
+                }
+            }
+        }
+    ]
+}
