@@ -10,7 +10,7 @@ import {
 
 import helper from "../../../utils/helper.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import sendSms from "../../../3rdPartyServices/sendSms.js";
+import sendSms from "../../../services/sendSms.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 const uniqueId = uid.rnd(6);

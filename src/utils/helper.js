@@ -2,6 +2,8 @@
 
 import cache from "memory-cache";
 import crypto from "crypto";
+const oneDayMillisecond = 24 * 60 * 60 * 1000;
+const oneWeekMillisecond = 7 * 24 * 60 * 60 * 1000;
 
 class Helper{
     getRandomOTP (min, max){
@@ -59,6 +61,35 @@ class Helper{
         const inObjectDecryptData = JSON.parse(decryptedData);
 
         return inObjectDecryptData;
+    }
+    getMonthNumber(date) {
+        const reference_date = new Date(this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
+        const currentDate = date ? new Date(date) : new Date();
+
+        let months = (currentDate.getFullYear() - reference_date.getFullYear()) * 12;
+
+        months -= reference_date.getMonth();
+        months += currentDate.getMonth();
+
+        return months <= 0 ? 0 : months;
+    }
+    getWeekNumber(date) {
+        const currentDate = date ? new Date(date).getTime() : new Date().getTime();
+
+        const reference_date = new Date(this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
+        const reference_week_start = this.getCacheElement("CONFIG", "REFERENCE_START_DATE") - (reference_date.getDay() * oneDayMillisecond);
+
+        const difference = currentDate - reference_week_start;
+        const week_difference = difference / oneWeekMillisecond;
+
+        return Math.floor(week_difference);
+    }
+    getDayNumber(date) {
+        const currentDate = date ? new Date(date).getTime() : new Date().getTime();
+        const difference = currentDate - this.getCacheElement("CONFIG", "REFERENCE_START_DATE");
+        const day_difference = difference / oneDayMillisecond;
+
+        return Math.floor(day_difference);
     }
 }
 

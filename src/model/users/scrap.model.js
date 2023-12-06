@@ -72,6 +72,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const Scrap = mongoose.model("Scrap", userSchema);
+const Scrap = mongoose.model("scrap", userSchema);
 
 export default Scrap;
