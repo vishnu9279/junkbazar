@@ -65,7 +65,7 @@ async function setupMiddleware() {
         console.log("CORS_ORIGIN", CORS_ORIGIN);
         app.use(
             cors({
-                credentials: true,
+                // credentials: true,
                 origin: CORS_ORIGIN
             })
         );
