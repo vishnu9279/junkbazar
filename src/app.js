@@ -41,13 +41,13 @@ function errorHandlerMiddleware(err, req, res, next) {
 async function setupMiddleware() {
     try {
         console.log(basicConfigurationObject.CORS_ORIGIN.split(","));
+        app.use(helmet());
         app.use(
             cors({
                 credentials: true,
                 origin: basicConfigurationObject.CORS_ORIGIN.split(",")
             })
         );
-        app.use(helmet());
         app.use(checkForForceUpdate);
         app.use(express.static("public"));
         app.use(express.json({
