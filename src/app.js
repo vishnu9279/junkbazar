@@ -12,11 +12,11 @@ import {
 import sanitizeMiddleware from "./middleware/xssMiddleware.js";
 import rateLimiter from "./middleware/rateLimit.js";
 import {
-    CommonMessage
+    CommonMessage, basicConfigurationObject
 } from "./utils/constants.js";
 
 import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFromDb.js";
-import helper from "./utils/helper.js";
+// import helper from "./utils/helper.js";
 import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
 const app = express();
 
@@ -40,10 +40,16 @@ function errorHandlerMiddleware(err, req, res, next) {
 }
 async function setupMiddleware() {
     try {
-        app.use(checkForForceUpdate);
+        console.log(basicConfigurationObject.CORS_ORIGIN.split(","));
+        app.use(
+            cors({
+                credentials: true,
+                origin: basicConfigurationObject.CORS_ORIGIN.split(",")
+            })
+        );
         app.use(helmet());
+        app.use(checkForForceUpdate);
         app.use(express.static("public"));
-        
         app.use(express.json({
             limit: "16kb" 
         }));
@@ -60,15 +66,7 @@ async function setupMiddleware() {
         app.use(morgan("combined"));
         await connectTomongoDbConn();
         await fetchConfigCollectionFromDb();
-        const CORS_ORIGIN = helper.getCacheElement("CONFIG", "CORS_ORIGIN");
-
-        console.log("CORS_ORIGIN", CORS_ORIGIN);
-        app.use(
-            cors({
-                // credentials: true,
-                origin: CORS_ORIGIN
-            })
-        );
+        
         // Error handling middleware
         app.use(errorHandlerMiddleware);
     }
