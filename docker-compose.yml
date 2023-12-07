@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 20  # Specify the Node.js version you want
+    ports:
+      - "5001:5000"
+      - "5002:5000"
+      - "5003:5000"
+    deploy:
+      replicas: 1
