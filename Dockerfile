@@ -1,5 +1,5 @@
 # Use an argument to set the Node.js version
-ARG NODE_VERSION=14
+ARG NODE_VERSION=20
 
 # Use the official Node.js image with the specified version
 FROM node:${NODE_VERSION}
