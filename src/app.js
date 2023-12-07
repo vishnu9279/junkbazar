@@ -66,7 +66,6 @@ async function setupMiddleware() {
         app.use(
             cors({
                 credentials: true,
-                methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
                 origin: CORS_ORIGIN
             })
         );
