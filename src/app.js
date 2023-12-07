@@ -19,9 +19,7 @@ import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFr
 import helper from "./utils/helper.js";
 import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
 const app = express();
-const CORS_ORIGIN = helper.getCacheElement("CONFIG", "CORS_ORIGIN");
 
-console.log("CORS_ORIGIN", CORS_ORIGIN);
 async function connectTomongoDbConn() {
     try {
         await connect();
@@ -62,6 +60,9 @@ async function setupMiddleware() {
         app.use(morgan("combined"));
         await connectTomongoDbConn();
         await fetchConfigCollectionFromDb();
+        const CORS_ORIGIN = helper.getCacheElement("CONFIG", "CORS_ORIGIN");
+
+        console.log("CORS_ORIGIN", CORS_ORIGIN);
         app.use(
             cors({
                 credentials: true,
