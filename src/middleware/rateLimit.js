@@ -58,7 +58,7 @@ import ApiError from "../utils/ApiError.js";
 
 // export default rateLimiter;
 
-const rateLimit = require("express-rate-limit");
+import rateLimit  from "express-rate-limit";
 
 const rateLimiter = rateLimit({
     handler: function (req, res /*next*/) {
