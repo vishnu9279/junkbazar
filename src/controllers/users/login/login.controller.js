@@ -5,7 +5,7 @@ import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration 
+    CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration, loginMessage
 } from "../../../utils/constants.js";
 
 import helper from "../../../utils/helper.js";
@@ -63,7 +63,7 @@ const login = asyncHandler (async (req, res) => {
         await session.commitTransaction();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerMessage.SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, loginMessage.LOGIN_OTP_SENT_SUCCESSFULLY)
         );
     }
     catch (error) {

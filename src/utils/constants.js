@@ -74,6 +74,11 @@ export const registerMessage = {
     SUCCESSFULLY_SAVED: "User Registered Successfully"
 };
 
+export const loginMessage = {
+    LOGIN_OTP_SENT_SUCCESSFULLY: "login OTP sent successfully"
+   
+};
+
 export const otpVerifyMessage = {
     NO_LOGIN_REQUEST_INITATION: "No Login request initated",
     OTP_EXPIRE: "Otp Expire",
