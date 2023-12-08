@@ -84,38 +84,3 @@ export const ScrapMessage = {
     SCRAP_ALREADY_EXIST: "Scrap Already Exist",
     SCRAP_SUCCESSFULLY_SAVED: "Scrap Saved Successfully"
 };
-
-
-#!/bin/bash
-
-# Variables
-APP_DIR="JunkBazzar"  # Replace with your app directory
-GIT_REPO="https://github.com/Hksoft-code/JunkBazzar.git"  # Replace with your Git repo URL
-BRANCH="prepared"  # Replace with your desired branch
-CONTAINER_NAME="junkbazzar_app"  # Replace with your container name
-
-# Git credentials
-GIT_USERNAME="sahimakhtar"
-GIT_PASSWORD="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"
-
-# Clone or pull your Node.js app with Git credentials
-if [ -d "$APP_DIR" ]; then
-  cd "$APP_DIR"
-  GIT_ASKPASS=/bin/echo GIT_USERNAME="$GIT_USERNAME" GIT_PASSWORD="$GIT_PASSWORD" git pull origin "$BRANCH"
-else
-  GIT_ASKPASS=/bin/echo GIT_USERNAME="$GIT_USERNAME" GIT_PASSWORD="$GIT_PASSWORD" git clone --branch "$BRANCH" "$GIT_REPO" "$APP_DIR"
-  cd "$APP_DIR"
-fi
-
-# Stop and remove the specified Docker container
-docker stop "$CONTAINER_NAME" || true  # Using '|| true' to prevent script failure if the container doesn't exist
-docker rm "$CONTAINER_NAME" || true
-
-# Use docker-compose to start the container
-docker-compose up -d
-
-# Install dependencies
-npm install
-
-# Start your Node.js app (adjust the start command as needed)
-npm start
