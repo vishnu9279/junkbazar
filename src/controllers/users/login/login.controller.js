@@ -36,7 +36,7 @@ const login = asyncHandler (async (req, res) => {
         });
 
         if (fieldValidator(user)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_NO_CONTENT, errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT, registerMessage.ERROR_USER_NOT_FOUND);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
     
         const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
