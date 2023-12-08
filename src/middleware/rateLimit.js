@@ -1,8 +1,9 @@
 "use strict";
 
 import {
-    CommonMessage, statusCodeObject 
+    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, registerMessage
 } from "../utils/constants.js";
+import ApiError from "../utils/ApiError.js";
 
 function createRateLimiter() {
     const rateLimitMap = new Map();
@@ -25,9 +26,7 @@ function createRateLimiter() {
 
         if (!clientIP) {
             // Handle the case where clientIP is undefined (e.g., if req.ip is not available)
-            res.status(statusCodeObject.HTTP_STATUS_BAD_REQUEST).send(CommonMessage.ERROR_MESSAGE_BAD_REQUEST);
-
-            return;
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
         }
 
         if (!rateLimitMap.has(clientIP)) {
@@ -43,11 +42,8 @@ function createRateLimiter() {
             entry.count += 1;
             entry.lastAccess = Date.now();
 
-            if (isRateLimitExceeded(entry)) {
-                res.status(statusCodeObject.HTTP_STATUS_TOO_MANY_REQUESTS).send(CommonMessage.ERROR_MESSAGE_TOO_MANY_REQUESTS);
-
-                return;
-            }
+            if (isRateLimitExceeded(entry)) 
+                throw new ApiError(statusCodeObject.HTTP_STATUS_TOO_MANY_REQUESTS, errorAndSuccessCodeConfiguration.HTTP_STATUS_TOO_MANY_REQUESTS, CommonMessage.ERROR_MESSAGE_TOO_MANY_REQUESTS);
         }
 
         cleanupRateLimitMap();
