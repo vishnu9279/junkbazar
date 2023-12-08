@@ -17,10 +17,10 @@ RUN npm install --production
 COPY . .
 
 # Build the application (if needed)
-# RUN npm run build
+RUN npm run build
 
 # Expose the port your application will run on
-EXPOSE 5000
+EXPOSE 3000
 
 # Command to run your application
 CMD ["npm", "start"]

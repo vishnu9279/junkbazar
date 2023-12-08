@@ -9,7 +9,7 @@ services:
         NODE_VERSION: 20  # Specify the Node.js version you want
     image: junkbazzar_app
     ports:
-      - "5001:5001"
+      - "5000:5000"
       # - "5001:5000"
       # - "5002:5000"
     deploy:
