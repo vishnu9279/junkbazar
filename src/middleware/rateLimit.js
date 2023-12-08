@@ -15,7 +15,7 @@ function createRateLimiter() {
         const now = Date.now();
 
         rateLimitMap.forEach((entry, ip) => {
-            if (now - entry.lastAccess > 20 * 1000) 
+            if (now - entry.lastAccess > 40 * 1000) 
                 rateLimitMap.delete(ip);
         });
     }
