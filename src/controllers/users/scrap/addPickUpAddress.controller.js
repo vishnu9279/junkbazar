@@ -27,10 +27,10 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            fullName, scrapId, stateCode, countryCode, pincode, dialCode, phoneNumber, address
+            fullName, scrapId, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city
         } = req.body;
 
-        if (fieldValidator(fullName) || fieldValidator(scrapId) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(fullName) || fieldValidator(scrapId) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         const scrap = await UserPickAddress.findOne({
             $or: [
@@ -49,11 +49,13 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         const scrapSaveObj = {
             address,
             addressId: uniqueId,
+            city,
             countryCode,
             currentTime,
+            dialCode,
             fullName,
             phoneNumber,
-            pincode,
+            pincode: parseInt(pincode),
             scrapId,
             stateCode,
             userId

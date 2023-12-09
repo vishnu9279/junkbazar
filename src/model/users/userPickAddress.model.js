@@ -23,11 +23,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        
         enabled: {
             default: true,
             type: Boolean
         },
-        
         fullName: {
             required: true,
             type: String

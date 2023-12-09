@@ -35,12 +35,6 @@ const getScrap = asyncHandler (async (req, res) => {
             userId 
         });
 
-        // console.log({
-        //     limit,
-        //     page,
-        //     scrap,
-        //     userId
-        // });
         const finalObj = {
             scrap,
             totalScrapCount
