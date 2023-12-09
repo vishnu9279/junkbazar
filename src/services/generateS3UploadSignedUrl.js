@@ -10,22 +10,18 @@ import {
 import ApiResponse from "../utils/ApiSuccess.js";
 import uploadFile from "../utils/uploadFile.js";
 
-const generateS3SignedUrl = asyncHandler (async (req, res) => {
-    console.log("generateS3SignedUrl working", req.body);
+const generateS3UploadSignedUrl = asyncHandler (async (req, res) => {
+    console.log("generateS3UploadSignedUrl working", req.body);
 
     try {
-        // const userId = req.decoded.userId;
-        const userId = "rtry7";
-        const type = "scrap";
+        const userId = req.decoded.userId;
         const {
-            fileName, ContentType
+            fileName, ContentType, uploadType
         } = req.body;
 
         if (fieldValidator(fileName) || fieldValidator(ContentType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        const imageSignedUrlObj =  await uploadFile(userId, type, fileName, ContentType);
-
-        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+        const imageSignedUrlObj =  await uploadFile(userId, uploadType.toLowerCase(), fileName, ContentType);
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, imageSignedUrlObj, ScrapMessage.SCRAP_SUCCESSFULLY_SAVED)
@@ -53,4 +49,4 @@ const generateS3SignedUrl = asyncHandler (async (req, res) => {
     }
 });
 
-export default generateS3SignedUrl;
+export default generateS3UploadSignedUrl;
