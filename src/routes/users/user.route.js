@@ -19,15 +19,17 @@ import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.con
 import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAddress.controller.js";
 import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
 import upload from "../../utils/multer.js";
+import generateS3SignedUrl from "../../services/generateS3SignedUrl.js";
 
 router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/otpVerify").post(otpVerify);
 router.route("/getCountries").get(get_country_state_cities);
 router.route("/getScrap").get(authenticateJwtMiddleware, getScrap);
-router.route("/addScrap").post(authenticateJwtMiddleware, upload.single("scrapImage"), addScrap);
+// router.route("/addScrap").post(authenticateJwtMiddleware, upload.single("scrapImage"), addScrap);
 router.route("/confirmPickRequest").post(authenticateJwtMiddleware, confirmPickRequest);
-// router.route("/addScrap").post( upload.single("scrapImage"), addScrap);
+router.route("/addScrap").post( upload.single("scrapImage"), addScrap);
+router.route("/getS3SignedUrl").post(generateS3SignedUrl); // generateS3SignedUrl
 router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
 router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
 router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);

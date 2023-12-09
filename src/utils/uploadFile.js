@@ -1,67 +1,57 @@
 "use strict";
 
-import AWS from "aws-sdk";
-
+import {
+    S3Client, PutObjectCommand
+} from "@aws-sdk/client-s3";
+import {
+    getSignedUrl
+} from "@aws-sdk/s3-request-presigner";
 import {
     basicConfigurationObject 
 } from "./constants.js";
-// const customEndpoint = "https://assets.hksoftware.in";
 
-AWS.config.update({
-    accessKeyId: basicConfigurationObject.AWS_S3_ACCESS_KEY_ID,
-    region: basicConfigurationObject.AWS_S3_REGION,
-    secretAccessKey: basicConfigurationObject.AWS_S3_SECRET_ACCESS_KEY
+const s3Client = new S3Client({
+    credentials: {
+        accessKeyId: basicConfigurationObject.AWS_S3_ACCESS_KEY_ID,
+        secretAccessKey: basicConfigurationObject.AWS_S3_SECRET_ACCESS_KEY
+    },
+    region: basicConfigurationObject.AWS_S3_REGION
 });
 
-const s3 = new AWS.S3({});
-// const s3 = new AWS.S3({
-//     endpoint: customEndpoint,
-//     s3ForcePathStyle: true
-// });
 const bucketName = basicConfigurationObject.BUCKET_NAME_AWS;
 
-const uploadFile = async (file, user_id, type, access_type) => {
-    console.log("uploadFile works  of user_id ", user_id);
+const uploadImage = (user_id, type, fileName, ContentType) => {
+    console.log("uploadImage works of user_id ", user_id, type, fileName, ContentType);
     const currentTime = new Date().getTime();
-
-    const array = file.originalname.split(".");
-
-    const fileExtension = `.${array[array.length - 1]}`;
-
-    const key = `${type}/${user_id}/${currentTime}${fileExtension}`;
+    const key = `${type}/${user_id}/${currentTime}-${fileName}`;
 
     return new Promise((resolve, reject) => {
-        const imageObject = {};
-    
-        s3.upload({
-            ACL: (access_type === "private") ? "private" : "public-read",
-            Body: file.buffer,
+        const s3Payload = {
             Bucket: bucketName,
-            ContentEncoding: "base64",
-            ContentType: file.mimetype,
+            ContentType,
             Key: key
-        }, function(err, s3Obj) {
-            console.log("s3Obj", s3Obj, err);
+        };
 
-            if (err) {
-                console.error("Error occurred in uploading file => ", err);
-                reject(new Error("Error while uploading attachment"));
-            }
-            else if (s3Obj.Location) {
-                console.log("S3 upload URL => ", s3Obj.Location);
-                imageObject.url = s3Obj.Location;
-                // imageObject.CustomUrl = `${customEndpoint}/${s3Obj.Key}`;
-                imageObject.docId = currentTime;
-                imageObject.docPath = s3Obj.Key;
-                console.log(imageObject);
-                resolve(imageObject);
-            }
-            else {
-                console.error("Could not get attachment URL");
-                reject(new Error("Error while uploading attachment"));
-            }
-        });
+        console.log("s3Payload", s3Payload);
+        const command = new PutObjectCommand(s3Payload);
+
+        console.log("Before getSignedUrl call");
+        getSignedUrl(s3Client, command, {
+            expiresIn: 60
+        })
+            .then(signedUrl => {
+                console.log("Signed URL:", signedUrl);
+                resolve({
+                    key,
+                    signedUrl
+                });
+            })
+            .catch(err => {
+                console.error("Error occurred in getSignedUrl: ", err);
+                reject(new Error("Error while getting signed URL"));
+            });
+        console.log("After getSignedUrl call");
     });
 };
 
-export default uploadFile;
+export default uploadImage;

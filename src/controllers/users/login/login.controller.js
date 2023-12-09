@@ -38,6 +38,8 @@ const login = asyncHandler (async (req, res) => {
         if (fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
     
+        if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.INVALID_PHONE_NUMBER);
+
         const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
         if (fixOtpUsers.includes(phoneNumber))
@@ -59,7 +61,7 @@ const login = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        await sendSms(phoneNumber, OTP);
+        // await sendSms(phoneNumber, OTP);
         await session.commitTransaction();
 
         return res.status(201).json(

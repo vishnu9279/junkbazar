@@ -6,6 +6,11 @@ const oneDayMillisecond = 24 * 60 * 60 * 1000;
 const oneWeekMillisecond = 7 * 24 * 60 * 60 * 1000;
 
 class Helper{
+    phoneNumberValidation(phoneNumber){
+        const regex = new RegExp("^(0|91)?[6-9][0-9]{9}$");
+
+        return  (regex.test(phoneNumber)) ? true : false;
+    }
     getRandomOTP (min, max){
         return Math.floor(Math.random() * (max - min) + min);
     }

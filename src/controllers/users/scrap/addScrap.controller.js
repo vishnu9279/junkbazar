@@ -51,7 +51,7 @@ const addScrap = asyncHandler (async (req, res) => {
         if (!fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const imageObj =  await uploadFile(files, userId, "scrap");
+        const imageObj =  await uploadFile(userId, "scrap", fileExtension, ContentType, fileName);
         const scrapSaveObj = {
             countryCode,
             currentTime,
