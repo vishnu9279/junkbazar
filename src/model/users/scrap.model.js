@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
     {
         address: {
-            required: true,
+            required: false,
             type: String
         },
         countryCode: {
-            required: true,
+            required: false,
             type: String
         },
         currentTime: {
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
             type: Number
         },
         quantity: {
-            required: false,
+            required: true,
             type: Number
         },
         
@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema(
             type: String   
         },
         stateCode: {
-            required: true,
+            required: false,
             type: String
         },
         userId: {
