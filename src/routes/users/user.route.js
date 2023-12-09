@@ -31,8 +31,7 @@ router.route("/confirmPickRequest").post(authenticateJwtMiddleware, confirmPickR
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl); // generateS3SignedUrl
 router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
-// router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
-router.route("/addPickUpAddress").post(addPickUpAddress);
+router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
 router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);
 
 export default router;
