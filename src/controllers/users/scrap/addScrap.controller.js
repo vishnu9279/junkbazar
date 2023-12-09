@@ -9,7 +9,7 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import uploadFile from "../../../utils/uploadFile.js";
+// import uploadFile from "../../../utils/uploadFile.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 const uniqueId = uid.rnd(6);
@@ -26,15 +26,15 @@ const addScrap = asyncHandler (async (req, res) => {
         session = await getNewMongoSession();
     
         session.startTransaction();
-        // const userId = req.decoded.userId;
-        const userId = "rtry7";
+        const userId = req.decoded.userId;
         let scrapName = req.body.scrapName;
         const {
-            price, quantityType, stateCode, countryCode
+            price, quantityType, 
+            // stateCode, countryCode, 
+            imageKey, quantity
         } = req.body;
-        const files = req.file;
 
-        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(files)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(quantity)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         scrapName = scrapName.toLowerCase();
         const scrap = await Scrap.findOne({
@@ -51,18 +51,17 @@ const addScrap = asyncHandler (async (req, res) => {
         if (!fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const imageObj =  await uploadFile(userId, "scrap", fileExtension, ContentType, fileName);
         const scrapSaveObj = {
-            countryCode,
+            // countryCode,
             currentTime,
-            docId: imageObj.docId,
-            docPath: imageObj.docPath,
-            docUrl: imageObj.url,
+            // docId: imageObj.docId,
+            docPath: imageKey,
+            // docUrl: imageObj.url,
             price,
             quantityType,
             scrapId: uniqueId,
             scrapName,
-            stateCode,
+            // stateCode,
             userId
         };
         

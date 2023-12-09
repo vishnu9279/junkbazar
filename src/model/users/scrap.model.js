@@ -15,20 +15,20 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        docId: {
-            required: true,
-            type: String,
-            unique: true
-        },
+        // docId: {
+        //     required: true,
+        //     type: String,
+        //     unique: true
+        // },
         docPath: {
             required: true,
             type: String,
             unique: true
         },
-        docUrl: {
-            required: true,
-            type: String 
-        },
+        // docUrl: {
+        //     required: true,
+        //     type: String 
+        // },
         
         enabled: {
             default: true,
