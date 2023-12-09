@@ -25,6 +25,8 @@ const generateS3SignedUrl = asyncHandler (async (req, res) => {
 
         const imageSignedUrlObj =  await uploadFile(userId, type, fileName, ContentType);
 
+        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, imageSignedUrlObj, ScrapMessage.SCRAP_SUCCESSFULLY_SAVED)
         );
