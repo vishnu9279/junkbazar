@@ -61,7 +61,7 @@ const login = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        // await sendSms(phoneNumber, OTP);
+        await sendSms(phoneNumber, OTP);
         await session.commitTransaction();
 
         return res.status(201).json(
