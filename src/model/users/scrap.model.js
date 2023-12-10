@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema(
         // },
         docPath: {
             required: true,
-            type: String,
-            unique: true
+            type: String
+            // unique: true
         },
         docUrl: {
             required: false,
