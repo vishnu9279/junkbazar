@@ -25,10 +25,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
-        // docUrl: {
-        //     required: true,
-        //     type: String 
-        // },
+        docUrl: {
+            required: false,
+            type: String 
+        },
         
         enabled: {
             default: true,
