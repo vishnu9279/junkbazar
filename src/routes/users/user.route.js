@@ -20,13 +20,14 @@ import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAdd
 import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
 // import upload from "../../utils/multer.js";
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
+import getUserScrap from "../../controllers/users/scrap/getUserScrap.controller.js";
 
 router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/otpVerify").post(otpVerify);
 router.route("/getCountries").get(get_country_state_cities);
-router.route("/getScrap").get(authenticateJwtMiddleware, getScrap);
-// router.route("/getScrap").get( getScrap);
+router.route("/getScrap").get(getScrap);
+router.route("/getUserScrap").get(authenticateJwtMiddleware, getUserScrap);
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 router.route("/confirmPickRequest").post(authenticateJwtMiddleware, confirmPickRequest);
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl); // generateS3SignedUrl

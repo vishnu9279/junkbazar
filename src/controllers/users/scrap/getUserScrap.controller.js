@@ -14,10 +14,11 @@ import {
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
-const getScrap = asyncHandler(async (req, res) => {
-    console.log("getScrap working");
+const getUserScrap = asyncHandler(async (req, res) => {
+    console.log("getUserScrap working");
 
     try {
+        const userId = req.decoded.userId;
         let limit = req.query.limit;
         let page = req.query.page;
 
@@ -26,7 +27,9 @@ const getScrap = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const scraps = await Scrap.find({})
+        const scraps = await Scrap.find({
+            userId
+        })
             .skip(skip)
             .limit(limit);
 
@@ -36,7 +39,9 @@ const getScrap = asyncHandler(async (req, res) => {
             scraps[index].docUrl = url;
         }
 
-        const totalScrapCount = await Scrap.countDocuments({});
+        const totalScrapCount = await Scrap.countDocuments({
+            userId
+        });
 
         const finalObj = {
             scraps: scraps,
@@ -73,7 +78,7 @@ const getScrap = asyncHandler(async (req, res) => {
         }
         else {
             // Handle other types of errors
-            console.error("Error in getScrap:", error);
+            console.error("Error in getUserScrap:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
                 error: CommonMessage.SOMETHING_WENT_WRONG
@@ -82,4 +87,4 @@ const getScrap = asyncHandler(async (req, res) => {
     }
 });
 
-export default getScrap;
+export default getUserScrap;
