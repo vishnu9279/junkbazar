@@ -56,7 +56,7 @@ const getUserScrap = asyncHandler(async (req, res) => {
             );
         }
 
-        return res.status(201).json(
+        return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
