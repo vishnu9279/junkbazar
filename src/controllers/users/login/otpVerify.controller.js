@@ -71,6 +71,7 @@ const otpVerify = asyncHandler (async (req, res) => {
         const tokenObj = {       
             phoneNumber,
             userId: user.userId,
+            userIdF_k: user._id,
             userRole: user.roles
         };
 

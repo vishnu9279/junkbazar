@@ -1,6 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
+import addToCartSchema  from "../../../model/users/addToCart.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -9,16 +10,13 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-// import uploadFile from "../../../utils/uploadFile.js";
-import ShortUniqueId from "short-unique-id";
-const uid = new ShortUniqueId();
-const uniqueId = uid.rnd(6);
+import helper from "../../../utils/helper.js";
 
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
-const addScrap = asyncHandler (async (req, res) => {
-    console.log("addScrap working", req.body, req.decoded);
+const addToCart = asyncHandler (async (req, res) => {
+    console.log("addToCart working", req.body);
     let  session;
     const currentTime = new Date().getTime();
 
@@ -28,49 +26,43 @@ const addScrap = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const userIdF_k = req.decoded.userIdF_k;
-        let scrapName = req.body.scrapName;
+
         const {
-            price, quantityType, 
-            // stateCode, countryCode, 
-            imageKey, quantity
+            scrapId
         } = req.body;
 
-        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(quantity)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        scrapName = scrapName.toLowerCase();
-        const scrap = await Scrap.findOne({
-            $or: [
-                {
-                    scrapId: uniqueId
-                },
-                {
-                    scrapName
-                }
-            ]
+        const pickAddress = await addToCartSchema.findOne({
+            scrapId,
+            userId
         });
 
-        if (!fieldValidator(scrap)) 
+        if (!fieldValidator(pickAddress)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const scrapSaveObj = {
-            // countryCode,
+        const scrap = await Scrap.findOne({
+            scrapId
+        });
+    
+        if (fieldValidator(scrap)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
+    
+        const addToCartSaveObj = {
             currentTime,
-            // docId: imageObj.docId,
-            docPath: imageKey,
-            // docUrl: imageObj.url,
-            price: parseFloat(price),
-            quantity: parseFloat(quantity),
-            quantityType,
-            scrapId: uniqueId,
-            scrapName,
-            // stateCode,
+            dayNumber: helper.getDayNumber(),
+            monthNumber: helper.getMonthNumber(),
+            scrapId,
+            scrapIdF_K: scrap._id,
             userId,
-            userIdF_k
+            userIdF_k,
+            weekNumber: helper.getWeekNumber()
         };
-        
-        const ScrapModelObj = new Scrap(scrapSaveObj);
 
-        const resp = await ScrapModelObj.save({
+        console.log("addToCartSaveObj", addToCartSaveObj);
+        const addToCartModelObj = new addToCartSchema(addToCartSaveObj);
+
+        const resp = await addToCartModelObj.save({
             session
         });
 
@@ -80,7 +72,7 @@ const addScrap = asyncHandler (async (req, res) => {
         await session.endSession();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, ScrapMessage.SCRAP_SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, CommonMessage.DETAIL_SAVED_SUCCESSFULLY)
         );
     }
     catch (error) {
@@ -107,4 +99,4 @@ const addScrap = asyncHandler (async (req, res) => {
     }
 });
 
-export default addScrap;
+export default addToCart;

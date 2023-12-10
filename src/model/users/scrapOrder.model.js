@@ -6,7 +6,7 @@ const scrapOrder = new mongoose.Schema(
         addressId: {
             ref: "user_pick_addres",
             required: true,
-            type: String
+            type: mongoose.Schema.Types.ObjectId
         },
         currentTime: {
             required: true,
@@ -28,13 +28,13 @@ const scrapOrder = new mongoose.Schema(
         scrapId: {
             ref: "scrap",
             required: true,
-            type: String
+            type: mongoose.Schema.Types.ObjectId
         },
        
         userId: {
-            ref: "User",
+            ref: "user",
             required: true,
-            type: String
+            type: mongoose.Schema.Types.ObjectId
         },
         weekNumber: {
             required: true,

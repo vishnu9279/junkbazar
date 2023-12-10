@@ -48,6 +48,7 @@ export const statusCodeObject = {
 };
 
 export const CommonMessage = {
+    DETAIL_FETCHED_SUCCESSFULLY: "Detail Fetched Successfully",
     DETAIL_SAVED_SUCCESSFULLY: "Detail Saved Successfully",
     EMAIL_REQUIRED: "Email is Required",
     ERROR_FIELD_REQUIRED: "Field required",
@@ -89,5 +90,6 @@ export const otpVerifyMessage = {
 };
 export const ScrapMessage = {
     SCRAP_ALREADY_EXIST: "Scrap Already Exist",
+    SCRAP_NOT_FOUND: "Scrap Not Found",
     SCRAP_SUCCESSFULLY_SAVED: "Scrap Saved Successfully"
 };

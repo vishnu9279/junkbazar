@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
+import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -26,13 +27,15 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
     
         session.startTransaction();
         const userId = req.decoded.userId;
+        const userIdF_k = req.decoded.userIdF_k;
+
         const {
             fullName, scrapId, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city
         } = req.body;
 
         if (fieldValidator(fullName) || fieldValidator(scrapId) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const scrap = await UserPickAddress.findOne({
+        const scrapAddress = await UserPickAddress.findOne({
             $or: [
                 {
                     addressId: uniqueId
@@ -43,8 +46,15 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
             ]
         });
 
-        if (!fieldValidator(scrap)) 
+        if (!fieldValidator(scrapAddress)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
+
+        const scrap = await Scrap.findOne({
+            scrapId
+        });
+
+        if (fieldValidator(scrap)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
         const scrapSaveObj = {
             address,
@@ -57,8 +67,10 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
             phoneNumber,
             pincode: parseInt(pincode),
             scrapId,
+            scrapIdF_K: scrap._id,
             stateCode,
-            userId
+            userId,
+            userIdF_k
         };
         
         const ScrapModelObj = new UserPickAddress(scrapSaveObj);

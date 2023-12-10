@@ -1,56 +1,69 @@
 const mongoose = require("mongoose");
 
 const vendorSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
-    },
-    vendorID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
-    },
-    scrapItem: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Item"
-    },
-    price: { type: Number },
-    quantity: { type: Number },
-    fullName: {
-        type: String,
-    },
-    phoneNumber: {
-        type: String,
-    },
-    pincode: {
-        type: String,
-    },
     address: {
-        type: String,
         required: true,
-    },
-    orderId: {
-        type: String,
-        required: true,
+        type: String
     },
     city: {
-        type: String,
         required: true,
+        type: String
+    },
+    fullName: {
+        type: String
     },
     landmark: {
-        type: String,
         required: true,
+        type: String
     },
-    status: {
-        type: String,
+    notification: {
+        default: true,
+        type: Boolean 
+    },
+    orderId: {
+        required: true,
+        type: String
+    },
+    payment_method: {
+        type: String 
+    },
+    payment_status: {
+        type: String 
+    },
+    phoneNumber: {
+        type: String
     },
     PickUp_Request_Status: {
-        type: String,
-        default: 'Vendor_Only'
+        default: "Vendor_Only",
+        type: String
     },
-    payment_method: { type: String },
-    payment_status: { type: String },
-    notification: { type: Boolean, default: true },
-}, { timestamps: true });
+    pincode: {
+        type: String
+    },
+    price: {
+        type: Number 
+    },
+    quantity: {
+        type: Number 
+    },
+    scrapItem: {
+        ref: "Item",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    status: {
+        type: String
+    },
+    user: {
+        ref: "user",
+        type: mongoose.Schema.Types.ObjectId
+    },
+    vendorID: {
+        ref: "user",
+        type: mongoose.Schema.Types.ObjectId
+    }
+}, {
+    timestamps: true 
+});
 
 const Vendor = mongoose.model("pickUp", vendorSchema);
 

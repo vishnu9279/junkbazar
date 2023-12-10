@@ -62,9 +62,14 @@ const userSchema = new mongoose.Schema(
             type: String
         },
         userId: {
-            ref: "User",
+            ref: "user",
             required: true,
             type: String
+        },
+        userIdF_k: {
+            ref: "user",
+            required: true, 
+            type: mongoose.Schema.Types.ObjectId
         }
     },
     {

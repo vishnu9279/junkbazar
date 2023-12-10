@@ -22,6 +22,8 @@ import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 import getUserScrap from "../../controllers/users/scrap/getUserScrap.controller.js";
 import contactUs from "../../controllers/users/other_api/contactUs.js";
+import getAddToCart from "../../controllers/users/other_api/getAddToCart.js";
+import addToCart from "../../controllers/users/other_api/addToCart.js";
 
 router.route("/register").post(register);
 router.route("/login").post(login);
@@ -36,5 +38,11 @@ router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuanti
 router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
 router.route("/contactUs").post(contactUs);
 router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);
+
+// Cart
+router.route("/getAddToCart").get(authenticateJwtMiddleware, getAddToCart);
+router.route("/addToCart").post(authenticateJwtMiddleware, addToCart);
+// router.route("/addToCart").post(addToCart);
+// router.route("/getAddToCart").get(getAddToCart);
 
 export default router;

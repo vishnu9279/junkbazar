@@ -41,18 +41,28 @@ const userSchema = new mongoose.Schema(
             type: Number
         },
         scrapId: {
-            ref: "Scrap",
+            ref: "scrap",
             required: true,
-            type: String  
+            type: String
+        },
+        scrapIdF_K: {
+            ref: "scrap",
+            required: true,
+            type: mongoose.Schema.Types.ObjectId
         },
         stateCode: {
             required: true,
             type: String
         },
         userId: {
-            ref: "User",
+            ref: "user",
             required: true,
             type: String
+        },
+        userIdF_k: {
+            ref: "user",
+            required: true, 
+            type: mongoose.Schema.Types.ObjectId
         }
     },
     {

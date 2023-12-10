@@ -2,7 +2,7 @@
 
 import Session  from "../model/users/session.model.js";
 const storeSession = async(data, jwtOption, exipryHr, milliseconds) => {
-    // console.log("storeSession working", data);
+    console.log("storeSession working", data);
     try {
         const currentTime = new Date().getTime();
         const obj = {
@@ -13,7 +13,8 @@ const storeSession = async(data, jwtOption, exipryHr, milliseconds) => {
             originalUrl: data.originUrl,
             phoneNumber: data.phoneNumber,
             platform: data.platform,
-            userId: data.userId
+            userId: data.userId,
+            userIdF_k: data.userIdF_k
         };
 
         console.log(obj);
