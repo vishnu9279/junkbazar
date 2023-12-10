@@ -14,7 +14,7 @@ const get_country_state_cities = asyncHandler (async (req, res) => {
     console.log("get_country_state_cities working", req.body);
     
     try {
-        const country = await Country.findOne({
+        const country = await Country.find({
             iso2: "IN"
         });
 
