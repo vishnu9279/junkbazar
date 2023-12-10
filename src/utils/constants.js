@@ -48,6 +48,7 @@ export const statusCodeObject = {
 };
 
 export const CommonMessage = {
+    DETAIL_SAVED_SUCCESSFULLY: "Detail Saved Successfully",
     EMAIL_REQUIRED: "Email is Required",
     ERROR_FIELD_REQUIRED: "Field required",
     ERROR_MESSAGE_BAD_REQUEST: "Bad Request",

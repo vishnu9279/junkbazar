@@ -21,6 +21,7 @@ import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest
 // import upload from "../../utils/multer.js";
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 import getUserScrap from "../../controllers/users/scrap/getUserScrap.controller.js";
+import contactUs from "../../controllers/users/other_api/contactUs.js";
 
 router.route("/register").post(register);
 router.route("/login").post(login);
@@ -33,6 +34,7 @@ router.route("/confirmPickRequest").post(authenticateJwtMiddleware, confirmPickR
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl); // generateS3SignedUrl
 router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
 router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
+router.route("/contactUs").post(contactUs);
 router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);
 
 export default router;
