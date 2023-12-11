@@ -27,10 +27,10 @@ const confirmPickRequest = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            scrapId, addressId
+            scrapIds, addressId
         } = req.body;
 
-        if (fieldValidator(scrapId) || fieldValidator(addressId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(scrapIds) || fieldValidator(addressId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         const pickAddress = await UserPickAddress.findOne({
             addressId
@@ -39,8 +39,10 @@ const confirmPickRequest = asyncHandler (async (req, res) => {
         if (!fieldValidator(pickAddress)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const scrap = await Scrap.findOne({
-            scrapId
+        const scrap = await Scrap.find({
+            scrapId: {
+                $in: scrapIds
+            }
         });
     
         if (!fieldValidator(scrap)) 
@@ -51,16 +53,18 @@ const confirmPickRequest = asyncHandler (async (req, res) => {
             currentTime,
             dayNumber: helper.getDayNumber(),
             monthNumber: helper.monthNumber(),
-            scrapId,
+            // scrapId,
             userId,
             weekNumber: helper.weekNumber()
         };
-        
-        const scrapOrderModelObj = new ScrapOrder(scrapOrderSaveObj);
+        const arr = [];
 
-        const resp = await scrapOrderModelObj.save({
-            session
-        });
+        for (const scrapId of scrapIds){
+            scrapOrderSaveObj.scrapId = scrapId;
+            arr.push(scrapOrderSaveObj);
+        }
+
+        const resp = await ScrapOrder.insertMany(scrapOrderSaveObj, session);
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
