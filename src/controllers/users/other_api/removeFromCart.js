@@ -2,61 +2,36 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import addToCartSchema  from "../../../model/users/addToCart.model.js";
-// import Scrap from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
-    errorAndSuccessCodeConfiguration,
-    ScrapMessage
+    errorAndSuccessCodeConfiguration
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
-const getAddToCart = asyncHandler(async (req, res) => {
-    console.log("getAddToCart working");
+const removeFormCart = asyncHandler(async (req, res) => {
+    console.log("removeFormCart working");
 
     try {
         const userIdF_k = req.decoded.userIdF_k;
-        let limit = req.query.limit;
-        let page = req.query.page;
-
-        if (fieldValidator(limit) || isNaN(page)) limit = 10;
-
-        if (fieldValidator(page) || isNaN(page)) page = page || 0;
-
-        const skip = page * limit;
-        const scraps = await addToCartSchema.find({
-            enabled: true,
+        const addToCartId = req.body.addToCartId;
+        const scraps = await addToCartSchema.findOneAndUpdate({
+            addToCartId,
             userIdF_k
-        }).populate("scrapIdF_K")
-            .skip(skip)
-            .limit(limit);
-
-        for (let index = 0; index < scraps.length; index++){
-            const url = await generateS3SignedUrl(scraps[index].scrapIdF_K.docPath);
-
-            scraps[index].docUrl = url;
-        }
-
-        const totalScrapCount = await addToCartSchema.countDocuments({
-            userIdF_k
+        }, {
+            $set: {
+                enabled: false
+            }
         });
 
-        const finalObj = {
-            cartLists: scraps,
-            totalScrapCount
-        };
-
-        // console.log("finalObj", finalObj);
-
-        if (fieldValidator(scraps)) {
+        if (fieldValidator(scraps.value)) {
             throw new ApiError(
                 statusCodeObject.HTTP_STATUS_CONFLICT,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
+                CommonMessage.SOMETHING_WENT_WRONG
             );
         }
 
@@ -64,8 +39,8 @@ const getAddToCart = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
-                finalObj,
-                CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
+                {},
+                CommonMessage.DETAIL_DELETED_SUCCESSFULLY
             )
         );
     }
@@ -82,7 +57,7 @@ const getAddToCart = asyncHandler(async (req, res) => {
         }
         else {
             // Handle other types of errors
-            console.error("Error in getAddToCart:", error);
+            console.error("Error in removeFormCart:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
                 error: CommonMessage.SOMETHING_WENT_WRONG
@@ -91,4 +66,4 @@ const getAddToCart = asyncHandler(async (req, res) => {
     }
 });
 
-export default getAddToCart;
+export default removeFormCart;

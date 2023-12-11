@@ -6,7 +6,7 @@ import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
+    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage, AddToCartMessage
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
@@ -15,6 +15,10 @@ import helper from "../../../utils/helper.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
+import ShortUniqueId from "short-unique-id";
+const uid = new ShortUniqueId();
+const uniqueId = uid.rnd(6);
+
 const addToCart = asyncHandler (async (req, res) => {
     console.log("addToCart working", req.body);
     let  session;
@@ -39,7 +43,7 @@ const addToCart = asyncHandler (async (req, res) => {
         });
 
         if (!fieldValidator(pickAddress)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, AddToCartMessage.SCRAP_ALREADY_IN_CART);
 
         const scrap = await Scrap.findOne({
             scrapId
@@ -49,6 +53,7 @@ const addToCart = asyncHandler (async (req, res) => {
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
     
         const addToCartSaveObj = {
+            addToCartId: uniqueId,
             currentTime,
             dayNumber: helper.getDayNumber(),
             monthNumber: helper.getMonthNumber(),

@@ -3,6 +3,10 @@
 import mongoose from "mongoose";
 const addToCartSchema = new mongoose.Schema(
     {
+        addToCartId: {
+            required: true, 
+            type: String 
+        },
         docUrl: {
             type: String
         },
