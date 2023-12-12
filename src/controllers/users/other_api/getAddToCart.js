@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import addToCartSchema  from "../../../model/users/addToCart.model.js";
+import addToCartSchema  from "../../../model/users/userScrapModel.model.js";
 // import Scrap from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";

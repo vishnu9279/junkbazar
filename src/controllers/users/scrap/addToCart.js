@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import addToCartSchema  from "../../../model/users/addToCart.model.js";
+import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -37,7 +37,7 @@ const addToCart = asyncHandler (async (req, res) => {
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const pickAddress = await addToCartSchema.findOne({
+        const pickAddress = await userScrapModel.findOne({
             scrapId,
             userId
         });
@@ -65,7 +65,7 @@ const addToCart = asyncHandler (async (req, res) => {
         };
 
         console.log("addToCartSaveObj", addToCartSaveObj);
-        const addToCartModelObj = new addToCartSchema(addToCartSaveObj);
+        const addToCartModelObj = new userScrapModel(addToCartSaveObj);
 
         const resp = await addToCartModelObj.save({
             session

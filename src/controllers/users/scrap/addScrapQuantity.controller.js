@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import Scrap  from "../../../model/users/scrap.model.js";
+import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -28,7 +28,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const scrap = await Scrap.findOne({
+        const scrap = await userScrapModel.findOne({
             scrapId,
             userId 
         });
@@ -36,7 +36,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
         if (!fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        const resp = await Scrap.findOneAndUpdate({
+        const resp = await userScrapModel.findOneAndUpdate({
             scrapId,
             userId
         }, {

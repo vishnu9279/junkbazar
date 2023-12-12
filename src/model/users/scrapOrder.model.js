@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const scrapOrder = new mongoose.Schema(
     {
         addressId: {
-            ref: "user_pick_addres",
+            ref: "user_pickup_address",
             required: true,
             type: mongoose.Schema.Types.ObjectId
         },

@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema(
             type: Number
         },
         quantity: {
+            default: 0,
             required: true,
             type: Number
         },

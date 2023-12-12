@@ -1,7 +1,7 @@
 "use strict";
 
 import mongoose from "mongoose";
-const addToCartSchema = new mongoose.Schema(
+const userScrapSchema = new mongoose.Schema(
     {
         addToCartId: {
             required: true, 
@@ -13,6 +13,11 @@ const addToCartSchema = new mongoose.Schema(
         enabled: {
             default: true,
             type: Boolean
+        },
+        quantity: {
+            default: 0,
+            required: true,
+            type: Number
         },
         scrapId: {
             ref: "scrap",
@@ -40,6 +45,6 @@ const addToCartSchema = new mongoose.Schema(
     }
 );
 
-const addToCartModel = mongoose.model("addToCart", addToCartSchema);
+const userScrapModel = mongoose.model("user_scrap", userScrapSchema);
 
-export default addToCartModel;
+export default userScrapModel;

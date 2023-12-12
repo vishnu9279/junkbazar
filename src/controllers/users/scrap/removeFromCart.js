@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import addToCartSchema  from "../../../model/users/addToCart.model.js";
+import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -16,18 +16,22 @@ const removeFormCart = asyncHandler(async (req, res) => {
     console.log("removeFormCart working");
 
     try {
-        const userIdF_k = req.decoded.userIdF_k;
+        const userId = req.decoded.userId;
         const addToCartId = req.body.addToCartId;
-        const scraps = await addToCartSchema.findOneAndUpdate({
+        const scraps = await userScrapModel.findOneAndUpdate({
             addToCartId,
-            userIdF_k
+            userId
         }, {
             $set: {
                 enabled: false
             }
+        }, {
+            new: true
         });
 
-        if (fieldValidator(scraps.value)) {
+        // console.log(scraps);
+
+        if (fieldValidator(scraps)) {
             throw new ApiError(
                 statusCodeObject.HTTP_STATUS_CONFLICT,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,

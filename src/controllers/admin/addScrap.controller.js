@@ -1,14 +1,14 @@
 "use strict";
 
-import asyncHandler from "../../../utils/asyncHandler.js";
-import Scrap  from "../../../model/users/scrap.model.js";
-import fieldValidator from "../../../utils/fieldValidator.js";
-import ApiError from "../../../utils/ApiError.js";
+import asyncHandler from "../../utils/asyncHandler.js";
+import Scrap  from "../../model/users/scrap.model.js";
+import fieldValidator from "../../utils/fieldValidator.js";
+import ApiError from "../../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
-} from "../../../utils/constants.js";
+} from "../../utils/constants.js";
 
-import ApiResponse from "../../../utils/ApiSuccess.js";
+import ApiResponse from "../../utils/ApiSuccess.js";
 // import uploadFile from "../../../utils/uploadFile.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
@@ -16,7 +16,7 @@ const uniqueId = uid.rnd(6);
 
 import {
     getNewMongoSession
-} from "../../../configuration/dbConnection.js";
+} from "../../configuration/dbConnection.js";
 const addScrap = asyncHandler (async (req, res) => {
     console.log("addScrap working", req.body, req.decoded);
     let  session;
@@ -32,10 +32,10 @@ const addScrap = asyncHandler (async (req, res) => {
         const {
             price, quantityType, 
             // stateCode, countryCode, 
-            imageKey, quantity
+            imageKey
         } = req.body;
 
-        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType) || fieldValidator(quantity)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         scrapName = scrapName.toLowerCase();
         const scrap = await Scrap.findOne({
@@ -59,7 +59,6 @@ const addScrap = asyncHandler (async (req, res) => {
             docPath: imageKey,
             // docUrl: imageObj.url,
             price: parseFloat(price),
-            quantity: parseFloat(quantity),
             quantityType,
             scrapId: uniqueId,
             scrapName,

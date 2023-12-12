@@ -70,6 +70,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const UserPickAddress = mongoose.model("user_pick_addres", userSchema);
+const UserPickAddress = mongoose.model("user_pickup_address", userSchema);
 
 export default UserPickAddress;

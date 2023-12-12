@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import Scrap from "../../../model/users/scrap.model.js";
+import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -27,19 +27,28 @@ const getUserScrap = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const scraps = await Scrap.find({
+        const scraps = await userScrapModel.find({
+            enabled: true,
             userId
-        })
+        }).populate("scrapIdF_K")
             .skip(skip)
             .limit(limit);
 
-        for (let index = 0; index < scraps.length; index++){
-            const url = await generateS3SignedUrl(scraps[index].docPath);
+        if (fieldValidator(scraps)) {
+            throw new ApiError(
+                statusCodeObject.HTTP_STATUS_CONFLICT,
+                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+                ScrapMessage.SCRAP_NOT_FOUND
+            );
+        }
 
+        for (let index = 0; index < scraps.length; index++){
+            const url = await generateS3SignedUrl(scraps[index].scrapIdF_K.docPath);
+    
             scraps[index].docUrl = url;
         }
 
-        const totalScrapCount = await Scrap.countDocuments({
+        const totalScrapCount = await userScrapModel.countDocuments({
             userId
         });
 
@@ -48,20 +57,12 @@ const getUserScrap = asyncHandler(async (req, res) => {
             totalScrapCount
         };
 
-        if (fieldValidator(scraps)) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_CONFLICT,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
-            );
-        }
-
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
                 finalObj,
-                ScrapMessage.SCRAP_SUCCESSFULLY_SAVED
+                CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
             )
         );
     }

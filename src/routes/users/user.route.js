@@ -12,7 +12,7 @@ import register from "../../controllers/users/register/register.controller.js";
 import login from "../../controllers/users/login/login.controller.js";
 import otpVerify from "../../controllers/users/login/otpVerify.controller.js";
 import get_country_state_cities from "../../controllers/users/other_api/get_countries_state_cities.js";
-import addScrap from "../../controllers/users/scrap/addScrap.controller.js";
+import addScrap from "../../controllers/admin/addScrap.controller.js";
 import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
 import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.controller.js";
@@ -25,8 +25,8 @@ import contactUs from "../../controllers/users/other_api/contactUs.js";
 
 // Cart
 import getAddToCart from "../../controllers/users/other_api/getAddToCart.js";
-import addToCart from "../../controllers/users/other_api/addToCart.js";
-import removeFormCart from "../../controllers/users/other_api/removeFromCart.js";
+import addToCart from "../../controllers/users/scrap/addToCart.js";
+import removeFormCart from "../../controllers/users/scrap/removeFromCart.js";
 
 router.route("/register").post(register);
 router.route("/login").post(login);

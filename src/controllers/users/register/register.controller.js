@@ -10,7 +10,7 @@ import {
 
 import helper from "../../../utils/helper.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import sendSms from "../../../services/sendSms.js";
+// import sendSms from "../../../services/sendSms.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 const uniqueId = uid.rnd(6);
@@ -88,7 +88,7 @@ const register = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        await sendSms(phoneNumber, OTP);
+        // await sendSms(phoneNumber, OTP);
         await session.commitTransaction();
         await session.endSession();
 
