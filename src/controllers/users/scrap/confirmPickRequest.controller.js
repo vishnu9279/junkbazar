@@ -52,10 +52,10 @@ const confirmPickRequest = asyncHandler (async (req, res) => {
             addressId,
             currentTime,
             dayNumber: helper.getDayNumber(),
-            monthNumber: helper.monthNumber(),
+            monthNumber: helper.getMonthNumber(),
             // scrapId,
             userId,
-            weekNumber: helper.weekNumber()
+            weekNumber: helper.getWeekNumber()
         };
         const arr = [];
 

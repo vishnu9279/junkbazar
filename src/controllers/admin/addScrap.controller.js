@@ -38,7 +38,7 @@ const addScrap = asyncHandler (async (req, res) => {
         if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         scrapName = scrapName.toLowerCase();
-        const scrap = await Scrap.findOne({
+        const scrap = await Scrap.find({
             $or: [
                 {
                     scrapId: uniqueId
@@ -48,6 +48,8 @@ const addScrap = asyncHandler (async (req, res) => {
                 }
             ]
         });
+
+        console.log("scrap", scrap);
 
         if (!fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);

@@ -1,12 +1,12 @@
 "use strict";
 
 import mongoose from "mongoose";
-const scrapOrder = new mongoose.Schema(
+const scrapOrderSchema = new mongoose.Schema(
     {
         addressId: {
-            ref: "user_pickup_address",
+            // ref: "user_pickup_address",
             required: true,
-            type: mongoose.Schema.Types.ObjectId
+            type: String
         },
         currentTime: {
             required: true,
@@ -26,15 +26,15 @@ const scrapOrder = new mongoose.Schema(
         },
         
         scrapId: {
-            ref: "scrap",
+            // ref: "scrap",
             required: true,
-            type: mongoose.Schema.Types.ObjectId
+            type: String
         },
        
         userId: {
-            ref: "user",
+            // ref: "user",
             required: true,
-            type: mongoose.Schema.Types.ObjectId
+            type: String
         },
         weekNumber: {
             required: true,
@@ -46,6 +46,26 @@ const scrapOrder = new mongoose.Schema(
     }
 );
 
-const ScrapOrder = mongoose.model("scrap_order", scrapOrder);
+const ScrapOrder = mongoose.model("scrap_order", scrapOrderSchema);
+
+scrapOrderSchema.virtual("scraps", {
+    foreignField: "scrapId",
+    justOne: true,
+    localField: "scrapId",
+    ref: "scrap"
+});
+scrapOrderSchema.virtual("user", {
+    foreignField: "userId",
+    justOne: true,
+    localField: "userId",
+    ref: "user"
+});
+
+scrapOrderSchema.virtual("pickupAddress", {
+    foreignField: "addressId",
+    justOne: true,
+    localField: "addressId",
+    ref: "user_pickup_address"
+});
 
 export default ScrapOrder;
