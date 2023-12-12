@@ -38,6 +38,7 @@ const addToCart = asyncHandler (async (req, res) => {
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         const pickAddress = await userScrapModel.findOne({
+            enabled: true,
             scrapId,
             userId
         });
