@@ -17,12 +17,12 @@ import {
 } from "../../../configuration/dbConnection.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
-const uniqueId = uid.rnd(6);
 
 const addToCart = asyncHandler (async (req, res) => {
     console.log("addToCart working", req.body);
     let  session;
     const currentTime = new Date().getTime();
+    const uniqueId = uid.rnd(6);
 
     try {
         session = await getNewMongoSession();

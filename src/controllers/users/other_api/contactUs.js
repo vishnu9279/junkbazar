@@ -11,10 +11,10 @@ import {
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
-const uniqueId = uid.rnd(6);
 
 const contactUs = asyncHandler (async (req, res) => {
     console.log("UserPickAddress working", req.body);
+    const uniqueId = uid.rnd(6);
    
     const currentTime = new Date().getTime();
 

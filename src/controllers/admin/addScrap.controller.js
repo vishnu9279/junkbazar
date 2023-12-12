@@ -12,7 +12,6 @@ import ApiResponse from "../../utils/ApiSuccess.js";
 // import uploadFile from "../../../utils/uploadFile.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
-const uniqueId = uid.rnd(6);
 
 import {
     getNewMongoSession
@@ -21,6 +20,7 @@ const addScrap = asyncHandler (async (req, res) => {
     console.log("addScrap working", req.body, req.decoded);
     let  session;
     const currentTime = new Date().getTime();
+    const uniqueId = uid.rnd(6);
 
     try {
         session = await getNewMongoSession();

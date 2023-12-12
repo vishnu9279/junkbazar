@@ -13,7 +13,6 @@ import ApiResponse from "../../utils/ApiSuccess.js";
 import sendSms from "../../services/sendSms.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
-const uniqueId = uid.rnd(6);
 
 import {
     getNewMongoSession
@@ -22,6 +21,7 @@ const register = asyncHandler (async (req, res) => {
     console.log("register working", req.body);
     let OTP, session;
     const currentTime = new Date().getTime();
+    const uniqueId = uid.rnd(6);
 
     try {
         session = await getNewMongoSession();
