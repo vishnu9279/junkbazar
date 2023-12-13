@@ -1,14 +1,14 @@
 "use strict";
 
-import asyncHandler from "../../../utils/asyncHandler.js";
-import contactUsModel  from "../../../model/users/contactUs.model.js";
-import fieldValidator from "../../../utils/fieldValidator.js";
-import ApiError from "../../../utils/ApiError.js";
+import asyncHandler from "../../utils/asyncHandler.js";
+import contactUsModel  from "../../model/users/contactUs.model.js";
+import fieldValidator from "../../utils/fieldValidator.js";
+import ApiError from "../../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration
-} from "../../../utils/constants.js";
+} from "../../utils/constants.js";
 
-import ApiResponse from "../../../utils/ApiSuccess.js";
+import ApiResponse from "../../utils/ApiSuccess.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 

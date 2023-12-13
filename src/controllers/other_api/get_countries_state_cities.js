@@ -1,14 +1,14 @@
 "use strict";
 
-import asyncHandler from "../../../utils/asyncHandler.js";
-import Country  from "../../../model/countries.model.js";
-import fieldValidator from "../../../utils/fieldValidator.js";
-import ApiError from "../../../utils/ApiError.js";
+import asyncHandler from "../../utils/asyncHandler.js";
+import Country  from "../../model/countries.model.js";
+import fieldValidator from "../../utils/fieldValidator.js";
+import ApiError from "../../utils/ApiError.js";
 import {
     CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration 
-} from "../../../utils/constants.js";
+} from "../../utils/constants.js";
 
-import ApiResponse from "../../../utils/ApiSuccess.js";
+import ApiResponse from "../../utils/ApiSuccess.js";
 
 const get_country_state_cities = asyncHandler (async (req, res) => {
     console.log("get_country_state_cities working", req.body);

@@ -5,6 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import userRouter from "./routes/users/user.route.js";
+import vendorRouter from "./routes/vendor/vendor.js";
 import loggerLogs from "./utils/loggerLogs.js";
 import {
     connect
@@ -73,6 +74,7 @@ async function setupMiddleware() {
 
 function setRoutes() {
     app.use("/api/v1/users", userRouter);
+    app.use("/api/v1/vendor", vendorRouter);
     app.get("*", (req, res) => {
         res.status(404).send({
             error: CommonMessage.ERROR_MESSAGE_NOT_FOUND 

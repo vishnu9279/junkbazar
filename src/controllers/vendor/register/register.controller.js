@@ -1,22 +1,23 @@
 "use strict";
 
-import asyncHandler from "../../utils/asyncHandler.js";
-import Vendor  from "../../model/vendor/vendor.model.js";
-import fieldValidator from "../../utils/fieldValidator.js";
-import ApiError from "../../utils/ApiError.js";
+import asyncHandler from "../../../utils/asyncHandler.js";
+import UserModel  from "../../../model/users/user.model.js";
+import fieldValidator from "../../../utils/fieldValidator.js";
+import RolesEnum  from "../../../utils/roles.js";
+import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration
-} from "../../utils/constants.js";
+} from "../../../utils/constants.js";
 
-import helper from "../../utils/helper.js";
-import ApiResponse from "../../utils/ApiSuccess.js";
-import sendSms from "../../services/sendSms.js";
+import helper from "../../../utils/helper.js";
+import ApiResponse from "../../../utils/ApiSuccess.js";
+// import sendSms from "../../../services/sendSms.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 
 import {
     getNewMongoSession
-} from "../../configuration/dbConnection.js";
+} from "../../../configuration/dbConnection.js";
 const register = asyncHandler (async (req, res) => {
     console.log("register working", req.body);
     let OTP, session;
@@ -33,7 +34,7 @@ const register = asyncHandler (async (req, res) => {
 
         if (fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        const user = await Vendor.findOne({
+        const user = await UserModel.findOne({
             $or: [
                 {
                     userId: uniqueId
@@ -60,10 +61,11 @@ const register = asyncHandler (async (req, res) => {
             OTP,
             otpGenerateTime: currentTime,
             phoneNumber,
+            roles: RolesEnum.VENDOR,
             userId: uniqueId
         };
         
-        const UserModelObj = new Vendor(userSaveObj);
+        const UserModelObj = new UserModel(userSaveObj);
 
         const resp = await UserModelObj.save({
             session
@@ -71,16 +73,18 @@ const register = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        await sendSms(phoneNumber, OTP);
+        // await sendSms(phoneNumber, OTP);
         await session.commitTransaction();
         await session.endSession();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerMessage.SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
+                userId: userSaveObj.userId
+            }, registerMessage.SUCCESSFULLY_SAVED)
         );
     }
     catch (error) {
-        console.error("Error while Creating User", error.message);
+        console.error("Error while Creating UserModel", error.message);
         await session.abortTransaction();
         await session.endSession();
 

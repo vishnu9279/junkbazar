@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
+        
         accountBlocked: {
             default: false,
             type: Boolean 
@@ -16,30 +17,34 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        documentUploaded: {
+            default: false,
+            required: true,
+            type: Boolean
+        },
         firstName: {
             required: false,
             type: String
         },
-        
+
         lastName: {
             required: false,
             type: String
         },
-        
         OTP: {
             required: false,
             type: Number
         },
-        
         otpGenerateTime: {
             required: true,
             type: Number
         },
-
+        
         panID: {
             required: false,
             type: String 
         },
+
         phoneNumber: {
             required: true,
             type: String,
@@ -73,6 +78,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const Vendor = mongoose.model("User", userSchema);
+const Vendor = mongoose.model("user", userSchema);
 
 export default Vendor;

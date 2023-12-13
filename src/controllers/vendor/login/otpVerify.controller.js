@@ -1,24 +1,24 @@
 "use strict";
 
-import asyncHandler from "../../utils/asyncHandler.js";
-import Vendor  from "../../model/vendor/vendor.model.js";
-import fieldValidator from "../../utils/fieldValidator.js";
-import ApiError from "../../utils/ApiError.js";
+import asyncHandler from "../../../utils/asyncHandler.js";
+import userModel  from "../../../model/users/user.model.js";
+import fieldValidator from "../../../utils/fieldValidator.js";
+import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration, otpVerifyMessage
-} from "../../utils/constants.js";
+} from "../../../utils/constants.js";
 
-import helper from "../../utils/helper.js";
-import ApiResponse from "../../utils/ApiSuccess.js";
+import helper from "../../../utils/helper.js";
+import ApiResponse from "../../../utils/ApiSuccess.js";
 import {
     getNewMongoSession
-} from "../../configuration/dbConnection.js";
-// import createJwtToken from "../../utils/createJwtToken.js";
+} from "../../../configuration/dbConnection.js";
+import createJwtToken from "../../../utils/createJwtToken.js";
 
 const otpVerify = asyncHandler (async (req, res) => {
     console.log("otpVerify working", req.body);
    
-    let session;
+    let session, token;
     const currentTime = new Date().getTime();
 
     try {
@@ -32,7 +32,7 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         if (fieldValidator(otp) || fieldValidator(phoneNumber) || fieldValidator(platform)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        const user = await Vendor.findOne({
+        const user = await userModel.findOne({
             phoneNumber
         });
 
@@ -57,7 +57,7 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         if (!user.verified) userOtpObj.verified = true;
 
-        const resp = await Vendor.findOneAndUpdate({
+        const resp = await userModel.findOneAndUpdate({
             phoneNumber
         }, {
             $set: userOtpObj
@@ -68,18 +68,22 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        // const tokenObj = {       
-        //     phoneNumber,
-        //     userId: user.userId,
-        //     userRole: user.roles
-        // };
-
-        // const token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+        if (user.isDocumentUploaded){
+            const tokenObj = {       
+                phoneNumber,
+                userId: user.userId,
+                userRole: user.roles
+            };
+    
+            token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+        }
 
         await session.commitTransaction();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, otpVerifyMessage.USER_LOGGED_IN)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
+                token
+            }, otpVerifyMessage.USER_LOGGED_IN)
         );
     }
     catch (error) {

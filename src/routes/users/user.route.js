@@ -11,7 +11,7 @@ import authenticateJwtMiddleware from "../../middleware/authenticateJwtMiddlewar
 import register from "../../controllers/users/register/register.controller.js";
 import login from "../../controllers/users/login/login.controller.js";
 import otpVerify from "../../controllers/users/login/otpVerify.controller.js";
-import get_country_state_cities from "../../controllers/users/other_api/get_countries_state_cities.js";
+import get_country_state_cities from "../../controllers/other_api/get_countries_state_cities.js";
 import addScrap from "../../controllers/admin/addScrap.controller.js";
 import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
@@ -21,10 +21,10 @@ import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest
 // import upload from "../../utils/multer.js";
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 import getUserScrap from "../../controllers/users/scrap/getUserScrap.controller.js";
-import contactUs from "../../controllers/users/other_api/contactUs.js";
+import contactUs from "../../controllers/other_api/contactUs.js";
 
 // Cart
-import getAddToCart from "../../controllers/users/other_api/getAddToCart.js";
+import getAddToCart from "../../controllers/other_api/getAddToCart.js";
 import addToCart from "../../controllers/users/scrap/addToCart.js";
 import removeFormCart from "../../controllers/users/scrap/removeFromCart.js";
 
