@@ -7,13 +7,15 @@ const oneWeekMillisecond = 7 * 24 * 60 * 60 * 1000;
 
 class Helper{
     phoneNumberValidation(phoneNumber){
-        const regex = new RegExp("^(0|91)?[6-9][0-9]{9}$");
+        const regex = /^[6-9]\d{9}$/;
 
-        return  (regex.test(phoneNumber)) ? true : false;
+        return regex.test(phoneNumber);
     }
+
     getRandomOTP (min, max){
         return Math.floor(Math.random() * (max - min) + min);
     }
+    
     getCacheElement(config = "CONFIG", key){
         console.log("getCacheElement working", {
             config,

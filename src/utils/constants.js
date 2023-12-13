@@ -49,7 +49,6 @@ export const statusCodeObject = {
 
 export const CommonMessage = {
     DETAIL_DELETED_SUCCESSFULLY: "Detail Deleted Successfully",
-    DETAIL_FETCHED_SUCCESSFULLY: "Detail Fetched Successfully",
     DETAIL_SAVED_SUCCESSFULLY: "Detail Saved Successfully",
     EMAIL_REQUIRED: "Email is Required",
     ERROR_FIELD_REQUIRED: "Field required",
@@ -60,11 +59,11 @@ export const CommonMessage = {
     ERROR_MESSAGE_TOO_MANY_REQUESTS: "Too Many Requests",
     ERROR_MESSAGE_UNAUTHORIZED: "Unauthorized",
     INVALID_EMAIL: "Invalid Email",
-    INVALID_PHONE_NUMBER: "Invalid Phone Number",
     LOGIN_KEY_MISSING: "Login Key is Missing",
     MESSAGE_ERROR: "Error",
     MESSAGE_SUCCESS: "Success",
     PASSWORD_REQUIRED: "Password is Required",
+    PLEASE_ENTER_VALID_PHONE_NUMBER: "Please Enter Valid Phone Number",
     SOMETHING_WENT_WRONG: "Something went Wrong",
     USERNAME_REQUIRED: "User name is required",
     USERNAME_VALIDATION_ERROR: "User name must be alphanumeric."
