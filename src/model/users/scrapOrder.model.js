@@ -46,7 +46,7 @@ const scrapOrderSchema = new mongoose.Schema(
     }
 );
 
-const ScrapOrder = mongoose.model("scrap_order", scrapOrderSchema);
+const ScrapOrder = mongoose.model("scrap_order_test", scrapOrderSchema);
 
 scrapOrderSchema.virtual("scraps", {
     foreignField: "scrapId",

@@ -8,6 +8,7 @@ import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
 } from "../../../utils/constants.js";
+import helper from "../../../utils/helper.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import ShortUniqueId from "short-unique-id";
@@ -21,6 +22,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
     let  session;
     const currentTime = new Date().getTime();
     const uniqueId = uid.rnd(6);
+    const scrapObj = [];
 
     try {
         session = await getNewMongoSession();
@@ -30,27 +32,17 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         const userIdF_k = req.decoded.userIdF_k;
 
         const {
-            fullName, scrapId, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city
+            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, scrapIds
         } = req.body;
 
-        if (fieldValidator(fullName) || fieldValidator(scrapId) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+
+        if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
         
-        const scrapAddress = await UserPickAddress.findOne({
-            $or: [
-                {
-                    addressId: uniqueId
-                },
-                {
-                    address
-                }
-            ]
-        });
-
-        if (!fieldValidator(scrapAddress)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
-
-        const scrap = await Scrap.findOne({
-            scrapId
+        const scrap = await Scrap.find({
+            scrapId: {
+                $in: scrapIds
+            }
         });
 
         if (fieldValidator(scrap)) 
@@ -62,20 +54,27 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
             city,
             countryCode,
             currentTime,
+            dayNumber: helper.getDayNumber(),
             dialCode,
             fullName,
+            monthNumber: helper.getMonthNumber(),
             phoneNumber,
             pincode: parseInt(pincode),
-            scrapId,
-            scrapIdF_K: scrap._id,
             stateCode,
             userId,
-            userIdF_k
+            userIdF_k,
+            weekNumber: helper.getWeekNumber()
         };
-        
-        const ScrapModelObj = new UserPickAddress(scrapSaveObj);
 
-        const resp = await ScrapModelObj.save({
+        for (const scrap of scrapIds){
+            scrapSaveObj.scrapId = scrap.scrapId,
+            scrapSaveObj.scrapIdF_K = scrap._id;
+            scrapObj.push(scrapSaveObj);
+        }
+       
+        // const ScrapModelObj = new UserPickAddress(scrapSaveObj);
+
+        const resp = await UserPickAddress.insertMany(scrapObj, {
             session
         });
 

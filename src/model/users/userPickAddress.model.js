@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        
         enabled: {
             default: true,
             type: Boolean
@@ -31,6 +30,11 @@ const userSchema = new mongoose.Schema(
         fullName: {
             required: true,
             type: String
+        },
+        orderStatus: {
+            default: 0,
+            required: true,
+            type: Number
         },
         phoneNumber: {
             required: true,
@@ -70,6 +74,6 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const UserPickAddress = mongoose.model("user_pickup_address", userSchema);
+const UserPickAddress = mongoose.model("user_order", userSchema);
 
 export default UserPickAddress;

@@ -1,18 +1,18 @@
 "use strict";
 
-import asyncHandler from "../../../utils/asyncHandler.js";
-import userScrapModel  from "../../../model/users/userScrapModel.model.js";
-import fieldValidator from "../../../utils/fieldValidator.js";
-import ApiError from "../../../utils/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import userScrapModel  from "../model/users/userScrapModel.model.js";
+import fieldValidator from "../utils/fieldValidator.js";
+import ApiError from "../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
     errorAndSuccessCodeConfiguration,
     ScrapMessage
-} from "../../../utils/constants.js";
+} from "../utils/constants.js";
 
-import ApiResponse from "../../../utils/ApiSuccess.js";
-import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import ApiResponse from "../utils/ApiSuccess.js";
+import generateS3SignedUrl from "../services/generateS3SignedUrl.js";
 
 const getUserScrap = asyncHandler(async (req, res) => {
     console.log("getUserScrap working");

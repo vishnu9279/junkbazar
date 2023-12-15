@@ -1,21 +1,21 @@
 "use strict";
 
-import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
-import Scrap  from "../../../model/users/scrap.model.js";
-import ScrapOrder from "../../../model/users/scrapOrder.model.js";
-import fieldValidator from "../../../utils/fieldValidator.js";
-import ApiError from "../../../utils/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import UserPickAddress  from "../model/users/userPickAddress.model.js";
+import Scrap  from "../model/users/scrap.model.js";
+import ScrapOrder from "../model/users/scrapOrder.model.js";
+import fieldValidator from "../utils/fieldValidator.js";
+import ApiError from "../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
-} from "../../../utils/constants.js";
+} from "../utils/constants.js";
 
-import ApiResponse from "../../../utils/ApiSuccess.js";
-import helper from "../../../utils/helper.js";
+import ApiResponse from "../utils/ApiSuccess.js";
+import helper from "../utils/helper.js";
 
 import {
     getNewMongoSession
-} from "../../../configuration/dbConnection.js";
+} from "../configuration/dbConnection.js";
 const confirmPickRequest = asyncHandler (async (req, res) => {
     console.log("confirmPickRequest working", req.body);
     let  session;
@@ -55,6 +55,7 @@ const confirmPickRequest = asyncHandler (async (req, res) => {
             monthNumber: helper.getMonthNumber(),
             // scrapId,
             userId,
+            
             weekNumber: helper.getWeekNumber()
         };
         const arr = [];
