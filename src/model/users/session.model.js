@@ -1,7 +1,7 @@
 "use strict";
 
 import mongoose from "mongoose";
-const configSchema = new mongoose.Schema({
+const userSessionSchema = new mongoose.Schema({
     encrypt: {
         required: true,
         type: String
@@ -42,6 +42,6 @@ const configSchema = new mongoose.Schema({
     }
 });
 
-const Session = mongoose.model("session", configSchema);
+const Session = mongoose.model("session", userSessionSchema);
 
 export default Session;

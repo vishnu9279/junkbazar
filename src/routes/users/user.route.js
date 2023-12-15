@@ -25,6 +25,7 @@ import getAddToCart from "../../controllers/other_api/getAddToCart.js";
 import addToCart from "../../controllers/users/scrap/addToCart.js";
 import removeFormCart from "../../controllers/users/scrap/removeFromCart.js";
 import resendOtp from "../../controllers/users/login/resendOtp.controller.js";
+import logout from "../../controllers/users/logout.js";
 
 // import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAddress.controller.js";
 // import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
@@ -44,14 +45,16 @@ router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, gener
 router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
 router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
 router.route("/contactUs").post(contactUs);
+
 // router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);
 // router.route("/getUserScrap").get(authenticateJwtMiddleware, getUserScrap);
 // router.route("/confirmPickRequest").post(authenticateJwtMiddleware, confirmPickRequest);
+// router.route("/getAddToCart").get(getAddToCart);
 
 // Cart
 router.route("/getAddToCart").get(authenticateJwtMiddleware, getAddToCart);
 router.route("/addToCart").post(authenticateJwtMiddleware, addToCart);
 router.route("/removeFormCart").post(authenticateJwtMiddleware, removeFormCart);
-// router.route("/getAddToCart").get(getAddToCart);
+router.route("/logout").get(authenticateJwtMiddleware, logout);
 
 export default router;

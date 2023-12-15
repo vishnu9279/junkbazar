@@ -16,6 +16,7 @@ import get_country_state_cities from "../../controllers/other_api/get_countries_
 import resendOtp from "../../controllers/vendor/login/resendOtp.controller.js";
 import getUserOrder from "../../controllers/vendor/scrap/getUserOrder.js";
 import updateOrderStatus from "../../controllers/vendor/scrap/updateOrderStatus.js";
+import logout from "../../controllers/vendor/logout.js";
 
 router.route("/register").post(register);
 router.route("/uploadDocument").post(uploadDocument);
@@ -25,5 +26,5 @@ router.route("/otpVerify").post(otpVerify);
 router.route("/getCountries").get(get_country_state_cities);
 router.route("/getUserOrder").get(authenticateJwtMiddleware, getUserOrder);
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
-
+router.route("/logout").get(authenticateJwtMiddleware, logout);
 export default router;
