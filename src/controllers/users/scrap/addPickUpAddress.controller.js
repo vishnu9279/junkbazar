@@ -22,7 +22,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
     let  session;
     const currentTime = new Date().getTime();
     const uniqueId = uid.rnd(6);
-    const scrapObj = [];
+    const scrapArrayOfObject = [];
 
     try {
         session = await getNewMongoSession();
@@ -39,42 +39,40 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
         
-        const scrap = await Scrap.find({
+        const scraps = await Scrap.find({
             scrapId: {
-                $in: scrapIds
+                $in: scrapIds.split(",")
             }
         });
 
-        if (fieldValidator(scrap)) 
+        if (fieldValidator(scraps)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
-        const scrapSaveObj = {
-            address,
-            addressId: uniqueId,
-            city,
-            countryCode,
-            currentTime,
-            dayNumber: helper.getDayNumber(),
-            dialCode,
-            fullName,
-            monthNumber: helper.getMonthNumber(),
-            phoneNumber,
-            pincode: parseInt(pincode),
-            stateCode,
-            userId,
-            userIdF_k,
-            weekNumber: helper.getWeekNumber()
-        };
+        for (const scrap of scraps){
+            const scrapSaveObj = {
+                address,
+                addressId: uniqueId,
+                city,
+                countryCode,
+                currentTime,
+                dayNumber: helper.getDayNumber(),
+                dialCode,
+                fullName,
+                monthNumber: helper.getMonthNumber(),
+                phoneNumber,
+                pincode: parseInt(pincode),
+                scrapId: scrap.scrapId,
+                scrapIdF_K: scrap._id,
+                stateCode,
+                userId,
+                userIdF_k,
+                weekNumber: helper.getWeekNumber()
+            };
 
-        for (const scrap of scrapIds){
-            scrapSaveObj.scrapId = scrap.scrapId,
-            scrapSaveObj.scrapIdF_K = scrap._id;
-            scrapObj.push(scrapSaveObj);
+            scrapArrayOfObject.push(scrapSaveObj);
         }
        
-        // const ScrapModelObj = new UserPickAddress(scrapSaveObj);
-
-        const resp = await UserPickAddress.insertMany(scrapObj, {
+        const resp = await UserPickAddress.insertMany(scrapArrayOfObject, {
             session
         });
 

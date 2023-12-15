@@ -26,6 +26,8 @@ const s3Client = new S3Client({
 const bucketName = basicConfigurationObject.BUCKET_NAME_AWS;
 
 const generateS3SignedUrl = (imageKeyName, expiresIn = 60) => {
+    console.log("imageKey", imageKeyName);
+
     return new Promise((resolve, reject) => {
         try {
             if (fieldValidator(imageKeyName)) {

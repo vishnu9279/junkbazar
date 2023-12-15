@@ -1,7 +1,7 @@
 "use strict";
 
 import mongoose from "mongoose";
-const userSchema = new mongoose.Schema(
+const userPickupSchema = new mongoose.Schema(
     {
         address: {
             required: true,
@@ -19,8 +19,16 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        dayNumber: {
+            required: true,
+            type: Number 
+        },
         dialCode: {
             required: true,
+            type: String
+        },
+        docUrl: {
+            required: false,
             type: String
         },
         enabled: {
@@ -30,6 +38,10 @@ const userSchema = new mongoose.Schema(
         fullName: {
             required: true,
             type: String
+        },
+        monthNumber: {
+            required: true,
+            type: Number
         },
         orderStatus: {
             default: 0,
@@ -58,6 +70,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        
         userId: {
             ref: "user",
             required: true,
@@ -67,6 +80,10 @@ const userSchema = new mongoose.Schema(
             ref: "user",
             required: true, 
             type: mongoose.Schema.Types.ObjectId
+        },
+        weekNumber: {
+            required: true,
+            type: Number
         }
     },
     {
@@ -74,6 +91,12 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const UserPickAddress = mongoose.model("user_order", userSchema);
+// userPickupSchema.virtual("scraps", {
+//     foreignField: "scrapId",
+//     justOne: true,
+//     localField: "scrapId",
+//     ref: "Scrap"
+// });
+const UserPickAddress = mongoose.model("user_order", userPickupSchema);
 
 export default UserPickAddress;

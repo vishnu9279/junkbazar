@@ -49,6 +49,7 @@ export const statusCodeObject = {
 
 export const CommonMessage = {
     DETAIL_DELETED_SUCCESSFULLY: "Detail Deleted Successfully",
+    DETAIL_FETCHED_SUCCESSFULLY: "Detail Fetched Successfully",
     DETAIL_SAVED_SUCCESSFULLY: "Detail Saved Successfully",
     EMAIL_REQUIRED: "Email is Required",
     ERROR_FIELD_REQUIRED: "Field required",
@@ -96,5 +97,5 @@ export const ScrapMessage = {
 export const AddToCartMessage = {
     SCRAP_ALREADY_IN_CART: "Scrap Already In Cart",
     SCRAP_NOT_FOUND: "Scrap Not Found",
-    SCRAP_SUCCESSFULLY_SAVED: "Scrap Saved Successfully"
+    SCRAP_SUCCESSFULLY_SAVED: "Scrap Added In Cart"
 };

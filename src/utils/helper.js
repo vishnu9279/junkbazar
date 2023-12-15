@@ -17,10 +17,10 @@ class Helper{
     }
     
     getCacheElement(config = "CONFIG", key){
-        console.log("getCacheElement working", {
-            config,
-            key
-        });
+        // console.log("getCacheElement working", {
+        //     config,
+        //     key
+        // });
         // console.log("response object", cache.get(config));
         const Obj = cache.get(config);
 
@@ -49,7 +49,7 @@ class Helper{
     }
 
     decryptAnyData(encryptedData) {
-        console.log("incoming message To decrypt = >", encryptedData);
+        console.log("incoming message To decrypt = >");
         const algorithm = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
         const initVector = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
         const Securitykey = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
