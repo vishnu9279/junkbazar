@@ -7,10 +7,6 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        addressId: {
-            required: true,
-            type: String
-        },
         city: {
             required: true,
             type: String 
@@ -42,6 +38,10 @@ const userPickupSchema = new mongoose.Schema(
         monthNumber: {
             required: true,
             type: Number
+        },
+        orderId: {
+            required: true,
+            type: String
         },
         orderStatus: {
             default: 0,

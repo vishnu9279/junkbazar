@@ -22,17 +22,21 @@ const uploadDocument = asyncHandler (async (req, res) => {
     
         session.startTransaction();
         const {
-            firstName, lastName, aadhaarID, panID, profile, userId
+            firstName, lastName, aadhaarID, panID, profile, userId, address, city, stateCode, countryCode
         } = req.body;
 
         if (fieldValidator(firstName) || fieldValidator(lastName) || fieldValidator(aadhaarID) || fieldValidator(panID) || fieldValidator(profile)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         const userSaveObj = {
             aadhaarID,
+            address,
+            city,
+            countryCode,
             firstName,
             lastName,
             panID,
-            profile
+            profile,
+            stateCode
         };
         
         const UserModelObj = new UserModel(userSaveObj);

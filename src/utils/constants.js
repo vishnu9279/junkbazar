@@ -99,3 +99,7 @@ export const AddToCartMessage = {
     SCRAP_NOT_FOUND: "Scrap Not Found",
     SCRAP_SUCCESSFULLY_SAVED: "Scrap Added In Cart"
 };
+export const OrderMessage = {
+    ORDER_NOT_FOUND: "Order Not Found",
+    ORDER_UPDATED_SUCCESSFULLY: "Order Updated Succesfully"
+};

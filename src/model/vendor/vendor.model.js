@@ -13,6 +13,19 @@ const userSchema = new mongoose.Schema(
             default: false,
             type: Boolean 
         },
+        address: {
+            required: false,
+            type: String
+        },
+        city: {
+            required: false,
+            type: String 
+        },
+        countryCode: {
+            required: false,
+            type: String
+        },
+
         dialCode: {
             required: true,
             type: String
@@ -26,11 +39,12 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
-
+        
         lastName: {
             required: false,
             type: String
         },
+
         OTP: {
             required: false,
             type: Number
@@ -39,12 +53,10 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        
         panID: {
             required: false,
             type: String 
         },
-
         phoneNumber: {
             required: true,
             type: String,
@@ -57,6 +69,10 @@ const userSchema = new mongoose.Schema(
         roles: {
             default: RolesEnum.VENDOR,
             type: Number
+        },
+        stateCode: {
+            required: false,
+            type: String
         },
         status: {
             default: "Offline",

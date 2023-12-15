@@ -21,7 +21,6 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
     console.log("UserPickAddress working", req.body);
     let  session;
     const currentTime = new Date().getTime();
-    const uniqueId = uid.rnd(6);
     const scrapArrayOfObject = [];
 
     try {
@@ -34,7 +33,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         const {
             fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, scrapIds
         } = req.body;
-
+        
         if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
@@ -51,7 +50,6 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         for (const scrap of scraps){
             const scrapSaveObj = {
                 address,
-                addressId: uniqueId,
                 city,
                 countryCode,
                 currentTime,
@@ -59,6 +57,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
                 dialCode,
                 fullName,
                 monthNumber: helper.getMonthNumber(),
+                orderId: uid.rnd(6),
                 phoneNumber,
                 pincode: parseInt(pincode),
                 scrapId: scrap.scrapId,
