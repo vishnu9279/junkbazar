@@ -21,7 +21,7 @@ import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.
 import contactUs from "../../controllers/other_api/contactUs.js";
 
 // Cart
-import getAddToCart from "../../controllers/other_api/getAddToCart.js";
+import getAddToCart from "../../controllers/users/scrap/getAddToCart.js";
 import addToCart from "../../controllers/users/scrap/addToCart.js";
 import removeFormCart from "../../controllers/users/scrap/removeFromCart.js";
 import resendOtp from "../../controllers/users/login/resendOtp.controller.js";

@@ -1,25 +1,25 @@
 "use strict";
 
-import asyncHandler from "../../utils/asyncHandler.js";
-import addToCartSchema  from "../../model/users/userScrapModel.model.js";
+import asyncHandler from "../../../utils/asyncHandler.js";
+import addToCartSchema  from "../../../model/users/userScrapModel.model.js";
 // import Scrap from "../../../model/users/scrap.model.js";
-import fieldValidator from "../../utils/fieldValidator.js";
-import ApiError from "../../utils/ApiError.js";
+import fieldValidator from "../../../utils/fieldValidator.js";
+import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
     errorAndSuccessCodeConfiguration,
     ScrapMessage
-} from "../../utils/constants.js";
+} from "../../../utils/constants.js";
 
-import ApiResponse from "../../utils/ApiSuccess.js";
-import generateS3SignedUrl from "../../services/generateS3SignedUrl.js";
+import ApiResponse from "../../../utils/ApiSuccess.js";
+import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
 const getAddToCart = asyncHandler(async (req, res) => {
     console.log("getAddToCart working");
 
     try {
-        const userIdF_k = req.decoded.userIdF_k;
+        const userId = req.decoded.userId;
         let limit = req.query.limit;
         let page = req.query.page;
 
@@ -28,31 +28,58 @@ const getAddToCart = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const scraps = await addToCartSchema.find({
-            enabled: true,
-            userIdF_k
-        }).populate("scrapIdF_K")
-            .skip(skip)
-            .limit(limit);
 
-        for (let index = 0; index < scraps.length; index++){
-            const url = await generateS3SignedUrl(scraps[index].scrapIdF_K.docPath);
+        const addToCarpScraps = await addToCartSchema.aggregate([
+            {
+                $match: {
+                    enabled: true,
+                    userId
+                }
+            },
+            {
+                $lookup: {
+                    as: "scrapInfo",
+                    foreignField: "scrapId",
+                    from: "scraps",
+                    localField: "scrapId"
+                }
+            },
+            {
+                $unwind: "$scrapInfo"
+            },
+            {
+                $skip: parseInt(skip)  // Add the skip stage
+            },
+            {
+                $limit: parseInt(limit)  // Add the limit stage
+            }
+        ]);
 
-            scraps[index].docUrl = url;
+        // const scraps = await addToCartSchema.find({
+        //     enabled: true,
+        //     userIdF_k
+        // }).populate("scrapIdF_K")
+        //     .skip(skip)
+        //     .limit(limit);
+
+        for (let index = 0; index < addToCarpScraps.length; index++){
+            const url = await generateS3SignedUrl(addToCarpScraps[index].scrapInfo.docPath);
+
+            addToCarpScraps[index].docUrl = url;
         }
 
         const totalScrapCount = await addToCartSchema.countDocuments({
-            userIdF_k
+            userId
         });
 
         const finalObj = {
-            cartLists: scraps,
+            cartLists: addToCarpScraps,
             totalScrapCount
         };
 
         // console.log("finalObj", finalObj);
 
-        if (fieldValidator(scraps)) {
+        if (fieldValidator(addToCarpScraps)) {
             throw new ApiError(
                 statusCodeObject.HTTP_STATUS_CONFLICT,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
