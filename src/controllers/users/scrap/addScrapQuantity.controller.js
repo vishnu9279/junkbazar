@@ -33,7 +33,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
             userId 
         });
 
-        if (!fieldValidator(scrap)) 
+        if (fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
         const resp = await userScrapModel.findOneAndUpdate({
