@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
+import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -29,18 +30,19 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const userIdF_k = req.decoded.userIdF_k;
-
+        const scrapIds = req.body.scrapIds;
         const {
-            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, scrapIds
+            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city
         } = req.body;
         
         if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
-        
+
+        scrapIds.split(",");
         const scraps = await Scrap.find({
             scrapId: {
-                $in: scrapIds.split(",")
+                $in: scrapIds
             }
         });
 
@@ -76,6 +78,23 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
+        
+        const respValue = await userScrapModel.updateMany({
+            enabled: true,
+            scrapId: {
+                $in: scrapIds
+            },
+            userId
+        }, {
+            $set: {
+                enabled: false
+            }
+        }, {
+            session: session
+        });
+
+        if (fieldValidator(respValue)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
         await session.commitTransaction();
         await session.endSession();
