@@ -15,7 +15,6 @@ const userScrapSchema = new mongoose.Schema(
             type: Boolean
         },
         quantity: {
-            default: 0,
             required: true,
             type: Number
         },

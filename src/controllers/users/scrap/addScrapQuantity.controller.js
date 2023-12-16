@@ -5,7 +5,7 @@ import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
+    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage, AddToCartMessage
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
@@ -14,17 +14,21 @@ import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
 const addScrapQuantity = asyncHandler (async (req, res) => {
-    console.log("addScrapQuantity working", req.body);
     let  session;
-
+    
     try {
         session = await getNewMongoSession();
-    
+        
         session.startTransaction();
         const userId = req.decoded.userId;
+
+        console.log("addScrapQuantity working", req.body, userId);
+        let quantity = req.body.addScrapQuantity;
         const {
-            scrapId, quantity
+            scrapId
         } = req.body;
+
+        quantity = parseInt(quantity);
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
@@ -53,7 +57,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
         await session.endSession();
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, ScrapMessage.SCRAP_SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, AddToCartMessage.SCRAP_QUANTITY_UPDATE)
         );
     }
     catch (error) {

@@ -58,6 +58,7 @@ const addToCart = asyncHandler (async (req, res) => {
             currentTime,
             dayNumber: helper.getDayNumber(),
             monthNumber: helper.getMonthNumber(),
+            quantity: 0,
             scrapId,
             scrapIdF_K: scrap._id,
             userId,
@@ -78,7 +79,7 @@ const addToCart = asyncHandler (async (req, res) => {
         await session.endSession();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, CommonMessage.DETAIL_SAVED_SUCCESSFULLY)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, AddToCartMessage.SCRAP_SUCCESSFULLY_SAVED_IN_CART)
         );
     }
     catch (error) {

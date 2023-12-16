@@ -97,7 +97,8 @@ export const ScrapMessage = {
 export const AddToCartMessage = {
     SCRAP_ALREADY_IN_CART: "Scrap Already In Cart",
     SCRAP_NOT_FOUND: "Scrap Not Found",
-    SCRAP_SUCCESSFULLY_SAVED: "Scrap Added In Cart"
+    SCRAP_QUANTITY_UPDATE: "Scrap Quantity Updated",
+    SCRAP_SUCCESSFULLY_SAVED_IN_CART: "Scrap Added In Cart"
 };
 export const OrderMessage = {
     ORDER_NOT_FOUND: "Order Not Found",
