@@ -60,13 +60,6 @@ const getAddToCart = asyncHandler(async (req, res) => {
             }
         ]);
 
-        // const scraps = await addToCartSchema.find({
-        //     enabled: true,
-        //     userIdF_k
-        // }).populate("scrapIdF_K")
-        //     .skip(skip)
-        //     .limit(limit);
-
         for (let index = 0; index < addToCarpScraps.length; index++){
             const url = await generateS3SignedUrl(addToCarpScraps[index].scrapInfo.docPath);
 
