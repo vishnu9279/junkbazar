@@ -17,6 +17,7 @@ import resendOtp from "../../controllers/vendor/login/resendOtp.controller.js";
 import getUserOrder from "../../controllers/vendor/scrap/getUserOrder.js";
 import updateOrderStatus from "../../controllers/vendor/scrap/updateOrderStatus.js";
 import logout from "../../controllers/vendor/logout.js";
+import getCurrentUser from "../../controllers/vendor/getCurrentUser.js";
 
 router.route("/register").post(register);
 router.route("/uploadDocument").post(uploadDocument);
@@ -27,4 +28,6 @@ router.route("/getCountries").get(get_country_state_cities);
 router.route("/getUserOrder").get(authenticateJwtMiddleware, getUserOrder);
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
 router.route("/logout").get(authenticateJwtMiddleware, logout);
+router.route("/getCurrentUser").get(authenticateJwtMiddleware, getCurrentUser);
+
 export default router;

@@ -62,7 +62,7 @@ const getUserOrder = asyncHandler(async (req, res) => {
             throw new ApiError(
                 statusCodeObject.HTTP_STATUS_CONFLICT,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
+                ScrapMessage.SCRAP_NOT_FOUND
             );
         }
             

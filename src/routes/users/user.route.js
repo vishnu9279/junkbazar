@@ -19,6 +19,7 @@ import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.con
 import getUserOrder from "../../controllers/users/scrap/getUserOrder.js";
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 import contactUs from "../../controllers/other_api/contactUs.js";
+import getCurrentUser from "../../controllers/users/getCurrentUser.js";
 
 // Cart
 import getAddToCart from "../../controllers/users/scrap/getAddToCart.js";
@@ -39,6 +40,7 @@ router.route("/otpVerify").post(otpVerify);
 router.route("/getCountries").get(get_country_state_cities);
 router.route("/getScrap").get(getScrap);
 router.route("/getUserOrder").get(authenticateJwtMiddleware, getUserOrder);
+router.route("/getCurrentUser").get(authenticateJwtMiddleware, getCurrentUser);
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl); // generateS3SignedUrl

@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        docUrl: {
+            type: String
+        },
+        
         firstName: {
             required: false,
             type: String
@@ -31,11 +35,10 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
-        
+
         OTP: {
             type: Number
         },
-
         otpGenerateTime: {
             required: true,
             type: Number
@@ -49,11 +52,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
+        
         profile: {
             required: false,
             type: String 
         },
-        
         roles: {
             default: RolesEnum.USER,
             type: Number
