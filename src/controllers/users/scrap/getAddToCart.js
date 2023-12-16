@@ -48,6 +48,11 @@ const getAddToCart = asyncHandler(async (req, res) => {
                 $unwind: "$scrapInfo"
             },
             {
+                $sort: {
+                    createdAt: -1  // Sort in descending order based on createdAt field
+                }
+            },
+            {
                 $skip: parseInt(skip)  // Add the skip stage
             },
             {
