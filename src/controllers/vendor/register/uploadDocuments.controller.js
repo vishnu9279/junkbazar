@@ -38,10 +38,8 @@ const uploadDocument = asyncHandler (async (req, res) => {
             profile,
             stateCode
         };
-        
-        const UserModelObj = new UserModel(userSaveObj);
 
-        const resp = await UserModelObj.findOneAndUpdate({
+        const resp = await UserModel.findOneAndUpdate({
             userId
         }, { 
             $set: userSaveObj
