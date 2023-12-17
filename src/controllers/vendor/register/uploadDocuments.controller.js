@@ -56,6 +56,7 @@ const uploadDocument = asyncHandler (async (req, res) => {
         const tokenObj = {       
             phoneNumber: resp.phoneNumber,
             userId: resp.userId,
+            userIdF_k: resp._id,
             userRole: resp.roles
         };
 
