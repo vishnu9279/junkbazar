@@ -18,6 +18,7 @@ import getUserOrder from "../../controllers/vendor/scrap/getUserOrder.js";
 import updateOrderStatus from "../../controllers/vendor/scrap/updateOrderStatus.js";
 import logout from "../../controllers/vendor/logout.js";
 import getCurrentUser from "../../controllers/vendor/getCurrentUser.js";
+import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 
 router.route("/register").post(register);
 router.route("/uploadDocument").post(uploadDocument);
@@ -29,5 +30,6 @@ router.route("/getUserOrder").get(authenticateJwtMiddleware, getUserOrder);
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
 router.route("/logout").get(authenticateJwtMiddleware, logout);
 router.route("/getCurrentUser").get(authenticateJwtMiddleware, getCurrentUser);
+router.route("/generateS3UploadSignedUrl").post(generateS3UploadSignedUrl); // generateS3SignedUrl
 
 export default router;

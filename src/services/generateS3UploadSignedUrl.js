@@ -14,12 +14,11 @@ const generateS3UploadSignedUrl = asyncHandler (async (req, res) => {
     console.log("generateS3UploadSignedUrl working", req.body);
 
     try {
-        const userId = req.decoded.userId;
         const {
-            fileName, ContentType, uploadType
+            fileName, ContentType, uploadType, userId
         } = req.body;
 
-        if (fieldValidator(fileName) || fieldValidator(ContentType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(fileName) || fieldValidator(ContentType) || fieldValidator(userId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         const imageSignedUrlObj =  await uploadFile(userId, uploadType.toLowerCase(), fileName, ContentType);
 
