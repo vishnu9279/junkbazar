@@ -45,9 +45,9 @@ const getUserOrder = asyncHandler(async (req, res) => {
                     },
                     {
                         stateCode: user.stateCode
-                    }]
-                },
-                orderStatus: parseInt(orderStatus)
+                    }],
+                    orderStatus: parseInt(orderStatus)
+                }
             },
             {
                 $lookup: {
