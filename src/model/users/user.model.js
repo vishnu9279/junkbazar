@@ -13,15 +13,15 @@ const userSchema = new mongoose.Schema(
             type: Boolean 
         },
         address: {
-            required: true,
+            required: false,
             type: String
         },
         city: {
-            required: true,
+            required: false,
             type: String 
         },
         countryCode: {
-            required: true,
+            required: false,
             type: String
         },
         dialCode: {
@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema(
             type: Number
         },
         stateCode: {
-            required: true,
+            required: false,
             type: String
         },
         status: {
