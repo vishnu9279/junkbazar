@@ -58,7 +58,18 @@ const getUserOrder = asyncHandler(async (req, res) => {
                 }
             },
             {
+                $lookup: {
+                    as: "vendorInfo",
+                    foreignField: "userId",
+                    from: "users",
+                    localField: "vendorId"
+                }
+            },
+            {
                 $unwind: "$scrapInfo"
+            },
+            {
+                $unwind: "$vendorInfo"
             },
             {
                 $skip: parseInt(skip)  // Add the skip stage
@@ -77,9 +88,11 @@ const getUserOrder = asyncHandler(async (req, res) => {
         }
 
         for (let index = 0; index < orders.length; index++){
-            const url = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
+            const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
+            const profileUrl = await generateS3SignedUrl(orders[index].vendorInfo.profile);
 
-            orders[index].docUrl = url;
+            orders[index].scrapInfo.docUrl = scrapUrl;
+            orders[index].vendorInfo.docUrl = profileUrl;
         }
             
         const totalScrapCount = await UserPickAddress.countDocuments({
