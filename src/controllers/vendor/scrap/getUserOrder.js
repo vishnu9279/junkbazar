@@ -9,7 +9,7 @@ import {
     CommonMessage,
     statusCodeObject,
     errorAndSuccessCodeConfiguration,
-    ScrapMessage,
+    // ScrapMessage,
     registerMessage
 } from "../../../utils/constants.js";
 
@@ -79,13 +79,13 @@ const getUserOrder = asyncHandler(async (req, res) => {
             }
         ]);
 
-        if (fieldValidator(orders)) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_CONFLICT,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
-            );
-        }
+        // if (fieldValidator(orders)) {
+        //     throw new ApiError(
+        //         statusCodeObject.HTTP_STATUS_CONFLICT,
+        //         errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+        //         ScrapMessage.SCRAP_ALREADY_EXIST
+        //     );
+        // }
 
         for (let index = 0; index < orders.length; index++){
             const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);

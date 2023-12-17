@@ -65,6 +65,7 @@ export const CommonMessage = {
     MESSAGE_SUCCESS: "Success",
     PASSWORD_REQUIRED: "Password is Required",
     PLEASE_ENTER_VALID_PHONE_NUMBER: "Please Enter Valid Phone Number",
+    SIGNED_URL_GENERATED_SUCCESSFULLY: "Signed Url Generated Successfully",
     SOMETHING_WENT_WRONG: "Something went Wrong",
     USERNAME_REQUIRED: "User name is required",
     USERNAME_VALIDATION_ERROR: "User name must be alphanumeric."

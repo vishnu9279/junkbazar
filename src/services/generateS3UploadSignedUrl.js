@@ -4,7 +4,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import fieldValidator from "../utils/fieldValidator.js";
 import ApiError from "../utils/ApiError.js";
 import {
-    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
+    CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration
 } from "../utils/constants.js";
 
 import ApiResponse from "../utils/ApiSuccess.js";
@@ -23,7 +23,7 @@ const generateS3UploadSignedUrl = asyncHandler (async (req, res) => {
         const imageSignedUrlObj =  await uploadFile(userId, uploadType.toLowerCase(), fileName, ContentType);
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, imageSignedUrlObj, ScrapMessage.SCRAP_SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, imageSignedUrlObj, CommonMessage.SIGNED_URL_GENERATED_SUCCESSFULLY)
         );
     }
     catch (error) {
