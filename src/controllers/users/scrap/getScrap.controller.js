@@ -43,13 +43,13 @@ const getScrap = asyncHandler(async (req, res) => {
             totalScrapCount
         };
 
-        if (fieldValidator(scraps)) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_CONFLICT,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
-            );
-        }
+        // if (fieldValidator(scraps)) {
+        //     throw new ApiError(
+        //         statusCodeObject.HTTP_STATUS_CONFLICT,
+        //         errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+        //         ScrapMessage.SCRAP_ALREADY_EXIST
+        //     );
+        // }
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(

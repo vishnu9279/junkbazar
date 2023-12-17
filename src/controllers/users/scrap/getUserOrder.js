@@ -7,8 +7,8 @@ import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
-    errorAndSuccessCodeConfiguration,
-    ScrapMessage
+    errorAndSuccessCodeConfiguration
+    // ScrapMessage
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
@@ -58,13 +58,13 @@ const getUserOrder = asyncHandler(async (req, res) => {
             orders[index].docUrl = url;
         }
         
-        if (fieldValidator(orders)) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_CONFLICT,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_NOT_FOUND
-            );
-        }
+        // if (fieldValidator(orders)) {
+        //     throw new ApiError(
+        //         statusCodeObject.HTTP_STATUS_CONFLICT,
+        //         errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+        //         ScrapMessage.SCRAP_NOT_FOUND
+        //     );
+        // }
             
         const totalScrapCount = await UserPickAddress.countDocuments({
             userId

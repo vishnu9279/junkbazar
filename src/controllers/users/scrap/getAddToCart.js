@@ -8,8 +8,8 @@ import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
-    errorAndSuccessCodeConfiguration,
-    ScrapMessage
+    errorAndSuccessCodeConfiguration
+    // ScrapMessage
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
@@ -77,13 +77,13 @@ const getAddToCart = asyncHandler(async (req, res) => {
 
         // console.log("finalObj", finalObj);
 
-        if (fieldValidator(addToCarpScraps)) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_CONFLICT,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
-            );
-        }
+        // if (fieldValidator(addToCarpScraps)) {
+        //     throw new ApiError(
+        //         statusCodeObject.HTTP_STATUS_CONFLICT,
+        //         errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+        //         ScrapMessage.SCRAP_ALREADY_EXIST
+        //     );
+        // }
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
