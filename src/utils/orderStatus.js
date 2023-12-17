@@ -5,6 +5,7 @@ const OrdersEnum = {
     ARRVIED: 3,
     ON_THE_WAY: 2,
     PENDING: 0,
+    REJECTED: 5,
     SCRAP_PICKED: 4
 };
 

@@ -13,13 +13,15 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
+import OrdersEnum from "../../../utils/orderStatus.js";
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
-    console.log("updateOrderStatus working");
+    console.log("updateOrderStatus working", req.body);
 
     try {
         const orderStatus = req.body.orderStatus;
         const orderId = req.body.orderId;
+        const userId =  req.body.userId;
 
         if (fieldValidator(orderId) || fieldValidator(orderStatus)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
@@ -30,12 +32,16 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         if (fieldValidator(order)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.ORDER_NOT_FOUND);
 
+        const obj = {
+            orderStatus
+        };
+
+        if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
+
         const resp = await UserPickAddress.findOneAndUpdate({
             orderId
         }, {
-            $set: {
-                orderStatus
-            }
+            $set: obj
         });
 
         if (fieldValidator(resp)) {

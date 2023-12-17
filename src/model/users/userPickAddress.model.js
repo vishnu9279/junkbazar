@@ -70,16 +70,19 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        
         userId: {
             ref: "user",
             required: true,
             type: String
         },
+        
         userIdF_k: {
             ref: "user",
             required: true, 
             type: mongoose.Schema.Types.ObjectId
+        },
+        vendorId: {
+            type: String  
         },
         weekNumber: {
             required: true,

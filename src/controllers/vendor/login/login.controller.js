@@ -70,7 +70,8 @@ const login = asyncHandler (async (req, res) => {
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
-                isDocumentUploaded: resp.isDocumentUploaded
+                isDocumentUploaded: resp.isDocumentUploaded,
+                userId: resp.userId
             }, loginMessage.LOGIN_OTP_SENT_SUCCESSFULLY)
         );
     }

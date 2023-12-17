@@ -84,7 +84,9 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
-                token
+                isDocumentUploaded: resp.isDocumentUploaded,
+                token,
+                userId: resp.userId
             }, otpVerifyMessage.USER_LOGGED_IN)
         );
     }
