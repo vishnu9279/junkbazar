@@ -13,6 +13,8 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
+import createJwtToken from "../../../utils/createJwtToken.js";
+
 const uploadDocument = asyncHandler (async (req, res) => {
     console.log("uploadDocument working", req.body);
     let session;
@@ -24,6 +26,7 @@ const uploadDocument = asyncHandler (async (req, res) => {
         const {
             firstName, lastName, aadhaarID, panID, profile, userId, address, city, stateCode, countryCode
         } = req.body;
+        const platform = req.headers.platform;
 
         if (fieldValidator(firstName) || fieldValidator(lastName) || fieldValidator(aadhaarID) || fieldValidator(panID) || fieldValidator(profile)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
@@ -33,6 +36,7 @@ const uploadDocument = asyncHandler (async (req, res) => {
             city,
             countryCode,
             firstName,
+            isDocumentUploaded: true,
             lastName,
             panID,
             profile,
@@ -49,11 +53,21 @@ const uploadDocument = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
+        const tokenObj = {       
+            phoneNumber: resp.phoneNumber,
+            userId: resp.userId,
+            userRole: resp.roles
+        };
+
+        console.log("tokenObj", tokenObj);
+        const token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+
         await session.commitTransaction();
         await session.endSession();
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
+                token,
                 userId: userSaveObj.userId
             }, registerMessage.SUCCESSFULLY_SAVED)
         );
