@@ -19,12 +19,13 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     console.log("updateOrderStatus working", req.body);
 
     try {
-        const orderStatus = req.body.orderStatus;
+        let orderStatus = req.body.orderStatus;
         const orderId = req.body.orderId;
-        const userId =  req.body.userId;
+        const userId =  req.decoded.userId;
 
         if (fieldValidator(orderId) || fieldValidator(orderStatus)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
-        
+
+        orderStatus = parseInt(orderStatus);
         const order = await UserPickAddress.findOne({
             orderId
         });

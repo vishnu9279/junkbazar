@@ -15,6 +15,7 @@ import {
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getUserOrder = asyncHandler(async (req, res) => {
     console.log("getUserOrder working");
@@ -57,20 +58,20 @@ const getUserOrder = asyncHandler(async (req, res) => {
                     localField: "scrapId"
                 }
             },
-            {
-                $lookup: {
-                    as: "vendorInfo",
-                    foreignField: "userId",
-                    from: "users",
-                    localField: "vendorId"
-                }
-            },
+            // {
+            //     $lookup: {
+            //         as: "vendorInfo",
+            //         foreignField: "userId",
+            //         from: "users",
+            //         localField: "vendorId"
+            //     }
+            // },
             {
                 $unwind: "$scrapInfo"
             },
-            {
-                $unwind: "$vendorInfo"
-            },
+            // {
+            //     $unwind: "$vendorInfo"
+            // },
             {
                 $skip: parseInt(skip)  // Add the skip stage
             },
@@ -89,14 +90,31 @@ const getUserOrder = asyncHandler(async (req, res) => {
 
         for (let index = 0; index < orders.length; index++){
             const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
-            const profileUrl = await generateS3SignedUrl(orders[index].vendorInfo.profile);
+
+            console.log("orders[index].orderStatus", orders[index].orderStatus);
+
+            if (orders[index].orderStatus === OrdersEnum.ACCEPTED){
+                const user = await UserModel.findOne({
+                    userId: orders[index].vendorId
+                });
+
+                const profileUrl = await generateS3SignedUrl(user.profile);
+
+                user.docUrl = profileUrl;
+                orders[index].vendorInfo = user;
+            }
 
             orders[index].scrapInfo.docUrl = scrapUrl;
-            orders[index].vendorInfo.docUrl = profileUrl;
         }
             
         const totalScrapCount = await UserPickAddress.countDocuments({
-            userId
+            $or: [{
+                city: user.city
+            },
+            {
+                stateCode: user.stateCode
+            }],
+            orderStatus: parseInt(orderStatus)
         });
     
         const finalObj = {
