@@ -33,6 +33,8 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         if (fieldValidator(order)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.ORDER_NOT_FOUND);
 
+        if (order.orderStatus === OrdersEnum.ACCEPTED) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.ORDER_ALREADY_ACCEPTED);
+
         const obj = {
             orderStatus
         };
