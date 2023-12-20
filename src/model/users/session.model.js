@@ -2,6 +2,11 @@
 
 import mongoose from "mongoose";
 const userSessionSchema = new mongoose.Schema({
+    enabled: {
+        default: true,
+        required: true,
+        type: Boolean
+    },
     encrypt: {
         required: true,
         type: String
@@ -29,6 +34,9 @@ const userSessionSchema = new mongoose.Schema({
     platform: {
         required: true, 
         type: String
+    },
+    terminated_at: {
+        type: Number
     },
     userId: {
         ref: "user",
