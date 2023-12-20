@@ -1,21 +1,21 @@
 "use strict";
 
-import asyncHandler from "../../utils/asyncHandler.js";
-import Scrap  from "../../model/users/scrap.model.js";
-import fieldValidator from "../../utils/fieldValidator.js";
-import ApiError from "../../utils/ApiError.js";
+import asyncHandler from "../../../utils/asyncHandler.js";
+import Scrap  from "../../../model/users/scrap.model.js";
+import fieldValidator from "../../../utils/fieldValidator.js";
+import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, ScrapMessage
-} from "../../utils/constants.js";
+} from "../../../utils/constants.js";
 
-import ApiResponse from "../../utils/ApiSuccess.js";
+import ApiResponse from "../../../utils/ApiSuccess.js";
 // import uploadFile from "../../../utils/uploadFile.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 
 import {
     getNewMongoSession
-} from "../../configuration/dbConnection.js";
+} from "../../../configuration/dbConnection.js";
 const addScrap = asyncHandler (async (req, res) => {
     console.log("addScrap working", req.body, req.decoded);
     let  session;

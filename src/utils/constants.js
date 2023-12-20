@@ -13,8 +13,9 @@ export const errorAndSuccessCodeConfiguration = {
     HTTP_STATUS_NO_CONTENT: 1008,
     HTTP_STATUS_NOT_FOUND: 1006,
     HTTP_STATUS_OK: 1007,
-    HTTP_STATUS_TOO_MANY_REQUESTS: 1008,
-    HTTP_STATUS_UNAUTHORIZED: 1008
+    HTTP_STATUS_TOO_MANY_REQUESTS: 1009,
+    HTTP_STATUS_UNAUTHORIZED: 1010,
+    HTTP_UNPROCESSABLE_ENTITY: 1011
 };
 export const basicConfigurationObject  = {
     ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY,
@@ -44,7 +45,8 @@ export const statusCodeObject = {
     HTTP_STATUS_NOT_FOUND: 404,
     HTTP_STATUS_OK: 200,
     HTTP_STATUS_TOO_MANY_REQUESTS: 429,
-    HTTP_STATUS_UNAUTHORIZED: 401
+    HTTP_STATUS_UNAUTHORIZED: 401,
+    HTTP_UNPROCESSABLE_ENTITY: 422
 };
 
 export const CommonMessage = {
@@ -80,6 +82,7 @@ export const registerMessage = {
 };
 
 export const loginMessage = {
+    EITHER_PHONE_NUMBER_OR_PASSWORD_WRONG: "Either Phone Number or Password Wrong",
     LOGIN_OTP_SENT_SUCCESSFULLY: "login OTP sent successfully"
    
 };
