@@ -42,6 +42,7 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
 
         console.log("encryptObj", encryptObj);
         const SessionObj =  await Session.findOne({
+            jwtId: encryptObj.jwtId,
             userId: encryptObj.userId
         });
 

@@ -46,6 +46,7 @@ const createJwtToken = async(userObj, originUrl, platform) => {
         const tokenExpiry = basicConfigurationObject.ACCESS_TOKEN_EXPIRY;
         const data = {
             ...userObj,
+            jwtId: uniqueId,
             originUrl,
             platform
         };
