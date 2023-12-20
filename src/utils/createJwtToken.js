@@ -9,7 +9,6 @@ import helper from "../utils/helper.js";
 import storeSession from "./storeSession.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
-const uniqueId = uid.stamp(32);
 
 function convertStringToMilliseconds(timeString) {
     const match = timeString.match(/(\d+)([hms])/);
@@ -43,6 +42,7 @@ const createJwtToken = async(userObj, originUrl, platform) => {
         userObj
     });
     try {
+        const uniqueId = uid.stamp(32);
         const tokenExpiry = basicConfigurationObject.ACCESS_TOKEN_EXPIRY;
         const data = {
             ...userObj,

@@ -7,6 +7,8 @@ import ApiError from "../utils/ApiError.js";
 import jsonwebtoken from "jsonwebtoken";
 import helper from "../utils/helper.js";
 import UserModel from "../model/users/user.model.js";
+import Session from "../model/users/session.model.js";
+import fieldValidator from "../utils/fieldValidator.js";
 
 const authenticateJwtMiddleware =  async(req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -37,6 +39,14 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         });
 
         if (user.accountBlocked) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Account Blocked");
+
+        const SessionObj =  await Session.findOne({
+            userId: encryptObj.userId
+        });
+
+        if (fieldValidator(SessionObj)) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Session Expired");
+
+        if (currentTime > SessionObj.terminated_at) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Session Expired");
 
         req.decoded = encryptObj;
   
