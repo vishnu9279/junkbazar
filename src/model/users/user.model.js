@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
+        aadhaarUrl: {
+            type: String
+        },
         accountBlocked: {
             default: false,
             type: Boolean 
@@ -35,7 +38,10 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
-        
+        isActive: {
+            default: false,
+            type: Boolean
+        },
         isDocumentUploaded: {
             default: false,
             required: true,
@@ -50,14 +56,18 @@ const userSchema = new mongoose.Schema(
         OTP: {
             type: Number
         },
-
+        
         otpGenerateTime: {
             required: true,
             type: Number
         },
+
         panID: {
             required: false,
             type: String 
+        },
+        panUrl: {
+            type: String
         },
         phoneNumber: {
             required: true,
@@ -69,16 +79,15 @@ const userSchema = new mongoose.Schema(
             type: String 
         },
         
+        profileUrl: {
+            type: String
+        },
         roles: {
             default: RolesEnum.USER,
             type: Number
         },
         stateCode: {
             required: false,
-            type: String
-        },
-        status: {
-            default: "Offline",
             type: String
         },
         userId: {

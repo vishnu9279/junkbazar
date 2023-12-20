@@ -34,9 +34,13 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             );
         }
 
-        const url = await generateS3SignedUrl(user.profile);
+        const profileUrl = await generateS3SignedUrl(user.profile);
+        const panUrl = await generateS3SignedUrl(user.panID);
+        const aadhaarUrl = await generateS3SignedUrl(user.aadhaarID);
 
-        user.docUrl = url;
+        user.profileUrl = profileUrl;
+        user.panUrl = panUrl;
+        user.aadhaarUrl = aadhaarUrl;
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
