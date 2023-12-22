@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../utils/asyncHandler.js";
 import UserModel  from "../../model/users/user.model.js";
+import AppVersion  from "../../model/appVersion.model.js";
 import fieldValidator from "../../utils/fieldValidator.js";
 import ApiError from "../../utils/ApiError.js";
 import {
@@ -19,6 +20,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
     try {
         const userId = req.decoded.userId;
+        const platform = req.headers.platform;
 
         const user = await UserModel.findOne({
             roles: RolesEnum.USER,
@@ -32,6 +34,17 @@ const getCurrentUser = asyncHandler(async (req, res) => {
                 registerMessage.ERROR_USER_NOT_FOUND
             );
         }
+
+        const appVersion = await AppVersion.findOne({
+            type: platform
+        })
+            .sort({
+                createdAt: -1 
+            }) // Sort in descending order based on the createdAt field
+            .exec();
+
+        console.log("appVersion", appVersion, platform);
+        user.appVersion = appVersion;
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(

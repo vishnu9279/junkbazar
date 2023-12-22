@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
+        appVersion: {
+            type: Object
+        },
         city: {
             required: false,
             type: String 
@@ -42,6 +45,7 @@ const userSchema = new mongoose.Schema(
             default: false,
             type: Boolean
         },
+        
         isDocumentUploaded: {
             default: false,
             required: true,
@@ -56,12 +60,11 @@ const userSchema = new mongoose.Schema(
         OTP: {
             type: Number
         },
-        
+
         otpGenerateTime: {
             required: true,
             type: Number
         },
-
         panID: {
             required: false,
             type: String 
@@ -74,11 +77,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
+        
         profile: {
             required: false,
             type: String 
         },
-        
         profileUrl: {
             type: String
         },

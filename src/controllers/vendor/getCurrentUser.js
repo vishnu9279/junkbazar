@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../utils/asyncHandler.js";
 import UserModel  from "../../model/users/user.model.js";
+import AppVersion  from "../../model/appVersion.model.js";
 import fieldValidator from "../../utils/fieldValidator.js";
 import ApiError from "../../utils/ApiError.js";
 import {
@@ -20,7 +21,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
     try {
         const userId = req.decoded.userId;
-
+        const platform = req.headers.platform;
         const user = await UserModel.findOne({
             roles: RolesEnum.VENDOR,
             userId
@@ -34,6 +35,16 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             );
         }
 
+        const appVersion = await AppVersion.findOne({
+            type: platform
+        })
+            .sort({
+                createdAt: -1 
+            }) // Sort in descending order based on the createdAt field
+            .exec();
+
+        console.log("appVersion", appVersion, platform);
+
         const profileUrl = await generateS3SignedUrl(user.profile);
         const panUrl = await generateS3SignedUrl(user.panID);
         const aadhaarUrl = await generateS3SignedUrl(user.aadhaarID);
@@ -41,6 +52,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         user.profileUrl = profileUrl;
         user.panUrl = panUrl;
         user.aadhaarUrl = aadhaarUrl;
+        user.appVersion = appVersion;
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
