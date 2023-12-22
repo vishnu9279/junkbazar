@@ -48,24 +48,24 @@ const scrapOrderSchema = new mongoose.Schema(
 
 const ScrapOrder = mongoose.model("scrap_order", scrapOrderSchema);
 
-scrapOrderSchema.virtual("scraps", {
-    foreignField: "scrapId",
-    justOne: true,
-    localField: "scrapId",
-    ref: "scrap"
-});
-scrapOrderSchema.virtual("user", {
-    foreignField: "userId",
-    justOne: true,
-    localField: "userId",
-    ref: "user"
-});
+// scrapOrderSchema.virtual("scraps", {
+//     foreignField: "scrapId",
+//     justOne: true,
+//     localField: "scrapId",
+//     ref: "scrap"
+// });
+// scrapOrderSchema.virtual("user", {
+//     foreignField: "userId",
+//     justOne: true,
+//     localField: "userId",
+//     ref: "user"
+// });
 
-scrapOrderSchema.virtual("pickupAddress", {
-    foreignField: "addressId",
-    justOne: true,
-    localField: "addressId",
-    ref: "user_pickup_address"
-});
+// scrapOrderSchema.virtual("pickupAddress", {
+//     foreignField: "addressId",
+//     justOne: true,
+//     localField: "addressId",
+//     ref: "user_pickup_address"
+// });
 
 export default ScrapOrder;

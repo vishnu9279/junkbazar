@@ -59,7 +59,7 @@ const userPickupSchema = new mongoose.Schema(
         scrapId: {
             ref: "scrap",
             required: true,
-            type: mongoose.Schema.Types.ObjectId
+            type: String
         },
         
         scrapIdF_K: {
