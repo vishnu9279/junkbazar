@@ -1,37 +1,29 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import addToCartSchema  from "../../../model/users/userScrapModel.model.js";
+import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
+import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
+    ScrapMessage,
     errorAndSuccessCodeConfiguration
 } from "../../../utils/constants.js";
-
+import OrdersEnum from "../../../utils/orderStatus.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
-const getAddToCart = asyncHandler(async (req, res) => {
-    console.log("getAddToCart working");
+const getVendorOrderInfo = asyncHandler(async (req, res) => {
+    console.log("getVendorOrderInfo working");
 
     try {
-        const userId = req.decoded.userId;
-        let limit = req.query.limit;
-        let page = req.query.page;
-
-        if (fieldValidator(limit) || isNaN(page)) limit = 10;
-
-        if (fieldValidator(page) || isNaN(page)) page = page || 0;
-
-        const skip = page * limit;
-
-        const addToCarpScraps = await addToCartSchema.aggregate([
+        const orderId = req.query.orderId;
+        const order = await UserPickAddress.aggregate([
             {
                 $match: {
-                    enabled: true,
-                    userId
+                    orderId
                 }
             },
             {
@@ -44,40 +36,33 @@ const getAddToCart = asyncHandler(async (req, res) => {
             },
             {
                 $unwind: "$scrapInfo"
-            },
-            {
-                $sort: {
-                    createdAt: -1  // Sort in descending order based on createdAt field
-                }
-            },
-            {
-                $skip: parseInt(skip)  // Add the skip stage
-            },
-            {
-                $limit: parseInt(limit)  // Add the limit stage
             }
         ]);
 
-        for (let index = 0; index < addToCarpScraps.length; index++){
-            const url = await generateS3SignedUrl(addToCarpScraps[index].scrapInfo.docPath);
+        if (fieldValidator(order)) throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
-            addToCarpScraps[index].docUrl = url;
+        for (let index = 0; index < order.length; index++){
+            const url = await generateS3SignedUrl(order[index].scrapInfo.docPath);
+
+            order[index].scrapInfo.docUrl = url;
+
+            if (order[index].orderStatus >= OrdersEnum.ACCEPTED){
+                const user = await UserModel.findOne({
+                    userId: order[index].vendorId
+                });
+
+                const profileUrl = await generateS3SignedUrl(user.profile);
+
+                user.docUrl = profileUrl;
+                order[index].vendorInfo = user;
+            }
         }
-
-        const totalScrapCount = await addToCartSchema.countDocuments({
-            userId
-        });
-
-        const finalObj = {
-            cartLists: addToCarpScraps,
-            totalScrapCount
-        };
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
-                finalObj,
+                order[0],
                 CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
             )
         );
@@ -95,7 +80,7 @@ const getAddToCart = asyncHandler(async (req, res) => {
         }
         else {
             // Handle other types of errors
-            console.error("Error in getAddToCart:", error);
+            console.error("Error in getVendorOrderInfo:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
                 error: CommonMessage.SOMETHING_WENT_WRONG
@@ -104,4 +89,4 @@ const getAddToCart = asyncHandler(async (req, res) => {
     }
 });
 
-export default getAddToCart;
+export default getVendorOrderInfo;

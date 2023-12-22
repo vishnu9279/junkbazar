@@ -15,10 +15,12 @@ import get_country_state_cities from "../../controllers/other_api/get_countries_
 import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
 import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.controller.js";
-import getUserOrder from "../../controllers/users/scrap/getUserOrder.js";
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 import contactUs from "../../controllers/other_api/contactUs.js";
 import getCurrentUser from "../../controllers/users/getCurrentUser.js";
+
+import getUserOrder from "../../controllers/users/scrap/getUserOrder.js";
+import getUserOrderInfo from "../../controllers/users/scrap/getUserOrderInfo.js";
 
 // Cart
 import getAddToCart from "../../controllers/users/scrap/getAddToCart.js";
@@ -39,6 +41,7 @@ router.route("/otpVerify").post(otpVerify);
 router.route("/getCountries").get(get_country_state_cities);
 router.route("/getScrap").get(getScrap);
 router.route("/getUserOrder").get(authenticateJwtMiddleware, getUserOrder);
+router.route("/getUserOrderInfo").get(authenticateJwtMiddleware, getUserOrderInfo);
 router.route("/getCurrentUser").get(authenticateJwtMiddleware, getCurrentUser);
 
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl); // generateS3SignedUrl

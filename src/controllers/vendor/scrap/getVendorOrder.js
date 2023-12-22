@@ -9,7 +9,6 @@ import {
     CommonMessage,
     statusCodeObject,
     errorAndSuccessCodeConfiguration,
-    // ScrapMessage,
     registerMessage
 } from "../../../utils/constants.js";
 
@@ -17,8 +16,8 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 import OrdersEnum from "../../../utils/orderStatus.js";
 
-const getUserOrder = asyncHandler(async (req, res) => {
-    console.log("getUserOrder working");
+const getVendorOrder = asyncHandler(async (req, res) => {
+    console.log("getVendorOrder working");
 
     try {
         const userId = req.decoded.userId;
@@ -58,20 +57,11 @@ const getUserOrder = asyncHandler(async (req, res) => {
                     localField: "scrapId"
                 }
             },
-            // {
-            //     $lookup: {
-            //         as: "vendorInfo",
-            //         foreignField: "userId",
-            //         from: "users",
-            //         localField: "vendorId"
-            //     }
-            // },
+            
             {
                 $unwind: "$scrapInfo"
             },
-            // {
-            //     $unwind: "$vendorInfo"
-            // },
+           
             {
                 $skip: parseInt(skip)  // Add the skip stage
             },
@@ -80,20 +70,12 @@ const getUserOrder = asyncHandler(async (req, res) => {
             }
         ]);
 
-        // if (fieldValidator(orders)) {
-        //     throw new ApiError(
-        //         statusCodeObject.HTTP_STATUS_CONFLICT,
-        //         errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-        //         ScrapMessage.SCRAP_ALREADY_EXIST
-        //     );
-        // }
-
         for (let index = 0; index < orders.length; index++){
             const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
 
             console.log("orders[index].orderStatus", orders[index].orderStatus);
 
-            if (orders[index].orderStatus === OrdersEnum.ACCEPTED){
+            if (orders[index].orderStatus >= OrdersEnum.ACCEPTED){
                 const user = await UserModel.findOne({
                     userId: orders[index].vendorId
                 });
@@ -144,7 +126,7 @@ const getUserOrder = asyncHandler(async (req, res) => {
         }
         else {
             // Handle other types of errors
-            console.error("Error in getUserOrder:", error);
+            console.error("Error in getVendorOrder:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
                 error: CommonMessage.SOMETHING_WENT_WRONG
@@ -153,4 +135,4 @@ const getUserOrder = asyncHandler(async (req, res) => {
     }
 });
 
-export default getUserOrder;
+export default getVendorOrder;

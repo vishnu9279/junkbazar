@@ -32,3 +32,13 @@
         }
     ]
 }
+
+
+var cityInfo = db.locations.aggregate([
+	{ $match: { "name": "Zimbabwe" } },
+	{ $unwind: "$states" },
+	{ $match: { "states.name": "Bulawayo Province" } },
+	{ $unwind: "$states.cities" },
+	{ $match: { "states.cities.name": "Bulawayo" } },
+	{ $project: { _id: 0, "states.cities.id": 1, "states.cities.name": 1, "states.cities.latitude": 1, "states.cities.longitude": 1 } }
+  ]);

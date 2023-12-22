@@ -2,15 +2,15 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
+import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
     errorAndSuccessCodeConfiguration
-    // ScrapMessage
 } from "../../../utils/constants.js";
-
+import OrdersEnum from "../../../utils/orderStatus.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
@@ -55,17 +55,20 @@ const getUserOrder = asyncHandler(async (req, res) => {
         for (let index = 0; index < orders.length; index++){
             const url = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
 
-            orders[index].docUrl = url;
+            orders[index].scrapInfo.docUrl = url;
+
+            if (orders[index].orderStatus >= OrdersEnum.ACCEPTED){
+                const user = await UserModel.findOne({
+                    userId: orders[index].vendorId
+                });
+
+                const profileUrl = await generateS3SignedUrl(user.profile);
+
+                user.docUrl = profileUrl;
+                orders[index].vendorInfo = user;
+            }
         }
-        
-        // if (fieldValidator(orders)) {
-        //     throw new ApiError(
-        //         statusCodeObject.HTTP_STATUS_CONFLICT,
-        //         errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-        //         ScrapMessage.SCRAP_NOT_FOUND
-        //     );
-        // }
-            
+                    
         const totalScrapCount = await UserPickAddress.countDocuments({
             userId
         });

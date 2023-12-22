@@ -25,6 +25,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
         if (fieldValidator(orderId) || fieldValidator(orderStatus)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
+        orderStatus = orderStatus.split(",");
         orderStatus = parseInt(orderStatus);
         const order = await UserPickAddress.findOne({
             orderId
@@ -36,7 +37,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         if (order.orderStatus === OrdersEnum.ACCEPTED) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.ORDER_ALREADY_ACCEPTED);
 
         const obj = {
-            orderStatus
+            orderStatus: [ orderStatus ]
         };
 
         if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
