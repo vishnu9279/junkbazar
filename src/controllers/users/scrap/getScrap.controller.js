@@ -27,6 +27,9 @@ const getScrap = asyncHandler(async (req, res) => {
 
         const skip = page * limit;
         const scraps = await Scrap.find({})
+            .sort({
+                createdAt: -1
+            })
             .skip(skip)
             .limit(limit);
 

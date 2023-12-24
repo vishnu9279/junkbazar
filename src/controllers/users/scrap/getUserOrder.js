@@ -42,6 +42,11 @@ const getUserOrder = asyncHandler(async (req, res) => {
                 }
             },
             {
+                $sort: {
+                    createdAt: -1  // Sort in descending order based on the createdAt field
+                }
+            },
+            {
                 $unwind: "$scrapInfo"
             },
             {

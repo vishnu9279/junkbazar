@@ -57,7 +57,11 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     localField: "scrapId"
                 }
             },
-            
+            {
+                $sort: {
+                    createdAt: -1  // Sort in descending order based on the createdAt field
+                }
+            },
             {
                 $unwind: "$scrapInfo"
             },
