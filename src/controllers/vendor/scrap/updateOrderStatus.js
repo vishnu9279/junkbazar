@@ -24,6 +24,9 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     let session;
 
     try {
+        session = await getNewMongoSession();
+    
+        session.startTransaction();
         let orderStatus = req.body.orderStatus;
         const orderId = req.body.orderId;
         const userId =  req.decoded.userId;
@@ -46,9 +49,6 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
         if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
 
-        session = await getNewMongoSession();
-    
-        session.startTransaction();
         const resp = await UserPickAddress.findOneAndUpdate({
             orderId
         }, {
