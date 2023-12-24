@@ -52,8 +52,8 @@ export const statusCodeObject = {
 export const CommonMessage = {
     DETAIL_DELETED_SUCCESSFULLY: "Detail Deleted Successfully",
     DETAIL_FETCHED_SUCCESSFULLY: "Detail Fetched Successfully",
-    DETAIL_UPDATED_SUCCESSFULLY: "Detail Updated Successfully",
     DETAIL_SAVED_SUCCESSFULLY: "Detail Saved Successfully",
+    DETAIL_UPDATED_SUCCESSFULLY: "Detail Updated Successfully",
     EMAIL_REQUIRED: "Email is Required",
     ERROR_FIELD_REQUIRED: "Field required",
     ERROR_MESSAGE_BAD_REQUEST: "Bad Request",
