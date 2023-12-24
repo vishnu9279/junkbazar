@@ -15,8 +15,13 @@ import {
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import OrdersEnum from "../../../utils/orderStatus.js";
 
+import {
+    getNewMongoSession
+} from "../../../configuration/dbConnection.js";
+
 const updateOrderStatus = asyncHandler(async (req, res) => {
     console.log("updateOrderStatus working", req.body);
+    let session;
 
     try {
         let orderStatus = req.body.orderStatus;
@@ -24,7 +29,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         const userId =  req.decoded.userId;
 
         if (fieldValidator(orderId) || fieldValidator(orderStatus)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
-
+       
         orderStatus = parseInt(orderStatus);
         const order = await UserPickAddress.findOne({
             orderId
@@ -41,10 +46,15 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
         if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
 
+        session = await getNewMongoSession();
+    
+        session.startTransaction();
         const resp = await UserPickAddress.findOneAndUpdate({
             orderId
         }, {
             $set: obj
+        }, {
+            session: session
         });
 
         if (fieldValidator(resp)) {
@@ -54,6 +64,9 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
                 ScrapMessage.SCRAP_ALREADY_EXIST
             );
         }
+
+        await session.commitTransaction();
+        await session.endSession();
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
@@ -66,6 +79,8 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     }
     catch (error) {
         console.error("Error on getting scrap", error.message);
+        await session.abortTransaction();
+        await session.endSession();
 
         if (error instanceof ApiError) {
             console.log("Api Error instance");
