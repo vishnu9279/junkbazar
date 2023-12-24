@@ -62,15 +62,17 @@ const getUserOrder = asyncHandler(async (req, res) => {
 
             orders[index].scrapInfo.docUrl = url;
 
-            if (orders[index].orderStatus >= OrdersEnum.ACCEPTED){
+            if ( orders[index].vendorId && orders[index].orderStatus >= OrdersEnum.ACCEPTED){
                 const user = await UserModel.findOne({
                     userId: orders[index].vendorId
                 });
 
-                const profileUrl = await generateS3SignedUrl(user.profile);
-
-                user.docUrl = profileUrl;
-                orders[index].vendorInfo = user;
+                if (!fieldValidator(user.profile)){
+                    const profileUrl = await generateS3SignedUrl(user.profile);
+     
+                    user.docUrl = profileUrl;
+                    orders[index].vendorInfo = user;
+                }
             }
         }
                     
