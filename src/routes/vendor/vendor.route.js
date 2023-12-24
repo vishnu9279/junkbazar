@@ -21,6 +21,7 @@ import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.
 
 import getVendorOrder from "../../controllers/vendor/scrap/getVendorOrder.js";
 import getVendorOrderInfo from "../../controllers/vendor/scrap/getVendorOrderInfo.js";
+import getScrapHistory from "../../controllers/vendor/scrap/getScrapHistory.js";
 
 router.route("/register").post(register);
 router.route("/uploadDocument").post(uploadDocument);
@@ -34,5 +35,6 @@ router.route("/logout").get(authenticateJwtMiddleware, logout);
 router.route("/getCurrentUser").get(authenticateJwtMiddleware, getCurrentUser);
 router.route("/generateS3UploadSignedUrl").post(generateS3UploadSignedUrl); // generateS3SignedUrl
 router.route("/getVendorOrderInfo").get(authenticateJwtMiddleware, getVendorOrderInfo);
+router.route("/getScrapHistory").get(authenticateJwtMiddleware, getScrapHistory);
 
 export default router;
