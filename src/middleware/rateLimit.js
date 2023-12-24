@@ -77,7 +77,7 @@ const rateLimiter = rateLimit({
     message: {
         message: CommonMessage.ERROR_MESSAGE_TOO_MANY_REQUESTS
     },
-    windowMs: 30 * 1000
+    windowMs: 40 * 1000
 });
 
 export default rateLimiter;

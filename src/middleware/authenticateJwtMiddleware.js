@@ -46,7 +46,7 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
             userId: encryptObj.userId
         });
 
-        console.log("SessionObj", SessionObj);
+        // console.log("SessionObj", SessionObj);
 
         if (fieldValidator(SessionObj)) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Session Expired");
         
