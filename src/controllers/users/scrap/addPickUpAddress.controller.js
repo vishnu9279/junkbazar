@@ -31,7 +31,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const userIdF_k = req.decoded.userIdF_k;
-        const scrapIds = req.body.scrapIds;
+        let scrapIds = req.body.scrapIds;
         const {
             fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city
         } = req.body;
@@ -40,7 +40,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
-        scrapIds.split(",");
+        scrapIds = scrapIds.split(",");
         const scraps = await Scrap.find({
             scrapId: {
                 $in: scrapIds
