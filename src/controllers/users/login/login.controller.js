@@ -69,7 +69,10 @@ const login = asyncHandler (async (req, res) => {
         await session.commitTransaction();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, loginMessage.LOGIN_OTP_SENT_SUCCESSFULLY)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
+                isDocumentUploaded: resp.isDocumentUploaded,
+                userId: resp.userId
+            }, loginMessage.LOGIN_OTP_SENT_SUCCESSFULLY)
         );
     }
     catch (error) {

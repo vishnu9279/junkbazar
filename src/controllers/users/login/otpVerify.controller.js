@@ -18,7 +18,7 @@ import createJwtToken from "../../../utils/createJwtToken.js";
 const otpVerify = asyncHandler (async (req, res) => {
     console.log("otpVerify working", req.body);
    
-    let session;
+    let session, token;
     const currentTime = new Date().getTime();
 
     try {
@@ -70,20 +70,24 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        const tokenObj = {       
-            phoneNumber,
-            userId: user.userId,
-            userIdF_k: user._id,
-            userRole: user.roles
-        };
-
-        const token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+        if (user.isDocumentUploaded){
+            const tokenObj = {       
+                phoneNumber,
+                userId: user.userId,
+                userIdF_k: user._id,
+                userRole: user.roles
+            };
+    
+            token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+        }
 
         await session.commitTransaction();
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
-                token
+                isDocumentUploaded: resp.isDocumentUploaded,
+                token,
+                userId: resp.userId
             }, otpVerifyMessage.USER_LOGGED_IN)
         );
     }

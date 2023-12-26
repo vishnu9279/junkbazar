@@ -95,7 +95,9 @@ const register = asyncHandler (async (req, res) => {
         await session.endSession();
 
         return res.status(201).json(
-            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, registerMessage.SUCCESSFULLY_SAVED)
+            new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {
+                userId: userSaveObj.userId
+            }, registerMessage.SUCCESSFULLY_SAVED)
         );
     }
     catch (error) {
