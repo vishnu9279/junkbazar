@@ -97,6 +97,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         if (fieldValidator(respValue)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
+        console.log("scrapIds", scrapIds, scrapIds.length);
         const userResp = await UserModel.updateOne({
             userId
         }, {
