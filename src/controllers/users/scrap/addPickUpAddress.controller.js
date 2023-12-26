@@ -3,6 +3,7 @@
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
 import userScrapModel  from "../../../model/users/userScrapModel.model.js";
+import UserModel  from "../../../model/users/user.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -94,6 +95,19 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         });
 
         if (fieldValidator(respValue)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
+
+        const userResp = await UserModel.updateOne({
+            userId
+        }, {
+            $inc: {
+                scrapSoldCount: scrapIds.length
+            }
+        }, {
+            session: session
+        });
+
+        if (fieldValidator(userResp)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
         await session.commitTransaction();

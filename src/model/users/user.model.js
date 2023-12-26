@@ -89,6 +89,9 @@ const userSchema = new mongoose.Schema(
             default: RolesEnum.USER,
             type: Number
         },
+        scrapSoldCount: {
+            type: Number
+        },
         stateCode: {
             required: false,
             type: String

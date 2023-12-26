@@ -14,6 +14,8 @@ import resendOtp from "../../controllers/admin/login/resendOtp.controller.js";
 import login from "../../controllers/admin/login/login.controller.js";
 import logout from "../../controllers/admin/logout.js";
 import addScrap from "../../controllers/admin/scraps/addScrap.controller.js";
+import getUser from "../../controllers/admin/users/getUser.controller.js";
+import getUserScrap from "../../controllers/admin/users/getUserScrap.controller.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 
@@ -22,5 +24,8 @@ router.route("/logout").get(authenticateJwtMiddleware, logout);
 router.route("/resendOtp").post(resendOtp);
 router.route("/otpVerify").post(otpVerify);
 router.route("/login").post(login);
+
+router.route("/getUser").get(authenticateJwtMiddleware, getUser);
+router.route("/getUserScrap").get(authenticateJwtMiddleware, getUserScrap);
 
 export default router;

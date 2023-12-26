@@ -16,12 +16,15 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import RolesEnum from "../../../utils/roles.js";
 
 const getUser = asyncHandler(async (req, res) => {
-    console.log("getUser working");
+    console.log("Admin getUser working");
 
     try {
         let limit = req.query.limit;
         let page = req.query.page;
         const name = req.query.name;
+        const phoneNumber = req.query.phoneNumber;
+        const city = req.query.city;
+        const stateCode = req.query.stateCode;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -43,7 +46,17 @@ const getUser = asyncHandler(async (req, res) => {
             ];
         }
 
-        const vendor = await UserModel.find(filterObj)
+        if (!fieldValidator(phoneNumber))
+            filterObj.phoneNumber = new RegExp(phoneNumber, "i");
+
+        if (!fieldValidator(city))
+            filterObj.city = new RegExp(city, "i");
+    
+        if (!fieldValidator(stateCode))
+            filterObj.stateCode = new RegExp(stateCode, "i");
+
+        console.log("filterObj", filterObj);
+        const users = await UserModel.find(filterObj)
             .sort({
                 createdAt: -1
             })
@@ -62,13 +75,11 @@ const getUser = asyncHandler(async (req, res) => {
         //     }
         // }
 
-        const totalScrapCount = await UserModel.countDocuments({
-            filterObj
-        });
+        const totalScrapCount = await UserModel.countDocuments(filterObj);
 
         const finalObj = {
             totalScrapCount,
-            vendor: vendor
+            users
         };
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(

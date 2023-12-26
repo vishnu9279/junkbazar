@@ -7,12 +7,15 @@ import ApiError from "../utils/ApiError.js";
 import jsonwebtoken from "jsonwebtoken";
 import helper from "../utils/helper.js";
 import UserModel from "../model/users/user.model.js";
+import AdminModel from "../model/admin/admin.model.js";
 import Session from "../model/users/session.model.js";
 import fieldValidator from "../utils/fieldValidator.js";
+import RolesEnum from "../utils/roles.js";
 
 const authenticateJwtMiddleware =  async(req, res, next) => {
     const authHeader = req.headers.authorization;
-    
+    let user;
+
     try {
         if (!authHeader) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Authorization header is missing");
 
@@ -28,19 +31,29 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         // console.log("decoded", decoded);
         const encryptObj = helper.decryptAnyData(decoded.encrypt);
 
+        // console.log("encryptObj", encryptObj);
+
         if (currentTime > encryptObj.expiryTime) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Token Expired");
 
         // Attach the decoded payload to the request for later use in routes
         delete encryptObj.originalUrl;
-        const user = await UserModel.findOne({
-           
-            userId: encryptObj.userId
 
-        });
+        if (encryptObj.userRole < RolesEnum.ADMIN){
+            console.log("User/Vendor Block Working in auth Middleware", encryptObj.userRole);
+
+            user = await UserModel.findOne({
+                userId: encryptObj.userId
+            });
+        }
+        else {
+            console.log("Admin Block Working in auth Middleware", encryptObj.userRole);
+            user = await AdminModel.findOne({
+                userId: encryptObj.userId
+            }); 
+        }
 
         if (user.accountBlocked) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Account Blocked");
 
-        console.log("encryptObj", encryptObj);
         const SessionObj =  await Session.findOne({
             jwtId: encryptObj.jwtId,
             userId: encryptObj.userId

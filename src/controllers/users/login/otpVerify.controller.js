@@ -39,7 +39,7 @@ const otpVerify = asyncHandler (async (req, res) => {
         });
 
         if (fieldValidator(user)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_NO_CONTENT, errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT, registerMessage.ERROR_USER_NOT_FOUND);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
         
         if (!user.OTP)
             throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyMessage.NO_LOGIN_REQUEST_INITATION);
@@ -53,6 +53,7 @@ const otpVerify = asyncHandler (async (req, res) => {
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_EXPIRE);
 
         const userOtpObj = {
+            isActive: true,
             OTP: "",
             otpVerifyTime: currentTime
         };
