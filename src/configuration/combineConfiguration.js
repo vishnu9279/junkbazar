@@ -21,7 +21,7 @@ function combineConfiguration(fullConfiguration) {
                 tempConfigs[ObjKey] = plainItem[ObjKey];
         }
     });
-    console.log("tempConfig", tempConfigs);
+    // console.log("tempConfig", tempConfigs);
 
     return tempConfigs ;
 }

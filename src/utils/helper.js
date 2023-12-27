@@ -21,7 +21,7 @@ class Helper{
         //     config,
         //     key
         // });
-        console.log("response object", cache.get(config));
+        // console.log("response object", cache.get(config));
         const Obj = cache.get(config);
 
         // console.log("response object", Obj[key]);

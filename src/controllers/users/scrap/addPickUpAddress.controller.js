@@ -33,10 +33,10 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         const userIdF_k = req.decoded.userIdF_k;
         let scrapIds = req.body.scrapIds;
         const {
-            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city
+            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, addToCartId, price, quantity
         } = req.body;
         
-        if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode) || fieldValidator(addToCartId) || fieldValidator(price) || fieldValidator(quantity)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
@@ -52,18 +52,21 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
 
         for (const scrap of scraps){
             const scrapSaveObj = {
-                // finalAmount:scrap.price *
                 address,
+                addToCartId,
                 city,
                 countryCode,
                 currentTime,
                 dayNumber: helper.getDayNumber(),
                 dialCode,
+                finalAmount: price * quantity,
                 fullName,
                 monthNumber: helper.getMonthNumber(),
                 orderId: uid.rnd(6),
                 phoneNumber,
                 pincode: parseInt(pincode),
+                price,
+                quantity,
                 scrapId: scrap.scrapId,
                 scrapIdF_K: scrap._id,
                 stateCode,
