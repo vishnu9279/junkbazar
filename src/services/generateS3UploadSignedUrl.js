@@ -21,7 +21,9 @@ const generateS3UploadSignedUrl = asyncHandler (async (req, res) => {
         if (fieldValidator(fileName) || fieldValidator(ContentType) || fieldValidator(userId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         const uploadTypeSchema = helper.getCacheElement("CONFIG", "S3_UPLOAD_TYPE");
-        
+
+        console.log("uplodTypeschema", uploadTypeSchema);
+
         if (fieldValidator(uploadTypeSchema)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         console.log("uploadTypeSchema", uploadTypeSchema[uploadType]);
