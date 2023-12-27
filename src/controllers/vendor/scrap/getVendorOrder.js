@@ -62,7 +62,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                         stateCode: user.stateCode
                     }],
                     orderStatus: {
-                        $in: parseInt(orderStatus)
+                        $in: orderStatus
                     }
                 }
             },
@@ -123,7 +123,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                 stateCode: user.stateCode
             }],
             orderStatus: {
-                $in: parseInt(orderStatus)
+                $in: orderStatus
             }
         });
     
