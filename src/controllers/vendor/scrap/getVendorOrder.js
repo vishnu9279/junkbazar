@@ -23,12 +23,14 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         const userId = req.decoded.userId;
         let limit = req.query.limit;
         let page = req.query.page;
-        const orderStatus = req.query.orderStatus;
+        let orderStatus = req.query.orderStatus;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
-        
+
+        orderStatus = orderStatus.split(",").map(el => parseInt(el));
+        console.log("orderStatus", orderStatus);
         const skip = page * limit;
         const user = await UserModel.findOne({
             userId
@@ -59,7 +61,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     {
                         stateCode: user.stateCode
                     }],
-                    orderStatus: parseInt(orderStatus)
+                    orderStatus: {
+                        $in: parseInt(orderStatus)
+                    }
                 }
             },
             {
@@ -118,7 +122,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             {
                 stateCode: user.stateCode
             }],
-            orderStatus: parseInt(orderStatus)
+            orderStatus: {
+                $in: parseInt(orderStatus)
+            }
         });
     
         const finalObj = {
