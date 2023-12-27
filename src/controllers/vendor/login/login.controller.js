@@ -14,7 +14,7 @@ import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
 import sendSms from "../../../services/sendSms.js";
-
+import RolesEnum from "../../../utils/roles.js";
 const login = asyncHandler (async (req, res) => {
     console.log("login working", req.body);
     let OTP, session;
@@ -34,7 +34,8 @@ const login = asyncHandler (async (req, res) => {
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
         const user = await UserModel.findOne({
-            phoneNumber
+            phoneNumber,
+            roles: RolesEnum.VENDOR
         });
 
         if (fieldValidator(user)) 

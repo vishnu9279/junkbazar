@@ -21,15 +21,12 @@ const getUserScrap = asyncHandler(async (req, res) => {
     try {
         let limit = req.query.limit;
         let page = req.query.page;
-        const name = req.query.name;
-        const phoneNumber = req.query.phoneNumber;
-        const city = req.query.city;
-        const stateCode = req.query.stateCode;
-        const scrapName = req.query.scrapName;
-        const fullName = req.query.fullName;
-        const orderStatus = req.query.orderStatus;
-        const userId = req.query.userId;
 
+        const scrapName = req.query.scrapName;
+        const orderStatus = req.query.orderStatus;
+        const filterValue = req.query.filterValue;
+        const userId = req.query.userId;
+        
         if (fieldValidator(userId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
@@ -40,30 +37,25 @@ const getUserScrap = asyncHandler(async (req, res) => {
         const filterObj = {
             userId
         };
+        
         const scrapFilterObj = {};
 
-        if (!fieldValidator(name)){
+        if (!fieldValidator(filterValue)){
             filterObj.$or = [
                 {
-                    firstName: new RegExp(name, "i")
+                    fullName: new RegExp(filterValue, "i")
                 },
                 {
-                    lastName: new RegExp(name, "i")
+                    phoneNumber: new RegExp(filterValue, "i")
+                },
+                {
+                    city: new RegExp(filterValue, "i")
+                },
+                {
+                    stateCode: new RegExp(filterValue, "i")
                 }
             ];
         }
-
-        if (!fieldValidator(phoneNumber))
-            filterObj.phoneNumber = new RegExp(phoneNumber, "i");
-
-        if (!fieldValidator(city))
-            filterObj.city = new RegExp(city, "i");
-    
-        if (!fieldValidator(stateCode))
-            filterObj.stateCode = new RegExp(stateCode, "i");
-
-        if (!fieldValidator(fullName))
-            filterObj.fullName = new RegExp(fullName, "i");
 
         if (!fieldValidator(orderStatus))
             filterObj.orderStatus = new RegExp(orderStatus, "i");

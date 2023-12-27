@@ -52,6 +52,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
 
         for (const scrap of scraps){
             const scrapSaveObj = {
+                // finalAmount:scrap.price *
                 address,
                 city,
                 countryCode,

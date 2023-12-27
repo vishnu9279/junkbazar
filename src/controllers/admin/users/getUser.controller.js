@@ -22,10 +22,11 @@ const getUser = asyncHandler(async (req, res) => {
     try {
         let limit = req.query.limit;
         let page = req.query.page;
-        const name = req.query.name;
-        const phoneNumber = req.query.phoneNumber;
-        const city = req.query.city;
-        const stateCode = req.query.stateCode;
+        // const name = req.query.name;
+        // const phoneNumber = req.query.phoneNumber;
+        // const city = req.query.city;
+        // const stateCode = req.query.stateCode;
+        const filterValue = req.query.filterValue;
         const weekNumber = req.query.weekNumber;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
@@ -37,25 +38,34 @@ const getUser = asyncHandler(async (req, res) => {
             roles: RolesEnum.USER
         };
 
-        if (!fieldValidator(name)){
+        if (!fieldValidator(filterValue)){
             filterObj.$or = [
                 {
-                    firstName: new RegExp(name, "i")
+                    firstName: new RegExp(filterValue, "i")
                 },
                 {
-                    lastName: new RegExp(name, "i")
+                    lastName: new RegExp(filterValue, "i")
+                },
+                {
+                    phoneNumber: new RegExp(filterValue, "i")
+                },
+                {
+                    city: new RegExp(filterValue, "i")
+                },
+                {
+                    stateCode: new RegExp(filterValue, "i")
                 }
             ];
         }
 
-        if (!fieldValidator(phoneNumber))
-            filterObj.phoneNumber = new RegExp(phoneNumber, "i");
+        // if (!fieldValidator(phoneNumber))
+        //     filterObj.phoneNumber = new RegExp(phoneNumber, "i");
 
-        if (!fieldValidator(city))
-            filterObj.city = new RegExp(city, "i");
+        // if (!fieldValidator(city))
+        //     filterObj.city = new RegExp(city, "i");
     
-        if (!fieldValidator(stateCode))
-            filterObj.stateCode = new RegExp(stateCode, "i");
+        // if (!fieldValidator(stateCode))
+        //     filterObj.stateCode = new RegExp(stateCode, "i");
 
         if (!fieldValidator(weekNumber)){
             const currentWeekNumber = helper.getWeekNumber();
@@ -64,6 +74,11 @@ const getUser = asyncHandler(async (req, res) => {
             filterObj.$and = [{
                 weekNumber: {
                     $gte: endWeekNumber
+                }
+            },
+            {
+                weekNumber: {
+                    $lte: currentWeekNumber
                 }
             }];
         }
