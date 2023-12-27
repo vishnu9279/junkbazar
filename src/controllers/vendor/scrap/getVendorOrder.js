@@ -37,6 +37,19 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         if (fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
 
+        if (!user.isActive){
+            console.log("isActve Status if condition working" );
+
+            return res.status(statusCodeObject.HTTP_STATUS_OK).json(
+                new ApiResponse(
+                    statusCodeObject.HTTP_STATUS_NO_CONTENT,
+                    errorAndSuccessCodeConfiguration.HTTP_STATUS_NO_CONTENT,
+                    {},
+                    CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
+                )
+            );
+        }
+
         const orders = await UserPickAddress.aggregate([
             {
                 $match: {
@@ -74,6 +87,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             }
         ]);
 
+        console.log("orders", orders);
         for (let index = 0; index < orders.length; index++){
             const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
 
@@ -84,10 +98,14 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     userId: orders[index].vendorId
                 });
 
-                const profileUrl = await generateS3SignedUrl(user.profile);
+                console.log(user);
 
-                user.docUrl = profileUrl;
-                orders[index].vendorInfo = user;
+                if (user && user.profile){
+                    const profileUrl = await generateS3SignedUrl(user.profile);
+
+                    user.docUrl = profileUrl;
+                    orders[index].vendorInfo = user;
+                }
             }
 
             orders[index].scrapInfo.docUrl = scrapUrl;
