@@ -10,6 +10,7 @@ import {
     errorAndSuccessCodeConfiguration,
     ScrapMessage
 } from "../../../utils/constants.js";
+import helper from "../../../utils/helper.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
 // import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
@@ -25,6 +26,7 @@ const getUser = asyncHandler(async (req, res) => {
         const phoneNumber = req.query.phoneNumber;
         const city = req.query.city;
         const stateCode = req.query.stateCode;
+        const weekNumber = req.query.weekNumber;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -54,6 +56,17 @@ const getUser = asyncHandler(async (req, res) => {
     
         if (!fieldValidator(stateCode))
             filterObj.stateCode = new RegExp(stateCode, "i");
+
+        if (!fieldValidator(weekNumber)){
+            const currentWeekNumber = helper.getWeekNumber();
+            const endWeekNumber = currentWeekNumber - parseInt(weekNumber);
+
+            filterObj.$and = [{
+                weekNumber: {
+                    $gte: endWeekNumber
+                }
+            }];
+        }
 
         console.log("filterObj", filterObj);
         const users = await UserModel.find(filterObj)

@@ -61,17 +61,16 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        
         scrapIdF_K: {
             ref: "scrap",
             required: true,
             type: mongoose.Schema.Types.ObjectId
         },
+        
         stateCode: {
             required: true,
             type: String
         },
-        
         userId: {
             ref: "user",
             required: true,
@@ -83,6 +82,7 @@ const userPickupSchema = new mongoose.Schema(
             required: true, 
             type: mongoose.Schema.Types.ObjectId
         },
+        
         vendorId: {
             type: String  
         },

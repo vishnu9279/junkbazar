@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
+        dayNumber: {
+            required: true,
+            type: Number 
+        },
         dialCode: {
             required: true,
             type: String
@@ -41,6 +45,7 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
+        
         isActive: {
             default: false,
             type: Boolean
@@ -56,11 +61,14 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
-        
+
+        monthNumber: {
+            required: true,
+            type: Number
+        },
         OTP: {
             type: Number
         },
-
         otpGenerateTime: {
             required: true,
             type: Number
@@ -69,6 +77,7 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String 
         },
+        
         panUrl: {
             type: String
         },
@@ -77,7 +86,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
-        
         profile: {
             required: false,
             type: String 
@@ -104,6 +112,10 @@ const userSchema = new mongoose.Schema(
         verified: {
             default: false,
             type: Boolean
+        },
+        weekNumber: {
+            required: true,
+            type: Number
         }
     },
     {

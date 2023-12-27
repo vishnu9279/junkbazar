@@ -58,11 +58,14 @@ const register = asyncHandler (async (req, res) => {
 
         OTP = helper.getRandomOTP(100000, 999999);
         const userSaveObj = {
+            dayNumber: helper.getDayNumber(),
             dialCode,
+            monthNumber: helper.getMonthNumber(),
             OTP,
             otpGenerateTime: currentTime,
             phoneNumber,
-            userId: uniqueId
+            userId: uniqueId,
+            weekNumber: helper.getWeekNumber()
         };
 
         if (!fieldValidator(otp)){
