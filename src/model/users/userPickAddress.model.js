@@ -76,11 +76,15 @@ const userPickupSchema = new mongoose.Schema(
             type: Number
         },
         
+        quantityType: {
+            type: String
+        },
         scrapId: {
             ref: "scrap",
             required: true,
             type: String
         },
+        
         scrapIdF_K: {
             ref: "scrap",
             required: true,
@@ -91,7 +95,6 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        
         userId: {
             ref: "user",
             required: true,

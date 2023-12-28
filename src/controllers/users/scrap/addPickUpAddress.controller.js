@@ -33,10 +33,10 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         const userIdF_k = req.decoded.userIdF_k;
         let scrapIds = req.body.scrapIds;
         const {
-            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, addToCartId, price, quantity
+            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, addToCartId, price, quantity, quantityType
         } = req.body;
         
-        if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode) || fieldValidator(addToCartId) || fieldValidator(price) || fieldValidator(quantity)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode) || fieldValidator(addToCartId) || fieldValidator(price) || fieldValidator(quantity) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         if (parseInt(quantity) < 0) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.SCRAP_QUANTITY);
 
@@ -69,6 +69,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
                 pincode: parseInt(pincode),
                 price,
                 quantity,
+                quantityType,
                 scrapId: scrap.scrapId,
                 scrapIdF_K: scrap._id,
                 stateCode,
