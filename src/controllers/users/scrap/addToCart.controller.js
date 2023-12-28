@@ -32,7 +32,7 @@ const addToCart = asyncHandler (async (req, res) => {
         const userIdF_k = req.decoded.userIdF_k;
 
         const {
-            scrapId, quantity
+            scrapId, addScrapQuantity
         } = req.body;
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
@@ -58,7 +58,7 @@ const addToCart = asyncHandler (async (req, res) => {
             currentTime,
             dayNumber: helper.getDayNumber(),
             monthNumber: helper.getMonthNumber(),
-            quantity,
+            quantity: addScrapQuantity,
             scrapId,
             scrapIdF_K: scrap._id,
             userId,
