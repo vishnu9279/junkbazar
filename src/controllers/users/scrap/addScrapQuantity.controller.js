@@ -39,6 +39,8 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
             userId
         });
 
+        console.log("scrap", scrap);
+
         if (fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
