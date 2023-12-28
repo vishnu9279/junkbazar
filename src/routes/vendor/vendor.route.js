@@ -8,20 +8,22 @@ const router = Router();
 
 import authenticateJwtMiddleware from "../../middleware/authenticateJwtMiddleware.js";
 
-import get_country_state_cities from "../../controllers/other_api/get_countries_state_cities.js";
+import get_country_state_cities from "../../controllers/other_api/get_countries_state_cities.controller.js";
+import getVendorOrderInfo from "../../controllers/vendor/scrap/getVendorOrderInfo.controller.js";
+import updateOrderStatus from "../../controllers/vendor/scrap/updateOrderStatus.controller.js";
+import updateActiveStatus from "../../controllers/vendor/updateActiveStatus.controller.js";
 import uploadDocument from "../../controllers/vendor/register/uploadDocuments.controller.js";
-import getVendorOrderInfo from "../../controllers/vendor/scrap/getVendorOrderInfo.js";
-import updateOrderStatus from "../../controllers/vendor/scrap/updateOrderStatus.js";
 import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
 import register from "../../controllers/vendor/register/register.controller.js";
-import getScrapHistory from "../../controllers/vendor/scrap/getScrapHistory.js";
+import getScrapHistory from "../../controllers/vendor/scrap/getScrapHistory.controller.js";
 import otpVerify from "../../controllers/vendor/login/otpVerify.controller.js";
 import resendOtp from "../../controllers/vendor/login/resendOtp.controller.js";
-import getVendorOrder from "../../controllers/vendor/scrap/getVendorOrder.js";
-import getCurrentUser from "../../controllers/vendor/getCurrentUser.js";
+import getVendorOrder from "../../controllers/vendor/scrap/getVendorOrder.controller.js";
+import getCurrentUser from "../../controllers/vendor/getCurrentUser.controller.js";
 import login from "../../controllers/vendor/login/login.controller.js";
-import logout from "../../controllers/vendor/logout.js";
-import updateActiveStatus from "../../controllers/vendor/updateActiveStatus.js";
+import logout from "../../controllers/vendor/logout.controller.js";
+
+import updateProfile from "../../controllers/vendor/updateProfile.controller.js";
 
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
 router.route("/getVendorOrderInfo").get(authenticateJwtMiddleware, getVendorOrderInfo);
@@ -37,5 +39,7 @@ router.route("/otpVerify").post(otpVerify);
 router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/updateActiveStatus").post(authenticateJwtMiddleware, updateActiveStatus);
+
+router.route("/updateProfile").post(authenticateJwtMiddleware, updateProfile);
 
 export default router;

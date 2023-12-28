@@ -12,7 +12,7 @@ import registerCreateAdmin_v1 from "../../controllers/admin/register/createAdmin
 import otpVerify from "../../controllers/admin/login/otpVerify.controller.js";
 import resendOtp from "../../controllers/admin/login/resendOtp.controller.js";
 import login from "../../controllers/admin/login/login.controller.js";
-import logout from "../../controllers/admin/logout.js";
+import logout from "../../controllers/admin/logout.controller.js";
 import addScrap from "../../controllers/admin/scraps/addScrap.controller.js";
 import getUser from "../../controllers/admin/users/getUser.controller.js";
 import getUserScrap from "../../controllers/admin/users/getUserScrap.controller.js";

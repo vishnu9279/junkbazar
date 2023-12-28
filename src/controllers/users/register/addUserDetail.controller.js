@@ -24,7 +24,7 @@ const addUserDetail = asyncHandler (async (req, res) => {
     
         session.startTransaction();
         const {
-            firstName, lastName, userId, address, city, stateCode, countryCode
+            firstName, lastName, userId, address, city, stateCode, countryCode, profile
         } = req.body;
         const platform = req.headers.platform;
 
@@ -37,6 +37,7 @@ const addUserDetail = asyncHandler (async (req, res) => {
             firstName,
             isDocumentUploaded: true,
             lastName,
+            profile,
             stateCode
         };
 
