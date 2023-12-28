@@ -24,6 +24,8 @@ import login from "../../controllers/vendor/login/login.controller.js";
 import logout from "../../controllers/vendor/logout.controller.js";
 
 import updateProfile from "../../controllers/vendor/updateProfile.controller.js";
+import getPaymentType from "../../controllers/vendor/scrap/getPaymentType.controller.js";
+import updatePaymentMethod from "../../controllers/vendor/scrap/updatePaymentMethod.controller.js";
 
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
 router.route("/getVendorOrderInfo").get(authenticateJwtMiddleware, getVendorOrderInfo);
@@ -41,5 +43,7 @@ router.route("/login").post(login);
 router.route("/updateActiveStatus").post(authenticateJwtMiddleware, updateActiveStatus);
 
 router.route("/updateProfile").post(authenticateJwtMiddleware, updateProfile);
+router.route("/getPaymentType").get(authenticateJwtMiddleware, getPaymentType);
+router.route("/updatePaymentMethod").post(authenticateJwtMiddleware, updatePaymentMethod);
 
 export default router;

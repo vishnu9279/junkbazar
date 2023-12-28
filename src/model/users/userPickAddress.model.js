@@ -56,6 +56,9 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        paymentType: {
+            type: String
+        },
         phoneNumber: {
             required: true,
             type: Number
@@ -72,17 +75,18 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        
         scrapId: {
             ref: "scrap",
             required: true,
             type: String
         },
-        
         scrapIdF_K: {
             ref: "scrap",
             required: true,
             type: mongoose.Schema.Types.ObjectId
         },
+        
         stateCode: {
             required: true,
             type: String
@@ -93,7 +97,6 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        
         userIdF_k: {
             ref: "user",
             required: true, 

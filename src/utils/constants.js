@@ -108,5 +108,6 @@ export const AddToCartMessage = {
 export const OrderMessage = {
     ORDER_ALREADY_ACCEPTED: "Order Already Accepted",
     ORDER_NOT_FOUND: "Order Not Found",
-    ORDER_UPDATED_SUCCESSFULLY: "Order Updated Succesfully"
+    ORDER_UPDATED_SUCCESSFULLY: "Order Updated Succesfully",
+    SCRAP_QUANTITY: "Scrap Quantity Must be Greater Than 0"
 };
