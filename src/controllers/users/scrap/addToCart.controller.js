@@ -58,7 +58,7 @@ const addToCart = asyncHandler (async (req, res) => {
             currentTime,
             dayNumber: helper.getDayNumber(),
             monthNumber: helper.getMonthNumber(),
-            quantity: addScrapQuantity,
+            quantity: addScrapQuantity || 0,
             scrapId,
             scrapIdF_K: scrap._id,
             userId,
