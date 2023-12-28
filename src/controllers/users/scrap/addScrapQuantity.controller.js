@@ -14,6 +14,7 @@ import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
 const addScrapQuantity = asyncHandler (async (req, res) => {
+    console.log("addScrapQuantity working ", req.body);
     let  session;
     
     try {
@@ -39,7 +40,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
         });
 
         if (fieldValidator(scrap)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
         const resp = await userScrapModel.findOneAndUpdate({
             enabled: true,
