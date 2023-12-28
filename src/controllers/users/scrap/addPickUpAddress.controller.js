@@ -38,7 +38,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         
         if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode) || fieldValidator(addToCartId) || fieldValidator(price) || fieldValidator(quantity)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        if (parseInt(quantity) > 0) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.SCRAP_QUANTITY);
+        if (parseInt(quantity) < 0) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.SCRAP_QUANTITY);
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
