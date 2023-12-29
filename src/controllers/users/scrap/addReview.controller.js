@@ -35,6 +35,8 @@ const addReview = asyncHandler (async (req, res) => {
             userId,
             vendorId
         };
+
+        console.log("obj", obj);
         const respValue = await addReviewModel.create(obj, session);
 
         if (fieldValidator(respValue)) 
