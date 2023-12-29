@@ -37,7 +37,14 @@ const addReview = asyncHandler (async (req, res) => {
         };
 
         console.log("obj", obj);
-        const respValue = await addReviewModel.create(obj, session);
+        const review = new addReviewModel({
+            comment,
+            rating,
+            userId,
+            vendorId
+        });
+
+        const respValue =  await review.save();
 
         if (fieldValidator(respValue)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerMessage.ERROR_USER_NOT_FOUND);
