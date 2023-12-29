@@ -27,17 +27,24 @@ const updateProfile = asyncHandler (async (req, res) => {
             firstName, lastName, profile
         } = req.body;
         
-        if (fieldValidator(firstName) || fieldValidator(lastName) || fieldValidator(profile)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
-      
+        const obj = {};
+
+        if (!fieldValidator(firstName))
+            obj.firstName = firstName;
+        
+        if (fieldValidator(lastName))
+            obj.lastName = lastName;
+ 
+        if (fieldValidator(profile)) 
+            obj.profile = profile;
+
+        if (fieldValidator(obj) ) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+
         const respValue = await UserModel.updateOne({
             accountBlocked: false,
             userId
         }, {
-            $set: {
-                firstName,
-                lastName,
-                profile
-            }
+            $set: obj
         }, {
             session: session
         });

@@ -38,6 +38,8 @@ const updateProfile = asyncHandler (async (req, res) => {
         if (fieldValidator(profile)) 
             obj.profile = profile;
 
+        if (fieldValidator(obj) ) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+
         const respValue = await UserModel.updateOne({
             accountBlocked: false,
             userId
