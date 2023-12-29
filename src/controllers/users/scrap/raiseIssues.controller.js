@@ -1,21 +1,21 @@
 "use strict";
 
-import asyncHandler from "../../utils/asyncHandler.js";
-import UserModel  from "../../model/users/user.model.js";
-import fieldValidator from "../../utils/fieldValidator.js";
-import ApiError from "../../utils/ApiError.js";
+import asyncHandler from "../../../utils/asyncHandler.js";
+import raiseIssuesModel  from "../../../model/users/raiseIssues.model.js";
+import fieldValidator from "../../../utils/fieldValidator.js";
+import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, registerMessage
-} from "../../utils/constants.js";
+} from "../../../utils/constants.js";
 
-import ApiResponse from "../../utils/ApiSuccess.js";
+import ApiResponse from "../../../utils/ApiSuccess.js";
 
 import {
     getNewMongoSession
-} from "../../configuration/dbConnection.js";
+} from "../../../configuration/dbConnection.js";
 
-const updateProfile = asyncHandler (async (req, res) => {
-    console.log("updateProfile working", req.body);
+const raiseIssues = asyncHandler (async (req, res) => {
+    console.log("raiseIssues working", req.body);
     let session;
 
     try {
@@ -24,28 +24,19 @@ const updateProfile = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            firstName, lastName, profile
+            comment, vendorId, scrapId, addToCartId
         } = req.body;
         
-        const obj = {};
+        if (fieldValidator(scrapId) || fieldValidator(comment) || fieldValidator(vendorId) || fieldValidator(addToCartId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        if (!fieldValidator(firstName))
-            obj.firstName = firstName;
-        
-        if (fieldValidator(lastName))
-            obj.lastName = lastName;
- 
-        if (fieldValidator(profile)) 
-            obj.profile = profile;
-
-        const respValue = await UserModel.updateOne({
-            accountBlocked: false,
-            userId
-        }, {
-            $set: obj
-        }, {
-            session: session
-        });
+        const obj = {
+            addToCartId,
+            comment,
+            scrapId,
+            userId,
+            vendorId
+        };
+        const respValue = await raiseIssuesModel.create(obj, session);
 
         if (fieldValidator(respValue)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerMessage.ERROR_USER_NOT_FOUND);
@@ -81,4 +72,4 @@ const updateProfile = asyncHandler (async (req, res) => {
     }
 });
 
-export default updateProfile;
+export default raiseIssues;

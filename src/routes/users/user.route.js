@@ -32,6 +32,7 @@ import removeFormCart from "../../controllers/users/scrap/removeFromCart.control
 import resendOtp from "../../controllers/users/login/resendOtp.controller.js";
 import logout from "../../controllers/users/logout.controller.js";
 import addReview from "../../controllers/users/scrap/addReview.controller.js";
+import raiseIssues from "../../controllers/users/scrap/raiseIssues.controller.js";
 
 // import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAddress.controller.js";
 // import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
@@ -69,4 +70,6 @@ router.route("/removeFormCart").post(authenticateJwtMiddleware, removeFormCart);
 router.route("/logout").get(authenticateJwtMiddleware, logout);
 
 router.route("/addReview").post(authenticateJwtMiddleware, addReview);
+
+router.route("/raiseIssues").post(authenticateJwtMiddleware, raiseIssues);
 export default router;

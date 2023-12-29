@@ -16,7 +16,7 @@ const addReviewSchems = new mongoose.Schema(
             type: String
         },
         
-        VendorId: {
+        vendorId: {
             required: true,
             type: String
         }
