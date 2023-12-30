@@ -8,7 +8,7 @@ const configSchema = new mongoose.Schema({
     },
     value: {
         // Allow any type of value
-        required: true, 
+        // required: true, 
         type: mongoose.Schema.Types.Mixed
     }
 });

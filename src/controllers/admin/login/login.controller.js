@@ -49,10 +49,10 @@ const login = asyncHandler (async (req, res) => {
 
         if (passwordHashed !== user.password) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, loginMessage.EITHER_PHONE_NUMBER_OR_PASSWORD_WRONG);
 
-        const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
+        const fixOtpUsers = await helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
         if (fixOtpUsers.includes(phoneNumber))
-            OTP = helper.getCacheElement("CONFIG", "FIX_OTP");
+            OTP = await helper.getCacheElement("CONFIG", "FIX_OTP");
         else 
             OTP = helper.getRandomOTP(100000, 999999);
         

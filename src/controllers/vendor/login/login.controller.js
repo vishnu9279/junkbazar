@@ -43,10 +43,10 @@ const login = asyncHandler (async (req, res) => {
     
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.INVALID_PHONE_NUMBER);
 
-        const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
+        const fixOtpUsers = await helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
         if (fixOtpUsers.includes(phoneNumber))
-            OTP = helper.getCacheElement("CONFIG", "FIX_OTP");
+            OTP = await helper.getCacheElement("CONFIG", "FIX_OTP");
         else 
             OTP = helper.getRandomOTP(100000, 999999);
 

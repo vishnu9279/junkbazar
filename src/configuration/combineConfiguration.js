@@ -7,9 +7,9 @@ function combineConfiguration(fullConfiguration) {
 
     fullConfiguration.forEach((item) => {
         // console.log(item);
-        const plainItem = item.toObject();
+        // const plainItem = item;
 
-        for (const ObjKey in plainItem) {
+        for (const ObjKey in item) {
             if (ObjKey === "CONFIG_TYPE" || ObjKey === "_id")
                 continue;
 
@@ -18,7 +18,7 @@ function combineConfiguration(fullConfiguration) {
                 console.error("This field already exist in configuration");
             }
             else
-                tempConfigs[ObjKey] = plainItem[ObjKey];
+                tempConfigs[ObjKey] = item[ObjKey];
         }
     });
     // console.log("tempConfig", tempConfigs);

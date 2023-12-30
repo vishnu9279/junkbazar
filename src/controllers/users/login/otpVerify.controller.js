@@ -49,7 +49,7 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         console.log("otp genrate Time", currentTime - user.otpGenerateTime);
 
-        if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
+        if (currentTime - user.otpGenerateTime > await helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_EXPIRE);
 
         const userOtpObj = {

@@ -2,23 +2,37 @@
 
 import Config from "../model/config.model.js";
 import combineConfiguration from "./combineConfiguration.js";
-import cache from "memory-cache";
+import NodeCache from "node-cache";
 
-async function fetchConfigCollectionFromDb() {
-    console.log("fetchConfigCollectionFromDb");
-    // const db = createDatabaseConn.connect();
-    try {
-        const items = await Config.find();
-        const config = combineConfiguration(items);
+let cache;
 
-        // console.log("Configuration Load  ed", items);
+function fetchConfigCollectionFromDb() {
+    return new Promise((resolve, reject) => {
+        cache = new NodeCache();
 
-        await cache.put("CONFIG", config);
-        // console.log(cache.get("CONFIG"));
-    }
-    catch (error) {
-        console.error("Error:", error);
-    }
+        console.log("fetchConfigCollectionFromDb");
+
+        Config.find({}).lean()
+            .then(items => {
+                const config = combineConfiguration(items);
+
+                cache.set("CONFIG", config);
+                // console.log("hdsjhdjkfhsk", cache.get("CONFIG"));
+                resolve(cache); // Resolve the promise with the cache instance
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                reject(error); // Reject the promise with the error
+            });
+    });
 }
 
-export default fetchConfigCollectionFromDb;
+const getCache = () => {
+    // console.log("cache", cache);
+
+    return cache;
+};
+
+export {
+    fetchConfigCollectionFromDb, getCache 
+};

@@ -10,8 +10,8 @@ const sendSms = async (phoneNumber, otp) => {
     try {
         const apiUrl =  "https://2factor.in/API/R1/";
         const apiKey = basicConfigurationObject.TWO_FACTOR_API_SMS_SERVICE;
-        const senderId = helper.getCacheElement("CONFIG", "SENDER_ID");
-        const templateName = helper.getCacheElement("CONFIG", "TEMPLATE_NAME");
+        const senderId = await helper.getCacheElement("CONFIG", "SENDER_ID");
+        const templateName = await helper.getCacheElement("CONFIG", "TEMPLATE_NAME");
         const module = "TRANS_SMS";
         const url = `${apiUrl}?module=${module}&apikey=${apiKey}&to=${phoneNumber}&from=${senderId}&templatename=${templateName}&var1=${otp}`;
         

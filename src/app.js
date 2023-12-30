@@ -7,6 +7,7 @@ import morgan from "morgan";
 import userRouter from "./routes/users/user.route.js";
 import vendorRouter from "./routes/vendor/vendor.route.js";
 import adminRouter from "./routes/admin/admin.route.js";
+import otherRouter from "./routes/other/other.route.js";
 import loggerLogs from "./utils/loggerLogs.js";
 import {
     connect
@@ -17,7 +18,9 @@ import {
     CommonMessage, basicConfigurationObject
 } from "./utils/constants.js";
 
-import fetchConfigCollectionFromDb from "./configuration/fetchConfigCollectionFromDb.js";
+import {
+    fetchConfigCollectionFromDb
+} from "./configuration/fetchConfigCollectionFromDb.js";
 // import helper from "./utils/helper.js";
 import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
 const app = express();
@@ -77,6 +80,7 @@ function setRoutes() {
     app.use("/api/v1/users", userRouter);
     app.use("/api/v1/vendor", vendorRouter);
     app.use("/api/v1/admin", adminRouter);
+    app.use("/api/v1/other", otherRouter);
     app.get("*", (req, res) => {
         res.status(404).send({
             error: CommonMessage.ERROR_MESSAGE_NOT_FOUND 

@@ -15,7 +15,7 @@ const getPaymentType = asyncHandler(async (req, res) => {
     console.log("getPaymentType working");
 
     try {
-        const finalPaymentMethod = helper.getCacheElement("CONFIG", "PAYMENT_TYPE_METHOD");
+        const finalPaymentMethod = await helper.getCacheElement("CONFIG", "PAYMENT_TYPE_METHOD");
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(

@@ -51,10 +51,10 @@ const register = asyncHandler (async (req, res) => {
         if (!fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerMessage.ERROR_USER_ALREADY_EXIST);
     
-        const fixOtpUsers = helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
+        const fixOtpUsers = await helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
         if (fixOtpUsers.includes(phoneNumber))
-            OTP = helper.getCacheElement("CONFIG", "FIXED_OTP");
+            OTP = await helper.getCacheElement("CONFIG", "FIXED_OTP");
 
         OTP = helper.getRandomOTP(100000, 999999);
         const userSaveObj = {
@@ -77,7 +77,7 @@ const register = asyncHandler (async (req, res) => {
 
             console.log("otp genrate Time", currentTime - user.otpGenerateTime);
 
-            if (currentTime - user.otpGenerateTime > helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
+            if (currentTime - user.otpGenerateTime > await helper.getCacheElement("CONFIG", "OTP_EXPIRATION_TIME"))
                 throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, otpVerifyMessage.OTP_EXPIRE);
 
             userSaveObj.verified = true;

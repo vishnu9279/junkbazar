@@ -1,27 +1,36 @@
 "use strict";
 
-import cache from "memory-cache";
+// import NodeCache from "node-cache";
 import crypto from "crypto";
 const oneDayMillisecond = 24 * 60 * 60 * 1000;
 const oneWeekMillisecond = 7 * 24 * 60 * 60 * 1000;
 
+import {
+    getCache
+} from "../configuration/fetchConfigCollectionFromDb.js";
 class Helper{
     phoneNumberValidation(phoneNumber){
         const regex = /^[6-9]\d{9}$/;
-
+        
         return regex.test(phoneNumber);
     }
-
+    
     getRandomOTP (min, max){
         return Math.floor(Math.random() * (max - min) + min);
     }
     
-    getCacheElement(config = "CONFIG", key){
-        // console.log("getCacheElement working", {
-        //     config,
-        //     key
-        // });
+    async getCacheElement(config = "CONFIG", key){
+        // const cache = new NodeCache();
+        const cache = await getCache();
+
+        // Alternatively, you can use getCache after fetchConfigCollectionFromDb
+
+        console.log("getCacheElement working", {
+            config,
+            key
+        });
         // console.log("response object", cache.get(config));
+        // console.log("response object", cachedInstance.get("CONFIG"));
         const Obj = cache.get(config);
 
         // console.log("response object", Obj[key]);
