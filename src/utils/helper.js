@@ -40,43 +40,55 @@ class Helper{
 
     async encryptAnyData(messages) {
         console.log("incoming message To encrypt = >", messages);
-        const algorithm = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
-        const initVector = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
-        const Securitykey = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
-
-        // console.log({
-        //     algorithm,
-        //     initVector,
-        //     Securitykey
-        // });
-        const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
-        let encryptedData = cipher.update(JSON.stringify(messages), "utf-8", "hex");
-
-        encryptedData += cipher.final("hex");
-
-        return encryptedData;
+        try {
+            const algorithm = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
+            const initVector = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
+            const Securitykey = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
+    
+            // console.log({
+            //     algorithm,
+            //     initVector,
+            //     Securitykey
+            // });
+            const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
+            let encryptedData = cipher.update(JSON.stringify(messages), "utf-8", "hex");
+    
+            encryptedData += cipher.final("hex");
+    
+            return encryptedData;
+        }
+        catch (error) {
+            console.error("Error decrypting data:", error);
+            throw new Error("Encryption failed"); 
+        }
     }
 
     async decryptAnyData(encryptedData) {
         console.log("incoming message To decrypt = >");
-        const algorithm = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
-        const initVector = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
-        const Securitykey = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
-
-        // console.log({
-        //     algorithm,
-        //     initVector,
-        //     Securitykey
-        // });
-        const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
-
-        let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
-
-        decryptedData += decipher.final("utf8");
-        
-        const inObjectDecryptData = JSON.parse(decryptedData);
-
-        return inObjectDecryptData;
+        try {
+            const algorithm = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
+            const initVector = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
+            const Securitykey = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
+    
+            // console.log({
+            //     algorithm,
+            //     initVector,
+            //     Securitykey
+            // });
+            const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
+    
+            let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
+    
+            decryptedData += decipher.final("utf8");
+            
+            const inObjectDecryptData = JSON.parse(decryptedData);
+    
+            return inObjectDecryptData;
+        }
+        catch (error) {
+            console.error("Error decrypting data:", error);
+            throw new Error("Decryption failed"); 
+        }
     }
     async getMonthNumber(date) {
         const reference_date = new Date( await this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
