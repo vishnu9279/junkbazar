@@ -38,11 +38,11 @@ class Helper{
         return Obj[key];
     }
 
-    encryptAnyData(messages) {
+    async encryptAnyData(messages) {
         console.log("incoming message To encrypt = >", messages);
-        const algorithm = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
-        const initVector = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
-        const Securitykey = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
+        const algorithm = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
+        const initVector = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
+        const Securitykey = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
 
         // console.log({
         //     algorithm,
@@ -57,11 +57,11 @@ class Helper{
         return encryptedData;
     }
 
-    decryptAnyData(encryptedData) {
+    async decryptAnyData(encryptedData) {
         console.log("incoming message To decrypt = >");
-        const algorithm = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
-        const initVector = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
-        const Securitykey = this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
+        const algorithm = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_ALGO");
+        const initVector = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_INIVECTOR_KEY");
+        const Securitykey = await this.getCacheElement("CONFIG", "ENCRYPT_AND_DECRYPT_KEY_SECURITY_KEY");
 
         // console.log({
         //     algorithm,
@@ -78,8 +78,8 @@ class Helper{
 
         return inObjectDecryptData;
     }
-    getMonthNumber(date) {
-        const reference_date = new Date(this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
+    async getMonthNumber(date) {
+        const reference_date = new Date( await this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
         const currentDate = date ? new Date(date) : new Date();
 
         let months = (currentDate.getFullYear() - reference_date.getFullYear()) * 12;
@@ -89,20 +89,20 @@ class Helper{
 
         return months <= 0 ? 0 : months;
     }
-    getWeekNumber(date) {
+    async getWeekNumber(date) {
         const currentDate = date ? new Date(date).getTime() : new Date().getTime();
 
-        const reference_date = new Date(this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
-        const reference_week_start = this.getCacheElement("CONFIG", "REFERENCE_START_DATE") - (reference_date.getDay() * oneDayMillisecond);
+        const reference_date = new Date(await this.getCacheElement("CONFIG", "REFERENCE_START_DATE"));
+        const reference_week_start = await this.getCacheElement("CONFIG", "REFERENCE_START_DATE") - (reference_date.getDay() * oneDayMillisecond);
 
         const difference = currentDate - reference_week_start;
         const week_difference = difference / oneWeekMillisecond;
 
         return Math.floor(week_difference);
     }
-    getDayNumber(date) {
+    async getDayNumber(date) {
         const currentDate = date ? new Date(date).getTime() : new Date().getTime();
-        const difference = currentDate - this.getCacheElement("CONFIG", "REFERENCE_START_DATE");
+        const difference = currentDate - await this.getCacheElement("CONFIG", "REFERENCE_START_DATE");
         const day_difference = difference / oneDayMillisecond;
 
         return Math.floor(day_difference);
