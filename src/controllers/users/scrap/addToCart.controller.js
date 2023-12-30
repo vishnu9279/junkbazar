@@ -56,14 +56,14 @@ const addToCart = asyncHandler (async (req, res) => {
         const addToCartSaveObj = {
             addToCartId: uniqueId,
             currentTime,
-            dayNumber: helper.getDayNumber(),
-            monthNumber: helper.getMonthNumber(),
+            dayNumber: await helper.getDayNumber(),
+            monthNumber: await helper.getMonthNumber(),
             quantity: addScrapQuantity || 0,
             scrapId,
             scrapIdF_K: scrap._id,
             userId,
             userIdF_k,
-            weekNumber: helper.getWeekNumber()
+            weekNumber: await helper.getWeekNumber()
         };
 
         console.log("addToCartSaveObj", addToCartSaveObj);

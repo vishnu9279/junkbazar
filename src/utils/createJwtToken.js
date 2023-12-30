@@ -59,7 +59,7 @@ const createJwtToken = async(userObj, originUrl, platform) => {
             jwtid: uniqueId
         };
 
-        const encrypt = helper.encryptAnyData(data);
+        const encrypt = await helper.encryptAnyData(data);
 
         data.encrypt = encrypt;
         const token = await jsonwebtoken.sign({

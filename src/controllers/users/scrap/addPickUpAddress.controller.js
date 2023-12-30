@@ -59,11 +59,11 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
                 city,
                 countryCode,
                 currentTime,
-                dayNumber: helper.getDayNumber(),
+                dayNumber: await helper.getDayNumber(),
                 dialCode,
                 finalAmount: price * quantity,
                 fullName,
-                monthNumber: helper.getMonthNumber(),
+                monthNumber: await helper.getMonthNumber(),
                 orderId: uid.rnd(6),
                 phoneNumber,
                 pincode: parseInt(pincode),
@@ -75,7 +75,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
                 stateCode,
                 userId,
                 userIdF_k,
-                weekNumber: helper.getWeekNumber()
+                weekNumber: await helper.getWeekNumber()
             };
 
             scrapArrayOfObject.push(scrapSaveObj);

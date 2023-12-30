@@ -51,12 +51,12 @@ const confirmPickRequest = asyncHandler (async (req, res) => {
         const scrapOrderSaveObj = {
             addressId,
             currentTime,
-            dayNumber: helper.getDayNumber(),
-            monthNumber: helper.getMonthNumber(),
+            dayNumber: await helper.getDayNumber(),
+            monthNumber: await helper.getMonthNumber(),
             // scrapId,
             userId,
             
-            weekNumber: helper.getWeekNumber()
+            weekNumber: await helper.getWeekNumber()
         };
         const arr = [];
 

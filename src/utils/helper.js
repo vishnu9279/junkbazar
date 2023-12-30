@@ -20,22 +20,28 @@ class Helper{
     }
     
     async getCacheElement(config = "CONFIG", key){
-        // const cache = new NodeCache();
-        const cache = await getCache();
-
-        // Alternatively, you can use getCache after fetchConfigCollectionFromDb
-
-        console.log("getCacheElement working", {
-            config,
-            key
-        });
-        // console.log("response object", cache.get(config));
-        // console.log("response object", cachedInstance.get("CONFIG"));
-        const Obj = cache.get(config);
-
-        // console.log("response object", Obj[key]);
-
-        return Obj[key];
+        try {
+            // const cache = new NodeCache();
+            const cache = await getCache();
+    
+            // Alternatively, you can use getCache after fetchConfigCollectionFromDb
+    
+            console.log("getCacheElement working", {
+                config,
+                key
+            });
+            // console.log("response object", cache.get(config));
+            // console.log("response object", cachedInstance.get("CONFIG"));
+            const Obj = cache.get(config);
+    
+            // console.log("response object", Obj[key]);
+    
+            return Obj[key];
+        }
+        catch (error) {
+            console.error("Error getCacheElement data:", error);
+            throw new Error("getCacheElement failed");
+        }
     }
 
     async encryptAnyData(messages) {
@@ -54,11 +60,11 @@ class Helper{
             let encryptedData = cipher.update(JSON.stringify(messages), "utf-8", "hex");
     
             encryptedData += cipher.final("hex");
-    
+
             return encryptedData;
         }
         catch (error) {
-            console.error("Error decrypting data:", error);
+            console.error("Error ecrypting data:", error);
             throw new Error("Encryption failed"); 
         }
     }

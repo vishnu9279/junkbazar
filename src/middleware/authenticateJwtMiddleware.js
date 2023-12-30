@@ -29,7 +29,7 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         const decoded = jsonwebtoken.verify(token, basicConfigurationObject.ACCESS_TOKEN_SECRET);
 
         // console.log("decoded", decoded);
-        const encryptObj = helper.decryptAnyData(decoded.encrypt);
+        const encryptObj = await helper.decryptAnyData(decoded.encrypt);
 
         // console.log("encryptObj", encryptObj);
 
