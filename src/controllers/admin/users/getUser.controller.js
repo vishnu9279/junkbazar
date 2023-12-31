@@ -13,7 +13,7 @@ import {
 import helper from "../../../utils/helper.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-// import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 import RolesEnum from "../../../utils/roles.js";
 
 const getUser = asyncHandler(async (req, res) => {
@@ -91,17 +91,15 @@ const getUser = asyncHandler(async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        // if (!fieldValidator(vendor)) {
-        //     for (let index = 0; index < vendor.length; index++){
-        //         const url = await generateS3SignedUrl(vendor[index].profile);
-        //         const pan = await generateS3SignedUrl(vendor[index].panID);
-        //         const aadhaar = await generateS3SignedUrl(vendor[index].aadhaarID);
-
-        //         vendor[index].profileUrl = url;
-        //         vendor[index].panUrl = pan;
-        //         vendor[index].aadhaarUrl = aadhaar;
-        //     }
-        // }
+        if (!fieldValidator(users)) {
+            for (let index = 0; index < users.length; index++){
+                if (!fieldValidator(users[index].profile)){
+                    const url = await generateS3SignedUrl(users[index].profile);
+    
+                    users[index].profileUrl = url;
+                }
+            }
+        }
 
         const totalScrapCount = await UserModel.countDocuments(filterObj);
 
