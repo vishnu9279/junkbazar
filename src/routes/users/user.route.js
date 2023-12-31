@@ -15,7 +15,7 @@ import get_country_state_cities from "../../controllers/other_api/get_countries_
 import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
 import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.controller.js";
-import generateS3UploadSignedUrl from "../../services/generateS3UploadSignedUrl.js";
+import generateS3UploadSignedUrl from "../../controllers/users/register/generateS3UploadSignedUrl.js";
 import contactUs from "../../controllers/other_api/contactUs.controller.js";
 import getCurrentUser from "../../controllers/users/getCurrentUser.controller.js";
 import addUserDetail from "../../controllers/users/register/addUserDetail.controller.js";
