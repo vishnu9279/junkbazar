@@ -40,7 +40,6 @@ const sendNotification = async (notificationData, userId) => {
         const messagesSend = await adminInstance.messaging().sendToDevice(registrationTokens, message, options);
         
         console.log("messageSend", messagesSend);
-        console.log("messageSend", messagesSend.responses[0]);
     }
     catch (error) {
         console.error("Error While Sending Notification", error);
