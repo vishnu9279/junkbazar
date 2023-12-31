@@ -62,9 +62,7 @@ const getVendor = asyncHandler(async (req, res) => {
             }
         }
 
-        const totalScrapCount = await UserModel.countDocuments({
-            filterObj
-        });
+        const totalScrapCount = await UserModel.countDocuments(filterObj);
 
         const finalObj = {
             totalScrapCount,
