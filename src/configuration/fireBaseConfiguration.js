@@ -8,7 +8,8 @@ const initializeFirebasefun = async () => {
     const fcm = await helper.getCacheElement("CONFIG", "FIREBASE_NOTIFICATION_JSON");
 
     await admin.initializeApp({
-        credential: admin.credential.cert(fcm)
+        credential: admin.credential.cert(fcm),
+        databaseURL: "https://junbazarapp-default-rtdb.firebaseio.com/"
     });
     
     return admin;
