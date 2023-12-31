@@ -19,6 +19,10 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        currentTime: {
+            required: true,
+            type: Number
+        },
         dayNumber: {
             required: true,
             type: Number 
@@ -71,14 +75,15 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        
         quantity: {
             required: true,
             type: Number
         },
-        
         quantityType: {
             type: String
         },
+        
         scrapId: {
             ref: "scrap",
             required: true,
@@ -90,7 +95,6 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: mongoose.Schema.Types.ObjectId
         },
-        
         stateCode: {
             required: true,
             type: String
