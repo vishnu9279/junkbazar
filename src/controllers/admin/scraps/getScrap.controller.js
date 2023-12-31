@@ -12,7 +12,7 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-// import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
 const getScrap = asyncHandler(async (req, res) => {
     console.log("getScrap working");
@@ -47,26 +47,22 @@ const getScrap = asyncHandler(async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        // if (!fieldValidator(vendor)) {
-        //     for (let index = 0; index < vendor.length; index++){
-        //         const url = await generateS3SignedUrl(vendor[index].profile);
-        //         const pan = await generateS3SignedUrl(vendor[index].panID);
-        //         const aadhaar = await generateS3SignedUrl(vendor[index].aadhaarID);
+        if (!fieldValidator(scraps)) {
+            for (let index = 0; index < scraps.length; index++){
+                const url = await generateS3SignedUrl(scraps[index].docPath);
 
-        //         vendor[index].profileUrl = url;
-        //         vendor[index].panUrl = pan;
-        //         vendor[index].aadhaarUrl = aadhaar;
-        //     }
-        // }
+                scraps[index].docUrl = url;
+            }
+        }
 
-        const totalScrapCount = await Scrap.countDocuments({
-            filterObj
-        });
+        const totalScrapCount = await Scrap.countDocuments(filterObj);
 
         const finalObj = {
             scrap: scraps,
             totalScrapCount
         };
+
+        // console.log("finalObj", finalObj, filterObj);
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
