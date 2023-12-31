@@ -1,6 +1,8 @@
 "use strict";
 
-import initializeFirebase from "../configuration/fireBaseConfiguration.js";
+import {
+    initializeFirebase
+} from "../configuration/fireBaseConfiguration.js";
 import notificationMeassageModel from "../model/users/notificationMessage.model.js";
 import userFcmModel from "../model/users/fcm.model.js";
 import fieldValidator from "../utils/fieldValidator.js";

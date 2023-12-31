@@ -2,7 +2,9 @@
 
 import admin from "firebase-admin";
 import helper from "../utils/helper.js";
+
 let firebaseConf;
+
 const initializeFirebasefun = async () => {
     console.log("initializeFirebasefun working");
     const fcm = await helper.getCacheElement("CONFIG", "FIREBASE_NOTIFICATION_JSON");
@@ -13,7 +15,7 @@ const initializeFirebasefun = async () => {
     });
 };
 
-const initializeFirebase = async () => {
+const initializeFirebase = () => {
     // const adminInstance = await initializeFirebasefun();
 
     // console.log("initializeFirebase", adminInstance);
