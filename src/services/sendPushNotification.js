@@ -12,11 +12,11 @@ import {
 
 const sendNotification = async (notificationData, userId) => {
     try {
-        const registrationTokens = await userFcmModel.find({
+        const fcms = await userFcmModel.find({
             enabled: true,
             userId
         }).lean();
-        
+        const registrationTokens = fieldValidator(fcms) ? [] : fcms.map(el => el.fcm);
         const notificatonMessageResp = await notificationMeassageModel.create({
             message: notificationData,
             userId
@@ -28,6 +28,8 @@ const sendNotification = async (notificationData, userId) => {
             data: notificationData,
             tokens: registrationTokens
         };
+
+        console.log("message", message);
         const adminInstance = await initializeFirebase();
         const messagesSend = await adminInstance.messaging().sendMulticast(message, false);
         
