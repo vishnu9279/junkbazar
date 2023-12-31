@@ -26,8 +26,14 @@ const sendNotification = async (notificationData, userId) => {
         
         if (fieldValidator(notificatonMessageResp)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.SOMETHING_WENT_WRONG);
         
-        const message = {
-            data: notificationData
+        const payload = {
+            data: {
+                data: JSON.stringify(notificationData)
+            },
+            notification: {
+                body: "testing",
+                title: "Hi Jhon"
+            }
         };
         // tokens: registrationTokens
         const options = {
@@ -35,9 +41,9 @@ const sendNotification = async (notificationData, userId) => {
             timeToLive: 60 * 60
         };
 
-        console.log("message", message);
+        console.log("message", payload);
         const adminInstance = await initializeFirebase();
-        const messagesSend = await adminInstance.messaging().sendToDevice(registrationTokens, message, options);
+        const messagesSend = await adminInstance.messaging().sendToDevice(registrationTokens, payload, options);
         
         console.log("messageSend", messagesSend);
     }
