@@ -13,7 +13,6 @@ import {
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
 // import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
-import RolesEnum from "../../../utils/roles.js";
 
 const getScrap = asyncHandler(async (req, res) => {
     console.log("getScrap working");
@@ -28,9 +27,7 @@ const getScrap = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const filterObj = {
-            roles: RolesEnum.USER
-        };
+        const filterObj = {};
 
         if (!fieldValidator(fullName)){
             filterObj.$or = [
