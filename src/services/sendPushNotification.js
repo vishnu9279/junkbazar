@@ -9,9 +9,7 @@ import ApiError from "../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration
 } from "../utils/constants.js";
-const adminInstance =  initializeFirebase();
 
-console.log("adminInstance", adminInstance);
 const sendNotification = async (notificationData, userId) => {
     try {
         const fcms = await userFcmModel.find({
@@ -32,6 +30,7 @@ const sendNotification = async (notificationData, userId) => {
         };
 
         console.log("message", message);
+        const adminInstance = await initializeFirebase();
         const messagesSend = await adminInstance.messaging().sendMulticast(message, false);
         
         console.log("messageSend", messagesSend);
