@@ -2,25 +2,25 @@
 
 import admin from "firebase-admin";
 import helper from "../utils/helper.js";
-
+let firebaseConf;
 const initializeFirebasefun = async () => {
     console.log("initializeFirebasefun working");
     const fcm = await helper.getCacheElement("CONFIG", "FIREBASE_NOTIFICATION_JSON");
 
-    const firebaseConf = await admin.initializeApp({
+    firebaseConf = await admin.initializeApp({
         credential: admin.credential.cert(fcm),
         databaseURL: "https://junbazarapp-default-rtdb.firebaseio.com/"
     });
-    
-    return admin;
 };
 
 const initializeFirebase = async () => {
-    const adminInstance = await initializeFirebasefun();
+    // const adminInstance = await initializeFirebasefun();
 
-    console.log("initializeFirebase", adminInstance);
+    // console.log("initializeFirebase", adminInstance);
 
-    return adminInstance;
+    return firebaseConf;
 };
 
-export default initializeFirebase;
+export {
+    initializeFirebase, initializeFirebasefun
+};

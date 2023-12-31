@@ -21,6 +21,9 @@ import {
 import {
     fetchConfigCollectionFromDb
 } from "./configuration/fetchConfigCollectionFromDb.js";
+import {
+    initializeFirebasefun
+} from "./configuration/fireBaseConfiguration.js";
 // import helper from "./utils/helper.js";
 import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
 const app = express();
@@ -66,7 +69,7 @@ async function setupMiddleware() {
         app.use(morgan("combined"));
         await connectTomongoDbConn();
         await fetchConfigCollectionFromDb();
-        
+        await initializeFirebasefun();
         // Error handling middleware
         app.use(errorHandlerMiddleware);
     }
