@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserModel from "../../../model/users/user.model.js";
+import Scrap from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -15,8 +15,8 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 // import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 import RolesEnum from "../../../utils/roles.js";
 
-const getUser = asyncHandler(async (req, res) => {
-    console.log("getUser working");
+const getScrap = asyncHandler(async (req, res) => {
+    console.log("getScrap working");
 
     try {
         let limit = req.query.limit;
@@ -43,7 +43,7 @@ const getUser = asyncHandler(async (req, res) => {
             ];
         }
 
-        const vendor = await UserModel.find(filterObj)
+        const scraps = await Scrap.find(filterObj)
             .sort({
                 createdAt: -1
             })
@@ -62,13 +62,13 @@ const getUser = asyncHandler(async (req, res) => {
         //     }
         // }
 
-        const totalScrapCount = await UserModel.countDocuments({
+        const totalScrapCount = await Scrap.countDocuments({
             filterObj
         });
 
         const finalObj = {
-            totalScrapCount,
-            vendor: vendor
+            scrap: scraps,
+            totalScrapCount
         };
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
@@ -93,7 +93,7 @@ const getUser = asyncHandler(async (req, res) => {
         }
         else {
             // Handle other types of errors
-            console.error("Error in getUser:", error);
+            console.error("Error in getScrap:", error);
 
             return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
                 error: CommonMessage.SOMETHING_WENT_WRONG
@@ -102,4 +102,4 @@ const getUser = asyncHandler(async (req, res) => {
     }
 });
 
-export default getUser;
+export default getScrap;
