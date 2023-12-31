@@ -19,6 +19,7 @@ import getUserScrap from "../../controllers/admin/users/getUserScrap.controller.
 import generateS3UploadSignedUrl from "../../controllers/admin/scraps/generateS3UploadSignedUrl.js";
 import editScrap from "../../controllers/admin/scraps/editScrap.controller.js";
 import getScrap from "../../controllers/admin/scraps/getScrap.controller.js";
+import getVendor from "../../controllers/admin/vendor/getVendor.controller.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 
@@ -33,5 +34,6 @@ router.route("/getScrap").get(authenticateJwtMiddleware, getScrap);
 router.route("/getUserScrap").get(authenticateJwtMiddleware, getUserScrap);
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl);
 router.route("/editScrap").post(authenticateJwtMiddleware, editScrap);
+router.route("/getVendor").get(authenticateJwtMiddleware, getVendor);
 
 export default router;
