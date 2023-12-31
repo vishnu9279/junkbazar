@@ -15,6 +15,6 @@ import dummy from "../../controllers/other_api/dummy.controller.js";
 
 router.route("/getCountries").get(get_country_state_cities);
 router.route("/appVersion").get(appVersion);
-router.route("/dummy").get(dummy);
+router.route("/dummy").get(authenticateJwtMiddleware, dummy);
 router.route("/saveFcmToken").post(authenticateJwtMiddleware, saveFcmToken);
 export default router;

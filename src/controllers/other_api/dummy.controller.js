@@ -8,17 +8,17 @@ import {
 
 import ApiResponse from "../../utils/ApiSuccess.js";
 import sendNotification from "../../services/sendPushNotification.js";
-const login = asyncHandler (async (req, res) => {
-    console.log("login working", req.body);
+const dummy = asyncHandler (async (req, res) => {
+    console.log("dummy working", req.body);
     
     try {
-        const registrationTokens = [ "epoJZOe1TqyW8Pn1Mk80Gf:APA91bHJkoebKnUTVjWsfK_w4AbqI3HZiKNIrK8GucN0PF8h4BUE6Die__x1jbS-bMdiC4QJAEbsgINKVGqm69YZEB3HDEOFy7I1DtlFWvvKJPXua5v5-wIV1R-F8O4Cowy9L_9V5k9Y" ];
+        const userId = req.decoded.userId;
+        
         const notificationData = {
             name: "hello World"
         };
-        const userId = "jdhsfyu";
 
-        await sendNotification(registrationTokens, notificationData, userId);
+        await sendNotification(notificationData, userId);
 
         return res.status(201).json(
             new ApiResponse(statusCodeObject.HTTP_STATUS_OK, errorAndSuccessCodeConfiguration.HTTP_STATUS_OK, {}, loginMessage.LOGIN_OTP_SENT_SUCCESSFULLY)
@@ -47,4 +47,4 @@ const login = asyncHandler (async (req, res) => {
     }
 });
 
-export default login;
+export default dummy;
