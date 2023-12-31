@@ -16,6 +16,7 @@ import logout from "../../controllers/admin/logout.controller.js";
 import addScrap from "../../controllers/admin/scraps/addScrap.controller.js";
 import getUser from "../../controllers/admin/users/getUser.controller.js";
 import getUserScrap from "../../controllers/admin/users/getUserScrap.controller.js";
+import generateS3UploadSignedUrl from "../../controllers/admin/scraps/generateS3UploadSignedUrl.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 
@@ -27,5 +28,6 @@ router.route("/login").post(login);
 
 router.route("/getUser").get(authenticateJwtMiddleware, getUser);
 router.route("/getUserScrap").get(authenticateJwtMiddleware, getUserScrap);
+router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl);
 
 export default router;

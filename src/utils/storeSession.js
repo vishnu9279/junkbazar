@@ -17,7 +17,7 @@ const storeSession = async(data, jwtOption, exipryHr, milliseconds) => {
             userIdF_k: data.userIdF_k
         };
 
-        console.log(obj);
+        // console.log(obj);
         await Session.create(obj);
         // await 
     }

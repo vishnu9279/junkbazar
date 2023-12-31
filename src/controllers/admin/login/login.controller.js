@@ -47,6 +47,8 @@ const login = asyncHandler (async (req, res) => {
 
         const passwordHashed = CryptoJS.HmacSHA256(password + user.salt, basicConfigurationObject.PASSWORD_SECRET_KEY).toString();
 
+        console.log("passwordHashed", passwordHashed);
+
         if (passwordHashed !== user.password) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, loginMessage.EITHER_PHONE_NUMBER_OR_PASSWORD_WRONG);
 
         const fixOtpUsers = await helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
