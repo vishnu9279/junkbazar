@@ -21,7 +21,7 @@ const getVendor = asyncHandler(async (req, res) => {
     try {
         let limit = req.query.limit;
         let page = req.query.page;
-        const name = req.query.name;
+        const filterValue = req.query.filterValue;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -32,13 +32,13 @@ const getVendor = asyncHandler(async (req, res) => {
             roles: RolesEnum.VENDOR
         };
 
-        if (!fieldValidator(name)){
+        if (!fieldValidator(filterValue)){
             filterObj.$or = [
                 {
-                    firstName: new RegExp(name, "i")
+                    firstName: new RegExp(filterValue, "i")
                 },
                 {
-                    lastName: new RegExp(name, "i")
+                    lastName: new RegExp(filterValue, "i")
                 }
             ];
         }
