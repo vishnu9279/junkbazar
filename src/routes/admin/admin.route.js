@@ -22,7 +22,7 @@ import getScrap from "../../controllers/admin/scraps/getScrap.controller.js";
 import getVendor from "../../controllers/admin/vendor/getVendor.controller.js";
 import getPendingOrdersAssignToAdmin from "../../controllers/admin/orders/getPendingOrdersAssignToAdmin.js";
 
-import "../../crons/moveScrapToAdmin.cron.js";
+// import "../../crons/moveScrapToAdmin.cron.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 
