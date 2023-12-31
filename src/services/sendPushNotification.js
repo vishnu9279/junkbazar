@@ -16,7 +16,7 @@ const sendNotification = async (notificationData, userId) => {
             enabled: true,
             userId
         }).lean();
-        const registrationTokens = fieldValidator(fcms) ? [] : fcms.map(el => el.fcm);
+        const registrationTokens = fieldValidator(fcms) ? [] : fcms.map(el => el.fcmToken);
         const notificatonMessageResp = await notificationMeassageModel.create({
             message: notificationData,
             userId
