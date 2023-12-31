@@ -11,7 +11,15 @@ const notificatioMessageSchems = new mongoose.Schema(
        
         message: {
             required: true,
+            type: String
+        },
+        payload: {
+            required: true,
             type: Object
+        },
+        title: {
+            required: true,
+            type: String
         },
         
         userId: {

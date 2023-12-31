@@ -26,10 +26,11 @@ const getScrap = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const scraps = await Scrap.find({})
-            .sort({
-                createdAt: -1
-            })
+        const scraps = await Scrap.find({
+            enabled: true
+        }).sort({
+            createdAt: -1
+        })
             .skip(skip)
             .limit(limit);
 

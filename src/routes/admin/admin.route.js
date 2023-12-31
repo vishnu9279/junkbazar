@@ -21,6 +21,8 @@ import editScrap from "../../controllers/admin/scraps/editScrap.controller.js";
 import getScrap from "../../controllers/admin/scraps/getScrap.controller.js";
 import getVendor from "../../controllers/admin/vendor/getVendor.controller.js";
 
+import "../../crons/moveScrapToAdmin.cron.js";
+
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 
 router.route("/registerCreateAdmin_v1").post(registerCreateAdmin_v1);

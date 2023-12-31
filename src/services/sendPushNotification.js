@@ -14,13 +14,18 @@ import {
 
 const sendNotification = async (notificationData, userId) => {
     try {
+        const data = notificationData.data;
+        const title = notificationData.title;
+        const message = notificationData.message;
         const fcms = await userFcmModel.find({
             enabled: true,
             userId
         }).lean();
         const registrationTokens = fieldValidator(fcms) ? [] : fcms.map(el => el.fcmToken);
         const notificatonMessageResp = await notificationMeassageModel.create({
-            message: notificationData,
+            message,
+            payload: data,
+            title,
             userId
         });
         
@@ -28,11 +33,11 @@ const sendNotification = async (notificationData, userId) => {
         
         const payload = {
             data: {
-                data: JSON.stringify(notificationData)
+                data: JSON.stringify(data)
             },
             notification: {
-                body: "testing",
-                title: "Hi Jhon"
+                body: message,
+                title
             }
         };
         // tokens: registrationTokens
