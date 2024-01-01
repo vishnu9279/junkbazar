@@ -7,6 +7,9 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        addressId: {
+            type: String
+        },
         addToCartId: {
             required: true,
             type: String

@@ -33,7 +33,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         const userIdF_k = req.decoded.userIdF_k;
         let scrapIds = req.body.scrapIds;
         const {
-            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, addToCartId, price, quantity, quantityType
+            fullName, stateCode, countryCode, pincode, dialCode, phoneNumber, address, city, addToCartId, price, quantity, quantityType, addressId
         } = req.body;
         
         if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode) || fieldValidator(addToCartId) || fieldValidator(price) || fieldValidator(quantity) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
@@ -43,6 +43,9 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
         scrapIds = scrapIds.split(",");
+
+        if (scrapIds.length > 1 && fieldValidator(addressId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+
         console.log("scrapIds", scrapIds);
         const scraps = await Scrap.find({
             scrapId: {
@@ -50,7 +53,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
             }
         });
 
-        if (fieldValidator(scraps)) 
+        if (fieldValidator(scraps) || scraps.length !== scrapIds) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
         for (const scrap of scraps){
@@ -78,6 +81,9 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
                 userIdF_k,
                 weekNumber: await helper.getWeekNumber()
             };
+
+            if (scrapIds.length > 1)
+                scrapArrayOfObject.addressId = addressId;
 
             scrapArrayOfObject.push(scrapSaveObj);
         }
