@@ -29,6 +29,7 @@ const otpVerify = asyncHandler (async (req, res) => {
             phoneNumber, otp
         } = req.body;
         const platform = req.headers.platform;
+        const ip = req.headers.ip;
 
         if (fieldValidator(otp) || fieldValidator(phoneNumber) || fieldValidator(platform)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
@@ -70,7 +71,8 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        const tokenObj = {       
+        const tokenObj = {  
+            ip,     
             phoneNumber,
             userId: user.userId,
             userIdF_k: user._id,
