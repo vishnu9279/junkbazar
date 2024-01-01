@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../utils/asyncHandler.js";
-import UserModel  from "../../model/users/user.model.js";
+import AdminModel  from "../../model/admin/admin.model.js";
 import Session  from "../../model/users/session.model.js";
 import ApiError from "../../utils/ApiError.js";
 import {
@@ -14,7 +14,7 @@ const logout = asyncHandler(async (req, res) => {
     const userId = req.decoded.userId;
 
     try {
-        const count = await UserModel.countDocuments({
+        const count = await AdminModel.countDocuments({
             userId  
         });
 

@@ -1,7 +1,8 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
+import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -12,7 +13,7 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-// import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
 const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
     console.log("getPendingOrdersAssignToAdmin working");
@@ -21,6 +22,8 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         let limit = req.query.limit;
         let page = req.query.page;
         const filterValue = req.query.filterValue;
+        const userId = req.decoded.userId;
+        const scrapName = req.query.scrapName;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -28,6 +31,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
 
         const skip = page * limit;
         const filterObj = {};
+        const scrapFilterObj = {};
 
         if (!fieldValidator(filterValue)){
             filterObj.$or = [
@@ -46,20 +50,59 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             ];
         }
 
-        const scraps = await UserPickAddress.find(filterObj)
-            .sort({
-                createdAt: -1
-            })
-            .skip(skip)
-            .limit(limit);
+        if (!fieldValidator(scrapName))
+            scrapFilterObj.scrapName = new RegExp(scrapName, "i");
 
-        // if (!fieldValidator(scraps)) {
-        //     for (let index = 0; index < scraps.length; index++){
-        //         const url = await generateS3SignedUrl(scraps[index].docPath);
+        const scraps = await UserPickAddress.aggregate([
+            {
+                $match: filterObj
+            },
+            {
+                $lookup: {
+                    as: "scrapInfo",
+                    foreignField: "scrapId",
+                    from: "scraps",
+                    localField: "scrapId",
+                    pipeline: [{
+                        $match: scrapFilterObj
+                    }]
+                }
+            },
+            
+            {
+                $unwind: "$scrapInfo"
+            },
+            {
+                $sort: {
+                    createdAt: -1  // Sort in descending order based on the createdAt field
+                }
+            },
+            {
+                $skip: parseInt(skip)  // Add the skip stage
+            },
+            {
+                $limit: parseInt(limit)  // Add the limit stage
+            }
+        ]);
 
-        //         scraps[index].docUrl = url;
-        //     }
-        // }
+        for (const scrap of scraps){
+            const vendors =  await UserModel.find({
+                $or: [{
+                    city: scrap.city
+                },
+                {
+                    stateCode: scrap.stateCode
+                }],
+                managedBy: userId
+            });
+
+            if (!fieldValidator(vendors))
+                scrap.vendors = vendors;
+            
+            const url = await generateS3SignedUrl(scrap.scrapInfo.docPath);
+
+            scrap.scrapInfo.docUrl = url;
+        }
 
         const totalScrapCount = await UserPickAddress.countDocuments(filterObj);
 

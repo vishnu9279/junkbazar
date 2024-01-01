@@ -21,7 +21,7 @@ import editScrap from "../../controllers/admin/scraps/editScrap.controller.js";
 import getScrap from "../../controllers/admin/scraps/getScrap.controller.js";
 import getVendor from "../../controllers/admin/vendor/getVendor.controller.js";
 import getPendingOrdersAssignToAdmin from "../../controllers/admin/orders/getPendingOrdersAssignToAdmin.js";
-
+import createVendor from "../../controllers/admin/vendor/createVendor.controller.js";
 // import "../../crons/moveScrapToAdmin.cron.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
@@ -39,5 +39,6 @@ router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, gener
 router.route("/editScrap").post(authenticateJwtMiddleware, editScrap);
 router.route("/getVendor").get(authenticateJwtMiddleware, getVendor);
 router.route("/getPendingOrdersAssignToAdmin").get(authenticateJwtMiddleware, getPendingOrdersAssignToAdmin);
+router.route("/createVendor").post(authenticateJwtMiddleware, createVendor);
 
 export default router;

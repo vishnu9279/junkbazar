@@ -111,3 +111,7 @@ export const OrderMessage = {
     ORDER_UPDATED_SUCCESSFULLY: "Order Updated Succesfully",
     SCRAP_QUANTITY: "Scrap Quantity Must be Greater Than 0"
 };
+export const AddAdressMessage = {
+    ADDRESS_ALREADY_EXIST: "Address already Exist"
+
+};

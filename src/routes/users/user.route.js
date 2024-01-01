@@ -33,7 +33,7 @@ import resendOtp from "../../controllers/users/login/resendOtp.controller.js";
 import logout from "../../controllers/users/logout.controller.js";
 import addReview from "../../controllers/users/scrap/addReview.controller.js";
 import raiseIssues from "../../controllers/users/scrap/raiseIssues.controller.js";
-
+import addAddress from "../../controllers/users/addAddress.controller.js";
 // import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAddress.controller.js";
 // import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
 // import upload from "../../utils/multer.js";
@@ -72,4 +72,5 @@ router.route("/logout").get(authenticateJwtMiddleware, logout);
 router.route("/addReview").post(authenticateJwtMiddleware, addReview);
 
 router.route("/raiseIssues").post(authenticateJwtMiddleware, raiseIssues);
+router.route("/addAddress").post(authenticateJwtMiddleware, addAddress);
 export default router;

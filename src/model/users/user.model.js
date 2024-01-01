@@ -45,7 +45,6 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
-        
         isActive: {
             default: false,
             type: Boolean
@@ -59,6 +58,10 @@ const userSchema = new mongoose.Schema(
         
         lastName: {
             required: false,
+            type: String
+        },
+        
+        managedBy: {
             type: String
         },
 

@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userPickAddress.model.js";
+import UserPickAddress  from "../../../model/users/userOrder.model.js";
 import userScrapModel  from "../../../model/users/userScrapModel.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
@@ -43,6 +43,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
         scrapIds = scrapIds.split(",");
+        console.log("scrapIds", scrapIds);
         const scraps = await Scrap.find({
             scrapId: {
                 $in: scrapIds
@@ -81,9 +82,7 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
             scrapArrayOfObject.push(scrapSaveObj);
         }
        
-        const resp = await UserPickAddress.insertMany(scrapArrayOfObject, {
-            session
-        });
+        const resp = await UserPickAddress.insertMany(scrapArrayOfObject, session);
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
         
