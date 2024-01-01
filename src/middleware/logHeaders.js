@@ -1,6 +1,6 @@
 "use strict";
 
-const onHeaders = require("on-headers");
+import onHeaders from "on-headers";
 
 function logHeaders(req, res, next) {
     if (!req.headers.ip) {
@@ -24,5 +24,4 @@ function logHeaders(req, res, next) {
 
     next();
 }
-
-module.exports = logHeaders;
+export default logHeaders;
