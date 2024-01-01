@@ -19,6 +19,7 @@ const getVendor = asyncHandler(async (req, res) => {
     console.log("getVendor working");
 
     try {
+        console.log("ip", req.headers.ip);
         let limit = req.query.limit;
         let page = req.query.page;
         const filterValue = req.query.filterValue;
@@ -52,13 +53,15 @@ const getVendor = asyncHandler(async (req, res) => {
 
         if (!fieldValidator(vendor)) {
             for (let index = 0; index < vendor.length; index++){
-                const url = await generateS3SignedUrl(vendor[index].profile);
-                const pan = await generateS3SignedUrl(vendor[index].panID);
-                const aadhaar = await generateS3SignedUrl(vendor[index].aadhaarID);
-
-                vendor[index].profileUrl = url;
-                vendor[index].panUrl = pan;
-                vendor[index].aadhaarUrl = aadhaar;
+                if (vendor[index].profile && vendor[index].panID && vendor[index].aadhaarID){
+                    const url = await generateS3SignedUrl(vendor[index].profile);
+                    const pan = await generateS3SignedUrl(vendor[index].panID);
+                    const aadhaar = await generateS3SignedUrl(vendor[index].aadhaarID);
+    
+                    vendor[index].profileUrl = url;
+                    vendor[index].panUrl = pan;
+                    vendor[index].aadhaarUrl = aadhaar;
+                }
             }
         }
 
