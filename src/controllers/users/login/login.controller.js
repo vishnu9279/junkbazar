@@ -23,7 +23,7 @@ const login = asyncHandler (async (req, res) => {
     const currentTime = new Date().getTime();
     
     try {
-        console.log("ip", req.headers.ip);
+        console.log("ip", req.headers);
         session = await getNewMongoSession();
     
         session.startTransaction();
