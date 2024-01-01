@@ -26,6 +26,8 @@ import {
 } from "./configuration/fireBaseConfiguration.js";
 // import helper from "./utils/helper.js";
 import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
+import logHeaders from "./middleware/logHeaders.js";
+
 const app = express();
 
 async function connectTomongoDbConn() {
@@ -60,7 +62,7 @@ async function setupMiddleware() {
             extended: true,
             limit: "16kb" 
         }));
-        
+        app.use(logHeaders);
         // Use the XSS prevention middleware
         app.use(sanitizeMiddleware);
         //Rate Limiter
