@@ -19,7 +19,6 @@ const getVendor = asyncHandler(async (req, res) => {
     console.log("getVendor working");
 
     try {
-        console.log("ip", req.headers.ip);
         let limit = req.query.limit;
         let page = req.query.page;
         const filterValue = req.query.filterValue;
