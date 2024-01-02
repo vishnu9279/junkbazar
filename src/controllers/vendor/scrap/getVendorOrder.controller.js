@@ -13,8 +13,8 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
-import OrdersEnum from "../../../utils/orderStatus.js";
+// import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+// import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getVendorOrder = asyncHandler(async (req, res) => {
     console.log("getVendorOrder working");
@@ -36,6 +36,8 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             userId
         });
 
+        console.log("user,", user);
+
         if (fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
 
@@ -55,12 +57,6 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         const orders = await userOrderModel.aggregate([
             {
                 $match: {
-                    $or: [{
-                        city: user.city
-                    },
-                    {
-                        stateCode: user.stateCode
-                    }],
                     orderStatus: {
                         $in: orderStatus
                     }
@@ -68,10 +64,31 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             },
             {
                 $lookup: {
-                    as: "scrapInfo",
+                    as: "addressInfo",
+                    foreignField: "addressId",
+                    from: "user_addresses",
+                    localField: "addressId",
+                    pipeline: [{
+                        $match: {
+                            $or: [{
+                                city: "Bokaro"
+                            },
+                            {
+                                stateCode: "JH"
+                            }]
+                        }
+                    }]
+                }
+            },
+            {
+                $unwind: "$addressInfo"
+            },
+            {
+                $lookup: {
+                    as: "items.scrapInfo",
                     foreignField: "scrapId",
                     from: "scraps",
-                    localField: "scrapId"
+                    localField: "items.scrapId"
                 }
             },
             {
@@ -80,9 +97,8 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                 }
             },
             {
-                $unwind: "$scrapInfo"
+                $unwind: "$items.scrapInfo"
             },
-           
             {
                 $skip: parseInt(skip)  // Add the skip stage
             },
@@ -90,30 +106,69 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                 $limit: parseInt(limit)  // Add the limit stage
             }
         ]);
+        
+        // aggregate([
+        //     {
+        //         $match: {
+        //             $or: [{
+        //                 city: user.city
+        //             },
+        //             {
+        //                 stateCode: user.stateCode
+        //             }],
+        //             orderStatus: {
+        //                 $in: orderStatus
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $lookup: {
+        //             as: "items.scrapInfo",
+        //             foreignField: "scrapId",
+        //             from: "scraps",
+        //             localField: "items.scrapId"
+        //         }
+        //     },
+        //     {
+        //         $sort: {
+        //             createdAt: -1  // Sort in descending order based on the createdAt field
+        //         }
+        //     },
+        //     {
+        //         $unwind: "$items.scrapInfo"
+        //     },
+           
+        //     {
+        //         $skip: parseInt(skip)  // Add the skip stage
+        //     },
+        //     {
+        //         $limit: parseInt(limit)  // Add the limit stage
+        //     }
+        // ]);
 
         console.log("orders", orders);
-        for (let index = 0; index < orders.length; index++){
-            const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
+        // for (let index = 0; index < orders.length; index++){
+        //     const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
 
-            console.log("orders[index].orderStatus", orders[index].orderStatus);
+        //     console.log("orders[index].orderStatus", orders[index].orderStatus);
 
-            if (orders[index].orderStatus >= OrdersEnum.ACCEPTED){
-                const user = await UserModel.findOne({
-                    userId: orders[index].vendorId
-                });
+        //     if (orders[index].orderStatus >= OrdersEnum.ACCEPTED){
+        //         const user = await UserModel.findOne({
+        //             userId: orders[index].vendorId
+        //         });
 
-                console.log(user);
+        //         console.log(user);
 
-                if (user && user.profile){
-                    const profileUrl = await generateS3SignedUrl(user.profile);
+        //         if (user && user.profile){
+        //             const profileUrl = await generateS3SignedUrl(user.profile);
 
-                    user.docUrl = profileUrl;
-                    orders[index].vendorInfo = user;
-                }
-            }
+        //             user.docUrl = profileUrl;
+        //             orders[index].vendorInfo = user;
+        //         }
+        //     }
 
-            orders[index].scrapInfo.docUrl = scrapUrl;
-        }
+        //     orders[index].scrapInfo.docUrl = scrapUrl;
+        // }
             
         const totalScrapCount = await userOrderModel.countDocuments({
             $or: [{
