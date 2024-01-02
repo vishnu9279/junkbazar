@@ -1,7 +1,7 @@
 "use strict";
 
 import CronJob from "node-cron";
-import UserPickAddress  from "../model/users/userPickAddress.model.js";
+import UserOrderModel  from "../model/users/userOrder.model.js";
 import OrdersEnum from "../utils/orderStatus.js";
 const ordersAssignToOrder = CronJob.schedule("* * * * *", async() => {
     console.log("ordersAssignToOrder working");
@@ -9,7 +9,7 @@ const ordersAssignToOrder = CronJob.schedule("* * * * *", async() => {
         const currentTimeStamp = new Date().getTime(); 
         const twoHrMillesecond =  currentTimeStamp + (2 * 60 * 60 * 1000);
 
-        await UserPickAddress.updateMany({
+        await UserOrderModel.updateMany({
             currentTime: {
                 $lte: twoHrMillesecond
             },

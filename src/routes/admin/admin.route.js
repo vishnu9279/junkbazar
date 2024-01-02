@@ -22,7 +22,8 @@ import getScrap from "../../controllers/admin/scraps/getScrap.controller.js";
 import getVendor from "../../controllers/admin/vendor/getVendor.controller.js";
 import getPendingOrdersAssignToAdmin from "../../controllers/admin/orders/getPendingOrdersAssignToAdmin.js";
 import createVendor from "../../controllers/admin/vendor/createVendor.controller.js";
-// import "../../crons/moveScrapToAdmin.cron.js";
+import assignOrderToVendor from "../../controllers/admin/orders/assignOrderToVendor.controller.js";
+import "../../crons/moveScrapToAdmin.cron.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 
@@ -40,5 +41,5 @@ router.route("/editScrap").post(authenticateJwtMiddleware, editScrap);
 router.route("/getVendor").get(authenticateJwtMiddleware, getVendor);
 router.route("/getPendingOrdersAssignToAdmin").get(authenticateJwtMiddleware, getPendingOrdersAssignToAdmin);
 router.route("/createVendor").post(authenticateJwtMiddleware, createVendor);
-
+router.route("/assignOrderToVendor").post(authenticateJwtMiddleware, assignOrderToVendor);
 export default router;

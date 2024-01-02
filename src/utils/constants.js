@@ -25,6 +25,7 @@ export const basicConfigurationObject  = {
     AWS_S3_SECRET_ACCESS_KEY: process.env.AWS_S3_SECRET_ACCESS_KEY,
     BUCKET_NAME_AWS: process.env.BUCKET_NAME_AWS,
     CORS_ORIGIN: process.env.CORS_ORIGIN,
+    JSON_STRINGIFY: process.env.JSON_STRINGIFY,
     JWT_ISSSUER: process.env.JWT_ISSSUER,
     MONGODB_URI: process.env.MONGODB_URI,
     PASSWORD_SECRET_KEY: process.env.PASSWORD_SECRET_KEY,
