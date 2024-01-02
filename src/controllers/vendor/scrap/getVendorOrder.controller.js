@@ -13,8 +13,8 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-// import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
-// import OrdersEnum from "../../../utils/orderStatus.js";
+import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getVendorOrder = asyncHandler(async (req, res) => {
     console.log("getVendorOrder working");
@@ -63,6 +63,20 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                 }
             },
             {
+                $unwind: "$items" // Unwind the items array
+            },
+            {
+                $lookup: {
+                    as: "items.scrapInfo",
+                    foreignField: "scrapId",
+                    from: "scraps",
+                    localField: "items.scrapId"
+                }
+            },
+            {
+                $unwind: "$items.scrapInfo"
+            },
+            {
                 $lookup: {
                     as: "addressInfo",
                     foreignField: "addressId",
@@ -84,11 +98,29 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                 $unwind: "$addressInfo"
             },
             {
-                $lookup: {
-                    as: "items.scrapInfo",
-                    foreignField: "scrapId",
-                    from: "scraps",
-                    localField: "items.scrapId"
+                $group: {
+                    _id: "$_id",
+                    addToCartId: {
+                        $first: "$addToCartId" 
+                    },
+                    createdAt: {
+                        $first: "$createdAt" 
+                    },
+                    enabled: {
+                        $first: "$enabled" 
+                    },
+                    items: {
+                        $push: "$items" 
+                    },
+                    updatedAt: {
+                        $first: "$updatedAt" 
+                    },
+                    userId: {
+                        $first: "$userId" 
+                    },
+                    userIdF_k: {
+                        $first: "$userIdF_k" 
+                    } // Push the items back into an array
                 }
             },
             {
@@ -96,9 +128,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     createdAt: -1  // Sort in descending order based on the createdAt field
                 }
             },
-            {
-                $unwind: "$items.scrapInfo"
-            },
+            
             {
                 $skip: parseInt(skip)  // Add the skip stage
             },
@@ -147,44 +177,67 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         // ]);
 
         console.log("orders", orders);
-        // for (let index = 0; index < orders.length; index++){
-        //     const scrapUrl = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
+        for (let index = 0; index < orders.length; index++){
+            orders[index].items.map(async(el) => {
+                const url = await generateS3SignedUrl( el.scrapInfo.docPath);
 
-        //     console.log("orders[index].orderStatus", orders[index].orderStatus);
+                el.scrapInfo.docUrl = url;
 
-        //     if (orders[index].orderStatus >= OrdersEnum.ACCEPTED){
-        //         const user = await UserModel.findOne({
-        //             userId: orders[index].vendorId
-        //         });
+                return el;
+            });
+            // const url = await generateS3SignedUrl(orders[index].items.scrapInfo.docPath);
 
-        //         console.log(user);
+            // orders[index].scrapInfo.docUrl = url;
 
-        //         if (user && user.profile){
-        //             const profileUrl = await generateS3SignedUrl(user.profile);
+            if ( orders[index].vendorId && orders[index].orderStatus >= OrdersEnum.ACCEPTED){
+                const user = await UserModel.findOne({
+                    userId: orders[index].vendorId
+                });
 
-        //             user.docUrl = profileUrl;
-        //             orders[index].vendorInfo = user;
-        //         }
-        //     }
-
-        //     orders[index].scrapInfo.docUrl = scrapUrl;
-        // }
+                if (!fieldValidator(user.profile)){
+                    const profileUrl = await generateS3SignedUrl(user.profile);
+     
+                    user.docUrl = profileUrl;
+                    orders[index].vendorInfo = user;
+                }
+            }
+        }
             
-        const totalScrapCount = await userOrderModel.countDocuments({
-            $or: [{
-                city: user.city
+        const totalScrapCount = await userOrderModel.aggregate([
+            {
+                $match: {
+                    orderStatus: {
+                        $in: orderStatus
+                    }
+                }
             },
             {
-                stateCode: user.stateCode
-            }],
-            orderStatus: {
-                $in: orderStatus
+                $lookup: {
+                    as: "addressInfo",
+                    foreignField: "addressId",
+                    from: "user_addresses",
+                    localField: "addressId",
+                    pipeline: [{
+                        $match: {
+                            $or: [{
+                                city: "Bokaro"
+                            },
+                            {
+                                stateCode: "JH"
+                            }]
+                        }
+                    }]
+                }
+            },
+            {
+                $unwind: "$addressInfo"
             }
-        });
-    
+        ]);
+
+        console.log("totalScrapCount", totalScrapCount.length);
         const finalObj = {
             orders: orders,
-            totalScrapCount
+            totalScrapCount: totalScrapCount.length
         };
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
