@@ -63,7 +63,7 @@ const getUserOrder = asyncHandler(async (req, res) => {
                 $group: {
                     _id: "$_id",
                     addressId: {
-                        $first: "$addToCartId"
+                        $first: "$addressId"
                     },
                     addressInfo: {
                         $first: "$addressInfo"

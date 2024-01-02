@@ -76,8 +76,25 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                 $unwind: "$items.scrapInfo"
             },
             {
+                $lookup: {
+                    as: "addressInfo",
+                    foreignField: "addressId",
+                    from: "user_addresses",
+                    localField: "addressId"
+                }
+            },
+            {
+                $unwind: "$addressInfo"
+            },
+            {
                 $group: {
                     _id: "$_id",
+                    addressId: {
+                        $first: "$addressId"
+                    },
+                    addressInfo: {
+                        $first: "$addressInfo"
+                    },
                     addToCartId: {
                         $first: "$addToCartId" 
                     },
@@ -117,20 +134,41 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         for (const scrap of scraps){
             const vendors =  await UserModel.find({
                 $or: [{
-                    city: scrap.city
+                    city: scrap.addressInfo.city
                 },
                 {
-                    stateCode: scrap.stateCode
+                    stateCode: scrap.addressInfo.stateCode
                 }],
                 managedBy: userId
             });
 
-            if (!fieldValidator(vendors))
-                scrap.vendors = vendors;
-            
-            const url = await generateS3SignedUrl(scrap.scrapInfo.docPath);
+            if (!fieldValidator(vendors)){
+                vendors.map(async (el) => {
+                    console.log("profile", el);
 
-            scrap.scrapInfo.docUrl = url;
+                    if (el.profile){
+                        const url = await generateS3SignedUrl(el.profile);
+                        const pan = await generateS3SignedUrl(el.panID);
+                        const aadhaar = await generateS3SignedUrl(el.aadhaarID);
+        
+                        el.profileUrl = url;
+                        el.panUrl = pan;
+                        el.aadhaarUrl = aadhaar;
+                    }
+
+                    return el;
+                });
+
+                scrap.vendors = vendors;
+            }
+
+            scrap.items.map(async(el) => {
+                const url = await generateS3SignedUrl( el.scrapInfo.docPath);
+    
+                el.scrapInfo.docUrl = url;
+    
+                return el;
+            });
         }
 
         const totalScrapCount = await UserOrderModel.countDocuments(filterObj);
