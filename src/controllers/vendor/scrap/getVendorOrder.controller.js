@@ -112,6 +112,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     items: {
                         $push: "$items" 
                     },
+                    orderId: {
+                        $first: "$orderId"
+                    },
                     updatedAt: {
                         $first: "$updatedAt" 
                     },
