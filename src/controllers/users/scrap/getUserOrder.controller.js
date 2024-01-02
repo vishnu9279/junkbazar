@@ -48,26 +48,26 @@ const getUserOrder = asyncHandler(async (req, res) => {
             {
                 $unwind: "$items.scrapInfo" // Unwind the scrapInfo array
             },
-            // {
-            //     $lookup: {
-            //         as: "addressInfo",
-            //         foreignField: "addressId",
-            //         from: "user_addresses",
-            //         localField: "addressId"
-            //     }
-            // },
-            // {
-            //     $unwind: "$addressInfo"
-            // },
+            {
+                $lookup: {
+                    as: "addressInfo",
+                    foreignField: "addressId",
+                    from: "user_addresses",
+                    localField: "addressId"
+                }
+            },
+            {
+                $unwind: "$addressInfo"
+            },
             {
                 $group: {
                     _id: "$_id",
                     addressId: {
                         $first: "$addToCartId"
                     },
-                    // addressInfo: {
-                    //     $first: "$addressInfo"
-                    // },
+                    addressInfo: {
+                        $first: "$addressInfo"
+                    },
                     addToCartId: {
                         $first: "$addToCartId" 
                     },

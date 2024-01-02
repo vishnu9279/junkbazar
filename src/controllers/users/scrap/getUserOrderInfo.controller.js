@@ -78,7 +78,7 @@ const getUserOrderInfo = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
-                order[0],
+                order,
                 CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
             )
         );
