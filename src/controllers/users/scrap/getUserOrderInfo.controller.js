@@ -21,44 +21,58 @@ const getUserOrderInfo = asyncHandler(async (req, res) => {
     try {
         const userId = req.decoded.userId;
         const orderId = req.query.orderId;
-        const order = await UserOrderModel.aggregate([
-            {
-                $match: {
-                    orderId,
-                    userId
-                }
-            },
-            {
-                $lookup: {
-                    as: "scrapInfo",
-                    foreignField: "scrapId",
-                    from: "scraps",
-                    localField: "scrapId"
-                }
-            },
-            {
-                $unwind: "$scrapInfo"
-            }
-        ]);
+        const order = await UserOrderModel.findOne({
+            orderId,
+            userId
+        }).lean();
+        // const order = await UserOrderModel.aggregate([
+        //     {
+        //         $match: {
+        //             orderId,
+        //             userId
+        //         }
+        //     },
+        //     {
+        //         $lookup: {
+        //             as: "scrapInfo",
+        //             foreignField: "scrapId",
+        //             from: "scraps",
+        //             localField: "scrapId"
+        //         }
+        //     },
+        //     {
+        //         $unwind: "$scrapInfo"
+        //     }
+        // ]);
 
         if (fieldValidator(order)) throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
-        for (let index = 0; index < order.length; index++){
-            const url = await generateS3SignedUrl(order[index].scrapInfo.docPath);
+        if (order.orderStatus >= OrdersEnum.ACCEPTED){
+            const user = await UserModel.findOne({
+                userId: order.vendorId
+            });
 
-            order[index].scrapInfo.docUrl = url;
+            const profileUrl = await generateS3SignedUrl(user.profile);
 
-            if (order[index].orderStatus >= OrdersEnum.ACCEPTED){
-                const user = await UserModel.findOne({
-                    userId: order[index].vendorId
-                });
-
-                const profileUrl = await generateS3SignedUrl(user.profile);
-
-                user.docUrl = profileUrl;
-                order[index].vendorInfo = user;
-            }
+            user.docUrl = profileUrl;
+            order.vendorInfo = user;
         }
+        // for (let index = 0; index < order.length; index++){
+        //     const url = await generateS3SignedUrl(order[index].scrapInfo.docPath);
+
+        //     order[index].scrapInfo.docUrl = url;
+
+        //     if (order[index].orderStatus >= OrdersEnum.ACCEPTED){
+        //         const user = await UserModel.findOne({
+        //             userId: order[index].vendorId
+        //         });
+
+        //         const profileUrl = await generateS3SignedUrl(user.profile);
+
+        //         user.docUrl = profileUrl;
+        //         order[index].vendorInfo = user;
+        //     }
+        // }
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
