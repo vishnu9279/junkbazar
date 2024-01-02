@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import userOrderModel  from "../../../model/users/userOrder.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -52,7 +52,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             );
         }
 
-        const orders = await UserPickAddress.aggregate([
+        const orders = await userOrderModel.aggregate([
             {
                 $match: {
                     $or: [{
@@ -115,7 +115,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             orders[index].scrapInfo.docUrl = scrapUrl;
         }
             
-        const totalScrapCount = await UserPickAddress.countDocuments({
+        const totalScrapCount = await userOrderModel.countDocuments({
             $or: [{
                 city: user.city
             },
