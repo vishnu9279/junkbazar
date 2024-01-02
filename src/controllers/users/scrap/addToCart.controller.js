@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import userScrapModel  from "../../../model/users/userScrapModel.model.js";
+import cartModel  from "../../../model/users/cart.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -37,9 +37,9 @@ const addToCart = asyncHandler (async (req, res) => {
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const pickAddress = await userScrapModel.findOne({
+        const pickAddress = await cartModel.findOne({
             enabled: true,
-            scrapId,
+            "items.scrapId": scrapId,
             userId
         });
 
@@ -52,26 +52,49 @@ const addToCart = asyncHandler (async (req, res) => {
     
         if (fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
-    
+        
+        const cartResp = await cartModel.findOne({
+            userId
+        }).lean();
+
         const addToCartSaveObj = {
-            addToCartId: uniqueId,
             currentTime,
             dayNumber: await helper.getDayNumber(),
             monthNumber: await helper.getMonthNumber(),
-            quantity: addScrapQuantity || 0,
-            scrapId,
-            scrapIdF_K: scrap._id,
+           
             userId,
             userIdF_k,
             weekNumber: await helper.getWeekNumber()
         };
 
-        console.log("addToCartSaveObj", addToCartSaveObj);
-        const addToCartModelObj = new userScrapModel(addToCartSaveObj);
+        if (fieldValidator(cartResp)) 
+            addToCartSaveObj.addToCartId = uniqueId;
+        // else 
+        //     addToCartSaveObj.addToCartId = cartResp.addToCartId;
 
-        const resp = await addToCartModelObj.save({
-            session
+        const items = [{
+            quantity: addScrapQuantity || 0,
+            scrapId,
+            scrapIdF_K: scrap._id
+
+        }];
+
+        const resp = await cartModel.findOneAndUpdate({
+            userId
+        }, {
+            
+            $push: {
+                items
+            },
+                
+            $set: addToCartSaveObj
+        }, {
+            new: true,
+            session: session,
+            upsert: true
         });
+
+        console.log("resp", resp);
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 

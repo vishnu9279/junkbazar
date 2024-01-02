@@ -101,7 +101,7 @@ export const ScrapMessage = {
 };
 export const AddToCartMessage = {
     SCRAP_ALREADY_IN_CART: "Scrap Already In Cart",
-    SCRAP_NOT_FOUND: "Scrap Not Found",
+    SCRAP_NOT_FOUND: "Scrap Not Found In Cart",
     SCRAP_QUANTITY_UPDATE: "Scrap Quantity Updated",
     SCRAP_SUCCESSFULLY_SAVED_IN_CART: "Scrap Added In Cart"
 };
@@ -112,6 +112,7 @@ export const OrderMessage = {
     SCRAP_QUANTITY: "Scrap Quantity Must be Greater Than 0"
 };
 export const AddAdressMessage = {
-    ADDRESS_ALREADY_EXIST: "Address already Exist"
+    ADDRESS_ALREADY_EXIST: "Address already Exist",
+    ADDRESS_NOT_FOUND: "Address Not Found"
 
 };

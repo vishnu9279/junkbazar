@@ -2,7 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userOrder.model.js";
-import userScrapModel  from "../../../model/users/userScrapModel.model.js";
+import userScrapModel  from "../../../model/users/cart.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
@@ -38,27 +38,29 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
         
         if (fieldValidator(fullName) || fieldValidator(pincode) || fieldValidator(dialCode) || fieldValidator(phoneNumber) || fieldValidator(city) || fieldValidator(scrapIds) || fieldValidator(stateCode) || fieldValidator(addToCartId) || fieldValidator(price) || fieldValidator(quantity) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        if (parseInt(quantity) < 0) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.SCRAP_QUANTITY);
+        if (parseInt(quantity) <= 0) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.SCRAP_QUANTITY);
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
         scrapIds = scrapIds.split(",");
+        console.log("scrapIds", scrapIds);
 
         if (scrapIds.length > 1 && fieldValidator(addressId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        console.log("scrapIds", scrapIds);
         const scraps = await Scrap.find({
             scrapId: {
                 $in: scrapIds
             }
         });
-
-        if (fieldValidator(scraps) || scraps.length !== scrapIds) 
+        
+        if (fieldValidator(scraps) && scraps.length !== scrapIds) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
-
+    
+        console.log("scraps", scraps, scraps.length, scrapIds.length);
         for (const scrap of scraps){
             const scrapSaveObj = {
                 address,
+                addressId: (scrapIds.length > 1) ? addressId : "",
                 addToCartId,
                 city,
                 countryCode,
@@ -82,12 +84,9 @@ const addPickUpAddress = asyncHandler (async (req, res) => {
                 weekNumber: await helper.getWeekNumber()
             };
 
-            if (scrapIds.length > 1)
-                scrapArrayOfObject.addressId = addressId;
-
             scrapArrayOfObject.push(scrapSaveObj);
         }
-       
+        console.log("scrapArrayOfObject", scrapArrayOfObject);
         const resp = await UserPickAddress.insertMany(scrapArrayOfObject, session);
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);

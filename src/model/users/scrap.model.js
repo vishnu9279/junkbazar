@@ -39,11 +39,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        quantity: {
-            default: 0,
-            required: true,
-            type: Number
-        },
+        // quantity: {
+        //     default: 0,
+        //     required: true,
+        //     type: Number
+        // },
         
         quantityType: {
             required: true,

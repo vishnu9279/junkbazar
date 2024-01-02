@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import addToCartSchema  from "../../../model/users/userScrapModel.model.js";
+import cartModel  from "../../../model/users/cart.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -27,7 +27,7 @@ const getAddToCart = asyncHandler(async (req, res) => {
 
         const skip = page * limit;
 
-        const addToCarpScraps = await addToCartSchema.aggregate([
+        const addToCarpScraps = await cartModel.aggregate([
             {
                 $match: {
                     enabled: true,
@@ -35,42 +35,89 @@ const getAddToCart = asyncHandler(async (req, res) => {
                 }
             },
             {
+                $unwind: "$items" // Unwind the items array
+            },
+            {
                 $lookup: {
-                    as: "scrapInfo",
+                    as: "items.scrapInfo",
                     foreignField: "scrapId",
                     from: "scraps",
-                    localField: "scrapId"
+                    localField: "items.scrapId"
                 }
             },
             {
-                $unwind: "$scrapInfo"
+                $unwind: "$items.scrapInfo" // Unwind the scrapInfo array
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    addToCartId: {
+                        $first: "$addToCartId" 
+                    },
+                    createdAt: {
+                        $first: "$createdAt" 
+                    },
+                    enabled: {
+                        $first: "$enabled" 
+                    },
+                    items: {
+                        $push: "$items" 
+                    },
+                    updatedAt: {
+                        $first: "$updatedAt" 
+                    },
+                    userId: {
+                        $first: "$userId" 
+                    },
+                    userIdF_k: {
+                        $first: "$userIdF_k" 
+                    } // Push the items back into an array
+                }
             },
             {
                 $sort: {
-                    createdAt: -1  // Sort in descending order based on createdAt field
+                    createdAt: -1
                 }
             },
             {
-                $skip: parseInt(skip)  // Add the skip stage
+                $skip: parseInt(skip)
             },
             {
-                $limit: parseInt(limit)  // Add the limit stage
+                $limit: parseInt(limit)
+            }
+        ]);        
+
+        // console.log("addToCarpScraps", JSON.stringify(addToCarpScraps));
+    
+        for (let index = 0; index < addToCarpScraps[0].items.length; index++){
+            // console.log("addToCarpScraps[index].scrapInfo", addToCarpScraps[0].items[index].scrapInfo);
+            const url = await generateS3SignedUrl(addToCarpScraps[0].items[index].scrapInfo.docPath);
+
+            addToCarpScraps[0].items[index].scrapInfo.docUrl = url;
+        }
+
+        const totalScrapCount = await cartModel.aggregate([
+            {
+                $match: {
+                    userId
+                }
+            },
+            {
+                $unwind: "$items"
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: 1 
+                    }
+                }
             }
         ]);
 
-        for (let index = 0; index < addToCarpScraps.length; index++){
-            const url = await generateS3SignedUrl(addToCarpScraps[index].scrapInfo.docPath);
-
-            addToCarpScraps[index].docUrl = url;
-        }
-
-        const totalScrapCount = await addToCartSchema.countDocuments({
-            userId
-        });
-
         const finalObj = {
-            cartLists: addToCarpScraps,
-            totalScrapCount
+            cartLists: addToCarpScraps[0],
+            totalScrapCount: totalScrapCount[0].total
         };
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(

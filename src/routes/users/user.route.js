@@ -14,7 +14,7 @@ import otpVerify from "../../controllers/users/login/otpVerify.controller.js";
 import get_country_state_cities from "../../controllers/other_api/get_countries_state_cities.controller.js";
 import addScrapQuantity from "../../controllers/users/scrap/addScrapQuantity.controller.js";
 import getScrap from "../../controllers/users/scrap/getScrap.controller.js";
-import addPickUpAddress from "../../controllers/users/scrap/addPickUpAddress.controller.js";
+import raisePickUp from "../../controllers/users/scrap/raisePickUp.controller.js";
 import generateS3UploadSignedUrl from "../../controllers/users/register/generateS3UploadSignedUrl.js";
 import contactUs from "../../controllers/other_api/contactUs.controller.js";
 import getCurrentUser from "../../controllers/users/getCurrentUser.controller.js";
@@ -52,7 +52,7 @@ router.route("/addUserDetail").post(addUserDetail);
 
 router.route("/generateS3UploadSignedUrl").post(authenticateJwtMiddleware, generateS3UploadSignedUrl); // generateS3SignedUrl
 router.route("/addScrapQuantity").post(authenticateJwtMiddleware, addScrapQuantity);
-router.route("/addPickUpAddress").post(authenticateJwtMiddleware, addPickUpAddress);
+router.route("/raisePickUp").post(authenticateJwtMiddleware, raisePickUp);
 
 router.route("/updateProfile").post(authenticateJwtMiddleware, updateProfile);
 

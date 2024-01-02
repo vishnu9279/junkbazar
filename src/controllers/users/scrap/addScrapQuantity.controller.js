@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import userScrapModel  from "../../../model/users/userScrapModel.model.js";
+import cartModel  from "../../../model/users/cart.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -33,24 +33,24 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const scrap = await userScrapModel.findOne({
+        const scrap = await cartModel.findOne({
             enabled: true,
-            scrapId,
+            "items.scrapId": scrapId,
             userId
         });
 
-        console.log("scrap", scrap);
+        // console.log("scrap", scrap);
 
         if (fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
-        const resp = await userScrapModel.findOneAndUpdate({
+        const resp = await cartModel.findOneAndUpdate({
             enabled: true,
-            scrapId,
+            "items.scrapId": scrapId,
             userId
         }, {
             $set: {
-                quantity
+                "items.$.quantity": quantity
             }
         }, {
             session: session

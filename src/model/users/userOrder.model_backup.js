@@ -1,35 +1,10 @@
 "use strict";
 
 import mongoose from "mongoose";
-const orderItemSchema = new mongoose.Schema({
-    amount: {
-        required: true,
-        type: Number 
-    },
-    quantity: {
-        required: true,
-        type: Number 
-    },
-    quantityType: {
-        type: String 
-    },
-    scrapId: {
-        ref: "scrap",
-        required: true,
-        type: String 
-    },
-    scrapIdF_K: {
-        ref: "scrap",
-        required: true,
-        type: mongoose.Schema.Types.ObjectId
-    }
-
-}, {
-    _id: false
-});
 const userPickupSchema = new mongoose.Schema(
     {
         address: {
+            required: true,
             type: String
         },
         addressId: {
@@ -40,9 +15,11 @@ const userPickupSchema = new mongoose.Schema(
             type: String
         },
         city: {
+            required: true,
             type: String 
         },
         countryCode: {
+            required: true,
             type: String
         },
         currentTime: {
@@ -73,7 +50,6 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        items: [ orderItemSchema ],
         monthNumber: {
             required: true,
             type: Number
@@ -94,32 +70,36 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        
         pincode: {
+            required: true,
             type: Number
         },
-        // price: {
-        //     required: true,
-        //     type: Number
-        // },
-        // quantity: {
-        //     required: true,
-        //     type: Number
-        // },
-        // quantityType: {
-        //     type: String
-        // },
-        // scrapId: {
-        //     ref: "scrap",
-        //     required: true,
-        //     type: String
-        // },
-        // scrapIdF_K: {
-        //     ref: "scrap",
-        //     required: true,
-        //     type: mongoose.Schema.Types.ObjectId
-        // },
+        price: {
+            required: true,
+            type: Number
+        },
+        quantity: {
+            required: true,
+            type: Number
+        },
+        
+        quantityType: {
+            type: String
+        },
+        scrapId: {
+            ref: "scrap",
+            required: true,
+            type: String
+        },
+        
+        scrapIdF_K: {
+            ref: "scrap",
+            required: true,
+            type: mongoose.Schema.Types.ObjectId
+        },
+        
         stateCode: {
+            required: true,
             type: String
         },
         userId: {
@@ -141,13 +121,7 @@ const userPickupSchema = new mongoose.Schema(
         }
     },
     {
-        timestamps: true,
-        toJSON: {
-            virtuals: true
-        },
-        toObject: {
-            virtuals: true
-        }
+        timestamps: true 
     }
 );
 

@@ -7,11 +7,9 @@ import ApiError from "../../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration, AddAdressMessage
 } from "../../utils/constants.js";
-import helper from "../../utils/helper.js";
 
 import ApiResponse from "../../utils/ApiSuccess.js";
-import ShortUniqueId from "short-unique-id";
-const uid = new ShortUniqueId();
+import saveAddAddressHelper from "./saveAddressHelper.controller.js";
 
 import {
     getNewMongoSession
@@ -20,7 +18,6 @@ import {
 const addAddress = asyncHandler (async (req, res) => {
     console.log("addAddress working", req.body);
     let  session;
-    const currentTime = new Date().getTime();
 
     try {
         session = await getNewMongoSession();
@@ -41,23 +38,8 @@ const addAddress = asyncHandler (async (req, res) => {
 
         if (!fieldValidator(userAddressResp)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, AddAdressMessage.ADDRESS_ALREADY_EXIST);
-        
-        const addressObj = {
-            address,
-            addressId: uid.rnd(6),
-            city,
-            countryCode,
-            currentTime,
-            dayNumber: await helper.getDayNumber(),
-            monthNumber: await helper.getMonthNumber(),
-            pincode: parseInt(pincode),
-            stateCode,
-            userId,
-            weekNumber: await helper.getWeekNumber()
-        };
-        const addressMap = new userAddress(addressObj);
 
-        const resp = await addressMap.save();
+        const resp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, session);
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
       

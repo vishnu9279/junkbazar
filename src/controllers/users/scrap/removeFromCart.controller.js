@@ -1,12 +1,13 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import userScrapModel  from "../../../model/users/userScrapModel.model.js";
+import cartModel  from "../../../model/users/cart.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
+    ScrapMessage,
     errorAndSuccessCodeConfiguration
 } from "../../../utils/constants.js";
 
@@ -17,16 +18,28 @@ const removeFormCart = asyncHandler(async (req, res) => {
 
     try {
         const userId = req.decoded.userId;
-        const addToCartId = req.body.addToCartId;
-        const scraps = await userScrapModel.findOneAndUpdate({
-            addToCartId,
+        const scrapId = req.body.scrapId;
+
+        const scrap = await cartModel.findOne({
+            enabled: true,
+            "items.scrapId": scrapId,
+            userId
+        });
+
+        console.log("scrap", scrap);
+
+        if (fieldValidator(scrap)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
+
+        const scraps = await cartModel.findOneAndUpdate({
+            "items.scrapId": scrapId,
             userId
         }, {
-            $set: {
-                enabled: false
+            $pull: {
+                items: {
+                    scrapId: scrapId 
+                }
             }
-        }, {
-            new: true
         });
 
         // console.log(scraps);
