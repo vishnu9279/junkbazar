@@ -34,7 +34,8 @@ import logout from "../../controllers/users/logout.controller.js";
 import addReview from "../../controllers/users/scrap/addReview.controller.js";
 import raiseIssues from "../../controllers/users/scrap/raiseIssues.controller.js";
 import addAddress from "../../controllers/users/addAddress.controller.js";
-// import getUserPickupAddress from "../../controllers/users/scrap/getUserPickupAddress.controller.js";
+import getAddress from "../../controllers/users/scrap/getAddress.controller.js";
+
 // import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
 // import upload from "../../utils/multer.js";
 // import getUserScrap from "../../controllers/users/scrap/getUserScrap.controller.js";
@@ -58,11 +59,6 @@ router.route("/updateProfile").post(authenticateJwtMiddleware, updateProfile);
 
 router.route("/contactUs").post(contactUs);
 
-// router.route("/getUserPickupAddress").get(authenticateJwtMiddleware, getUserPickupAddress);
-// router.route("/getUserScrap").get(authenticateJwtMiddleware, getUserScrap);
-// router.route("/confirmPickRequest").post(authenticateJwtMiddleware, confirmPickRequest);
-// router.route("/getAddToCart").get(getAddToCart);
-
 // Cart
 router.route("/getAddToCart").get(authenticateJwtMiddleware, getAddToCart);
 router.route("/addToCart").post(authenticateJwtMiddleware, addToCart);
@@ -73,4 +69,6 @@ router.route("/addReview").post(authenticateJwtMiddleware, addReview);
 
 router.route("/raiseIssues").post(authenticateJwtMiddleware, raiseIssues);
 router.route("/addAddress").post(authenticateJwtMiddleware, addAddress);
+router.route("/getAddress").get(authenticateJwtMiddleware, getAddress);
+
 export default router;

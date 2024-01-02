@@ -88,12 +88,13 @@ const getAddToCart = asyncHandler(async (req, res) => {
         ]);        
 
         // console.log("addToCarpScraps", JSON.stringify(addToCarpScraps));
-    
-        for (let index = 0; index < addToCarpScraps[0].items.length; index++){
+        if (!fieldValidator(addToCarpScraps)){
+            for (let index = 0; index < addToCarpScraps[0].items.length; index++){
             // console.log("addToCarpScraps[index].scrapInfo", addToCarpScraps[0].items[index].scrapInfo);
-            const url = await generateS3SignedUrl(addToCarpScraps[0].items[index].scrapInfo.docPath);
+                const url = await generateS3SignedUrl(addToCarpScraps[0].items[index].scrapInfo.docPath);
 
-            addToCarpScraps[0].items[index].scrapInfo.docUrl = url;
+                addToCarpScraps[0].items[index].scrapInfo.docUrl = url;
+            }
         }
 
         const totalScrapCount = await cartModel.aggregate([
