@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import UserOrderModel  from "../../../model/users/userOrder.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -53,16 +53,19 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         if (!fieldValidator(scrapName))
             scrapFilterObj.scrapName = new RegExp(scrapName, "i");
 
-        const scraps = await UserPickAddress.aggregate([
+        const scraps = await UserOrderModel.aggregate([
             {
                 $match: filterObj
             },
             {
+                $unwind: "$items" // Unwind the items array
+            },
+            {
                 $lookup: {
-                    as: "scrapInfo",
+                    as: "items.scrapInfo",
                     foreignField: "scrapId",
                     from: "scraps",
-                    localField: "scrapId",
+                    localField: "items.scrapId",
                     pipeline: [{
                         $match: scrapFilterObj
                     }]
@@ -70,7 +73,33 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             },
             
             {
-                $unwind: "$scrapInfo"
+                $unwind: "$items.scrapInfo"
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    addToCartId: {
+                        $first: "$addToCartId" 
+                    },
+                    createdAt: {
+                        $first: "$createdAt" 
+                    },
+                    enabled: {
+                        $first: "$enabled" 
+                    },
+                    items: {
+                        $push: "$items" 
+                    },
+                    updatedAt: {
+                        $first: "$updatedAt" 
+                    },
+                    userId: {
+                        $first: "$userId" 
+                    },
+                    userIdF_k: {
+                        $first: "$userIdF_k" 
+                    } // Push the items back into an array
+                }
             },
             {
                 $sort: {
@@ -104,7 +133,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             scrap.scrapInfo.docUrl = url;
         }
 
-        const totalScrapCount = await UserPickAddress.countDocuments(filterObj);
+        const totalScrapCount = await UserOrderModel.countDocuments(filterObj);
 
         const finalObj = {
             scrap: scraps,

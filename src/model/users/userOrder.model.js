@@ -157,6 +157,6 @@ const userPickupSchema = new mongoose.Schema(
 //     localField: "scrapId",
 //     ref: "Scrap"
 // });
-const UserPickAddress = mongoose.model("user_order", userPickupSchema);
+const UserOrderModel = mongoose.model("user_order", userPickupSchema);
 
-export default UserPickAddress;
+export default UserOrderModel;

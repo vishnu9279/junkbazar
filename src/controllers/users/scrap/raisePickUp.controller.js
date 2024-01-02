@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import userOrderModel  from "../../../model/users/userOrder.model.js";
+import UserOrderModel  from "../../../model/users/userOrder.model.js";
 import userAddress  from "../../../model/users/userAdress.model.js";
 
 import cartModel  from "../../../model/users/cart.model.js";
@@ -122,7 +122,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
         ordersObj.items = ordersItemArray;
         ordersObj.finalAmount = finalAmount;
         console.log("orderObj", ordersObj);
-        const userOrderModelMapping = new userOrderModel(ordersObj);
+        const userOrderModelMapping = new UserOrderModel(ordersObj);
         
         const resp = await userOrderModelMapping.save({
             session

@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import UserOrderModel  from "../../../model/users/userOrder.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -27,27 +27,98 @@ const getUserOrder = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const orders = await UserPickAddress.aggregate([
+        const orders = await UserOrderModel.aggregate([
             {
                 $match: {
+                    enabled: true,
                     userId
                 }
             },
             {
+                $unwind: "$items" // Unwind the items array
+            },
+            {
                 $lookup: {
-                    as: "scrapInfo",
+                    as: "items.scrapInfo",
                     foreignField: "scrapId",
                     from: "scraps",
-                    localField: "scrapId"
+                    localField: "items.scrapId"
+                }
+            },
+            {
+                $unwind: "$items.scrapInfo" // Unwind the scrapInfo array
+            },
+            // {
+            //     $lookup: {
+            //         as: "addressInfo",
+            //         foreignField: "addressId",
+            //         from: "user_addresses",
+            //         localField: "addressId"
+            //     }
+            // },
+            // {
+            //     $unwind: "$addressInfo"
+            // },
+            {
+                $group: {
+                    _id: "$_id",
+                    addressId: {
+                        $first: "$addToCartId"
+                    },
+                    // addressInfo: {
+                    //     $first: "$addressInfo"
+                    // },
+                    addToCartId: {
+                        $first: "$addToCartId" 
+                    },
+                    createdAt: {
+                        $first: "$createdAt" 
+                    },
+                    dialCode: {
+                        $first: "$dialCode"
+                    },
+                    enabled: {
+                        $first: "$enabled" 
+                    },
+                    finalAmount: {
+                        $first: "$finalAmount"
+                    },
+                    fullName: {
+                        $first: "$fullName"
+                    },
+                    items: {
+                        $push: "$items" 
+                    },
+                    monthNumber: {
+                        $first: "$monthNumber"
+                    },
+                    orderId: {
+                        $first: "$orderId"
+                    },
+                    orderStatus: {
+                        $first: "$orderStatus"
+                    },
+                    phoneNumber: {
+                        $first: "$phoneNumber"
+                    },
+                    updatedAt: {
+                        $first: "$updatedAt" 
+                    },
+                    userId: {
+                        $first: "$userId" 
+                    },
+                    userIdF_k: {
+                        $first: "$userIdF_k" 
+                    },
+                    weekNumber: {
+                        $first: "$weekNumber"
+                    }
                 }
             },
             {
                 $sort: {
-                    createdAt: -1  // Sort in descending order based on the createdAt field
+                    createdAt: -1
                 }
-            },
-            {
-                $unwind: "$scrapInfo"
             },
             {
                 $skip: parseInt(skip)  // Add the skip stage
@@ -56,11 +127,48 @@ const getUserOrder = asyncHandler(async (req, res) => {
                 $limit: parseInt(limit)  // Add the limit stage
             }
         ]);
+        
+        // .aggregate([
+        //     {
+        //         $match: {
+        //             userId
+        //         }
+        //     },
+        //     {
+        //         $lookup: {
+        //             as: "scrapInfo",
+        //             foreignField: "scrapId",
+        //             from: "scraps",
+        //             localField: "scrapId"
+        //         }
+        //     },
+        //     {
+        //         $sort: {
+        //             createdAt: -1  // Sort in descending order based on the createdAt field
+        //         }
+        //     },
+        //     {
+        //         $unwind: "$scrapInfo"
+        //     },
+        //     {
+        //         $skip: parseInt(skip)  // Add the skip stage
+        //     },
+        //     {
+        //         $limit: parseInt(limit)  // Add the limit stage
+        //     }
+        // ]);
 
         for (let index = 0; index < orders.length; index++){
-            const url = await generateS3SignedUrl(orders[index].scrapInfo.docPath);
+            orders[index].items.map(async(el) => {
+                const url = await generateS3SignedUrl( el.scrapInfo.docPath);
 
-            orders[index].scrapInfo.docUrl = url;
+                el.scrapInfo.docUrl = url;
+
+                return el;
+            });
+            // const url = await generateS3SignedUrl(orders[index].items.scrapInfo.docPath);
+
+            // orders[index].scrapInfo.docUrl = url;
 
             if ( orders[index].vendorId && orders[index].orderStatus >= OrdersEnum.ACCEPTED){
                 const user = await UserModel.findOne({
@@ -76,7 +184,7 @@ const getUserOrder = asyncHandler(async (req, res) => {
             }
         }
                     
-        const totalScrapCount = await UserPickAddress.countDocuments({
+        const totalScrapCount = await UserOrderModel.countDocuments({
             userId
         });
     

@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import UserOrderModel  from "../../../model/users/userOrder.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -21,7 +21,7 @@ const getUserOrderInfo = asyncHandler(async (req, res) => {
     try {
         const userId = req.decoded.userId;
         const orderId = req.query.orderId;
-        const order = await UserPickAddress.aggregate([
+        const order = await UserOrderModel.aggregate([
             {
                 $match: {
                     orderId,
