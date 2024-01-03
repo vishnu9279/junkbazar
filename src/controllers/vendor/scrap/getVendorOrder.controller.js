@@ -190,7 +190,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             console.log("inside if condtion", orders[index].vendorId);
 
             orders[index].items.map(async(el) => {
-                const url = await generateS3SignedUrl( el.scrapInfo.docPath);
+                const url = await generateS3SignedUrl(el.scrapInfo.docPath);
 
                 el.scrapInfo.docUrl = url;
 
@@ -211,6 +211,20 @@ const getVendorOrder = asyncHandler(async (req, res) => {
      
                     user.docUrl = profileUrl;
                     orders[index].vendorInfo = user;
+                }
+            }
+
+            if ( orders[index].userId){
+                console.log("inside if condtion", orders[index].userId);
+                const user = await UserModel.findOne({
+                    userId: orders[index].userId
+                });
+
+                if (!fieldValidator(user.profile)){
+                    const profileUrl = await generateS3SignedUrl(user.profile);
+     
+                    user.docUrl = profileUrl;
+                    orders[index].userInfo = user;
                 }
             }
         }
