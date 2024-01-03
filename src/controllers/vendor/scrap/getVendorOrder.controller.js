@@ -187,7 +187,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
 
         console.log("orders", orders);
         for (let index = 0; index < orders.length; index++){
-            console.log("inside if condtion", orders[index].vendorId);
+            console.log("inside if condtionvendor ", orders[index].vendorId);
 
             orders[index].items.map(async(el) => {
                 const url = await generateS3SignedUrl(el.scrapInfo.docPath);
@@ -201,31 +201,32 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             // orders[index].scrapInfo.docUrl = url;
 
             if ( orders[index].vendorId && orders[index].orderStatus >= OrdersEnum.ACCEPTED){
-                console.log("inside if condtion", orders[index].vendorId);
-                const user = await UserModel.findOne({
+                const vendor = await UserModel.findOne({
                     userId: orders[index].vendorId
                 });
-
-                if (!fieldValidator(user.profile)){
-                    const profileUrl = await generateS3SignedUrl(user.profile);
-     
-                    user.docUrl = profileUrl;
-                    orders[index].vendorInfo = user;
+                
+                if (!fieldValidator(vendor.profile)){
+                    const profileUrl = await generateS3SignedUrl(vendor.profile);
+                    
+                    vendor.docUrl = profileUrl;
+                    orders[index].vendorInfo = vendor;
                 }
             }
-
+            
             if ( orders[index].userId){
-                console.log("inside if condtion", orders[index].userId);
                 const user = await UserModel.findOne({
                     userId: orders[index].userId
                 });
 
+                console.log("inside if condtion user", orders[index].userId, user);
+
                 if (!fieldValidator(user.profile)){
                     const profileUrl = await generateS3SignedUrl(user.profile);
      
                     user.docUrl = profileUrl;
-                    orders[index].userInfo = user;
                 }
+
+                orders[index].userInfo = user;
             }
         }
             
