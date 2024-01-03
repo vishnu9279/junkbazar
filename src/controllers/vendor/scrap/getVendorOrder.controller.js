@@ -106,8 +106,14 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     createdAt: {
                         $first: "$createdAt" 
                     },
+                    dialCode: {
+                        $first: "$dialCode"
+                    },
                     enabled: {
                         $first: "$enabled" 
+                    },
+                    fullName: {
+                        $first: "$fullName"
                     },
                     items: {
                         $push: "$items" 
@@ -117,6 +123,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     },
                     orderStatus: {
                         $first: "$orderStatus"
+                    },
+                    phoneNumber: {
+                        $first: "$phoneNumber"
                     },
                     updatedAt: {
                         $first: "$updatedAt" 
