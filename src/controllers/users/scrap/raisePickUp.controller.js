@@ -43,7 +43,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
         
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
         
-        scrapIds = scrapIds.split(",");
+        scrapIds = scrapIds.split(",").map(el => el.trim());
         console.log("scrapIds", scrapIds);
         
         const scraps = await Scrap.find({
@@ -52,9 +52,9 @@ const raisePickUp = asyncHandler (async (req, res) => {
             }
         });
 
-        // console.log(scraps.length, scrapIds.length, fieldValidator(scraps));
+        console.log(scraps.length, scrapIds.length, fieldValidator(scraps));
 
-        if (fieldValidator(scraps) && scraps.length !== scrapIds) 
+        if (scraps.length !== scrapIds.length) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
     
         const ordersObj = {

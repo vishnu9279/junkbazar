@@ -118,7 +118,7 @@ const getAddToCart = asyncHandler(async (req, res) => {
 
         const finalObj = {
             cartLists: addToCarpScraps[0],
-            totalScrapCount: totalScrapCount[0].total
+            totalScrapCount: (totalScrapCount.length === 0) ? 0 : totalScrapCount[0].total
         };
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(

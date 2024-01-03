@@ -23,7 +23,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
 
-        console.log("addScrapQuantity working", req.body, userId);
+        console.log("addScrapQuantity working userId", userId);
         let quantity = req.body.addScrapQuantity;
         const {
             scrapId
