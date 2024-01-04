@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import userOrderModel  from "../../../model/users/userOrder.model.js";
+import vendorBookingModel from "../../../model/vendor/vendorBooking.model.js";
 import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -271,8 +272,11 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         ]);
 
         console.log("totalScrapCount", totalScrapCount.length);
+        const bookingResp = await vendorBookingModel.find({
+            vendorId: userId
+        }).lean();
         const finalObj = {
-            orders: orders,
+            orders: orders.filter(order => !bookingResp.some(booking => booking.orderId === order.orderId)),
             totalScrapCount: totalScrapCount.length
         };
 

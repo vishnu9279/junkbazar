@@ -40,8 +40,17 @@ const removeFormCart = asyncHandler(async (req, res) => {
                     scrapId: scrapId 
                 }
             }
+        }, {
+            new: true
         });
 
+        console.log("Scraps", scrap);
+
+        if (scraps.items.length === 0){
+            await cartModel.deleteOne({
+                userId
+            }); 
+        }
         // console.log(scraps);
 
         if (fieldValidator(scraps)) {

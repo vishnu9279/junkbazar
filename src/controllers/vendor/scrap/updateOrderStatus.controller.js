@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import vendorBookingModel from "../../../model/vendor/vendorBooking.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -18,9 +19,10 @@ import OrdersEnum from "../../../utils/orderStatus.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
+import helper from "../../../utils/helper.js";
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
-    console.log("updateOrderStatus working", req.body);
+    console.log("updateOrderStatus working", req.body, req.decoded);
     let session;
 
     try {
@@ -49,20 +51,50 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
         if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
 
-        const resp = await UserPickAddress.findOneAndUpdate({
-            orderId
-        }, {
-            $set: obj
-        }, {
-            session: session
-        });
+        if (orderStatus !== OrdersEnum.REJECTED){
+            const resp = await UserPickAddress.findOneAndUpdate({
+                orderId
+            }, {
+                $set: obj
+            }, {
+                session: session
+            });
 
-        if (fieldValidator(resp)) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_CONFLICT,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
-                ScrapMessage.SCRAP_ALREADY_EXIST
-            );
+            if (fieldValidator(resp)) {
+                throw new ApiError(
+                    statusCodeObject.HTTP_STATUS_CONFLICT,
+                    errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+                    ScrapMessage.SCRAP_ALREADY_EXIST
+                );
+            }
+        }
+        else {
+            console.log("else condition is working");
+            const cancleBooking = await vendorBookingModel.findOneAndUpdate({
+                orderId,
+                vendorId: userId
+            }, {
+                $set: {
+                    dayNumber: await helper.getDayNumber(),
+                    monthNumber: await helper.getMonthNumber(),
+                    orderId,
+                    orderStatus,
+                    vendorId: userId,
+                    weekNumber: await helper.getWeekNumber()
+                }
+            }, {
+                new: true,
+                session: session,
+                upsert: true
+            });
+
+            if (fieldValidator(cancleBooking)) {
+                throw new ApiError(
+                    statusCodeObject.HTTP_STATUS_CONFLICT,
+                    errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+                    ScrapMessage.SCRAP_ALREADY_EXIST
+                );
+            }
         }
 
         await session.commitTransaction();
