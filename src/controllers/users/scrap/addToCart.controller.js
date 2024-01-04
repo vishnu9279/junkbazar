@@ -73,7 +73,7 @@ const addToCart = asyncHandler (async (req, res) => {
         //     addToCartSaveObj.addToCartId = cartResp.addToCartId;
 
         const items = [{
-            quantity: addScrapQuantity || 0,
+            quantity: addScrapQuantity || 1,
             scrapId,
             scrapIdF_K: scrap._id
 
