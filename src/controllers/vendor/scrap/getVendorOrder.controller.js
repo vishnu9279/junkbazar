@@ -14,7 +14,7 @@ import {
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-// import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 // import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getVendorOrder = asyncHandler(async (req, res) => {
@@ -161,87 +161,48 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                 $limit: parseInt(limit)  // Add the limit stage
             }
         ]);
-        
-        // aggregate([
-        //     {
-        //         $match: {
-        //             $or: [{
-        //                 city: user.city
-        //             },
-        //             {
-        //                 stateCode: user.stateCode
-        //             }],
-        //             orderStatus: {
-        //                 $in: orderStatus
-        //             }
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             as: "items.scrapInfo",
-        //             foreignField: "scrapId",
-        //             from: "scraps",
-        //             localField: "items.scrapId"
-        //         }
-        //     },
-        //     {
-        //         $sort: {
-        //             createdAt: -1  // Sort in descending order based on the createdAt field
-        //         }
-        //     },
-        //     {
-        //         $unwind: "$items.scrapInfo"
-        //     },
-           
-        //     {
-        //         $skip: parseInt(skip)  // Add the skip stage
-        //     },
-        //     {
-        //         $limit: parseInt(limit)  // Add the limit stage
-        //     }
-        // ]);
 
         // console.log("orders", orders);
-        // for (let index = 0; index < orders.length; index++){
-        //     console.log("inside if condtionvendor ", orders[index].vendorId);
+        for (let index = 0; index < orders.length; index++){
+            console.log("inside if condtionvendor ", orders[index].vendorId);
 
-        //     orders[index].items.map(async(el) => {
-        //         const url = await generateS3SignedUrl(el.scrapInfo.docPath);
+            orders[index].items.map(async(el) => {
+                const url = await generateS3SignedUrl(el.scrapInfo.docPath);
 
-        //         el.scrapInfo.docUrl = url;
+                el.scrapInfo.docUrl = url;
 
-        //         return el;
-        //     });
+                return el;
+            });
 
-        //     if ( orders[index].vendorId && orders[index].orderStatus >= OrdersEnum.ACCEPTED){
-        //         const vendor = await UserModel.findOne({
-        //             userId: orders[index].vendorId
-        //         });
+            // if ( orders[index].vendorId && orders[index].orderStatus >= OrdersEnum.ACCEPTED){
+            //     const vendor = await UserModel.findOne({
+            //         userId: orders[index].vendorId
+            //     });
                 
-        //         if (!fieldValidator(vendor.profile)){
-        //             const profileUrl = await generateS3SignedUrl(vendor.profile);
+            //     if (!fieldValidator(vendor.profile)){
+            //         const profileUrl = await generateS3SignedUrl(vendor.profile);
                     
-        //             vendor.docUrl = profileUrl;
-        //             orders[index].vendorInfo = vendor;
-        //         }
-        //     }
+            //         vendor.docUrl = profileUrl;
+            //         orders[index].vendorInfo = vendor;
+            //     }
+            // }
             
-        //     if ( orders[index].userId){
-        //         const user = await UserModel.findOne({
-        //             userId: orders[index].userId
-        //         });
+            // if ( orders[index].userId){
+            //     const user = await UserModel.findOne({
+            //         userId: orders[index].userId
+            //     });
 
-        //         console.log("inside if condtion user", orders[index].userId, user);
+            //     console.log("inside if condtion user", orders[index].userId, user);
 
-        //         if (!fieldValidator(user.profile)){
-        //             const profileUrl = await generateS3SignedUrl(user.profile);
+            //     if (!fieldValidator(user.profile)){
+            //         const profileUrl = await generateS3SignedUrl(user.profile);
      
-        //             user.docUrl = profileUrl;
-        //         }
+            //         user.docUrl = profileUrl;
+            //     }
 
-        //         orders[index].userInfo = user;
-        //     }
-        // }
+            //     orders[index].userInfo = user;
+            // }
+        }
             
         const totalScrapCount = await userOrderModel.aggregate([
             {
