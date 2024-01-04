@@ -116,6 +116,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     enabled: {
                         $first: "$enabled" 
                     },
+                    finalAmount: {
+                        $first: "$finalAmount"
+                    },
                     fullName: {
                         $first: "$fullName"
                     },
