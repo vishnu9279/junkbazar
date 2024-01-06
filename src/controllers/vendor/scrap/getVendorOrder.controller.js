@@ -18,7 +18,7 @@ import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 // import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getVendorOrder = asyncHandler(async (req, res) => {
-    console.log("getVendorOrder working");
+    console.log("getVendorOrder working", req.query);
 
     try {
         const userId = req.decoded.userId;

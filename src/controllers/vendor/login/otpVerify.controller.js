@@ -39,10 +39,12 @@ const otpVerify = asyncHandler (async (req, res) => {
             phoneNumber
         });
 
+        console.log("user", user);
+
         if (fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
         
-        if (!user.OTP)
+        if (!user.OTP || fieldValidator(user.OTP))
             throw new ApiError(statusCodeObject.HTTP_STATUS_GONE, errorAndSuccessCodeConfiguration.HTTP_STATUS_GONE, otpVerifyMessage.NO_LOGIN_REQUEST_INITATION);
 
         if (parseInt(otp) !== parseInt(user.OTP))

@@ -73,7 +73,7 @@ const rateLimiter = rateLimit({
     keyGenerator: function (req) {
         return req.headers.ip;
     },
-    max: 20,
+    max: 30,
     message: {
         message: CommonMessage.ERROR_MESSAGE_TOO_MANY_REQUESTS
     },
