@@ -57,7 +57,10 @@ const login = asyncHandler (async (req, res) => {
             OTP = await helper.getCacheElement("CONFIG", "FIX_OTP");
         else 
             OTP = helper.getRandomOTP(100000, 999999);
-        
+
+        console.log({
+            OTP
+        });
         const resp = await AdminModel.findOneAndUpdate({
             phoneNumber
         }, {
