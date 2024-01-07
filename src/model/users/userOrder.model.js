@@ -6,6 +6,10 @@ const orderItemSchema = new mongoose.Schema({
         required: true,
         type: Number 
     },
+    price: {
+        required: true,
+        type: Number
+    },
     quantity: {
         required: true,
         type: Number 
@@ -96,10 +100,6 @@ const userPickupSchema = new mongoose.Schema(
         },
         
         pincode: {
-            type: Number
-        },
-        price: {
-            required: true,
             type: Number
         },
         // quantity: {
