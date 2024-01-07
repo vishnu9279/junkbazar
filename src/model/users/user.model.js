@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String
         },
+        countryName: {
+            type: String
+        },
         dayNumber: {
             required: true,
             type: Number 

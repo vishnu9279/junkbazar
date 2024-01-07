@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserModel  from "../../../model/users/user.model.js";
+import CountryModel from "../../../model/countries.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -30,12 +31,19 @@ const uploadDocument = asyncHandler (async (req, res) => {
         const ip = req.headers.ip;
 
         if (fieldValidator(firstName) || fieldValidator(lastName) || fieldValidator(aadhaarID) || fieldValidator(panID) || fieldValidator(profile) || fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(city) || fieldValidator(address) || fieldValidator(userId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
-        
+
+        const country = await CountryModel.findOne({
+            iso2: countryCode
+        }).lean();
+
+        if (fieldValidator(country))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
+
         const userSaveObj = {
             aadhaarID,
             address,
             city,
             countryCode,
+            countryName: country.name,
             firstName,
             isDocumentUploaded: true,
             lastName,

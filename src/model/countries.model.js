@@ -13,6 +13,6 @@ const countrySchema = new mongoose.Schema({
     }
 });
 
-const Country = mongoose.model("countries_states_citie", countrySchema);
+const CountryModel = mongoose.model("countries_states_citie", countrySchema);
 
-export default Country;
+export default CountryModel;

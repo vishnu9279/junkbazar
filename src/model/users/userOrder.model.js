@@ -98,10 +98,10 @@ const userPickupSchema = new mongoose.Schema(
         pincode: {
             type: Number
         },
-        // price: {
-        //     required: true,
-        //     type: Number
-        // },
+        price: {
+            required: true,
+            type: Number
+        },
         // quantity: {
         //     required: true,
         //     type: Number
