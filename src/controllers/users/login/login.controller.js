@@ -5,7 +5,9 @@ import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
-    CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration, loginMessage
+    CommonMessage, 
+    // registerMessage, 
+    statusCodeObject, errorAndSuccessCodeConfiguration, loginMessage
 } from "../../../utils/constants.js";
 
 import helper from "../../../utils/helper.js";
@@ -14,14 +16,17 @@ import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
 import sendSms from "../../../services/sendSms.js";
-import RolesEnum from "../../../utils/roles.js";
+// import RolesEnum from "../../../utils/roles.js";
+import ShortUniqueId from "short-unique-id";
+const uid = new ShortUniqueId();
 
 const login = asyncHandler (async (req, res) => {
     console.log("login working", req.body);
     let OTP, session;
    
     const currentTime = new Date().getTime();
-    
+    const uniqueId = uid.rnd(6);
+
     try {
         session = await getNewMongoSession();
     
@@ -35,12 +40,20 @@ const login = asyncHandler (async (req, res) => {
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
 
         const user = await UserModel.findOne({
-            phoneNumber,
-            roles: RolesEnum.USER
+            $or: [
+                {
+                    userId: uniqueId
+                },
+                {
+                    phoneNumber
+                }
+            ]
         });
 
-        if (fieldValidator(user)) 
-            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
+        console.log("user", user);
+
+        // if (fieldValidator(user)) 
+        //     throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
     
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.INVALID_PHONE_NUMBER);
 
@@ -51,16 +64,30 @@ const login = asyncHandler (async (req, res) => {
         else 
             OTP = helper.getRandomOTP(100000, 999999);
 
+        const userSaveObj = {
+            OTP,
+            otpGenerateTime: currentTime
+           
+        };
+
+        if (fieldValidator(user)){
+            userSaveObj.dayNumber = await  helper.getDayNumber();
+            userSaveObj.dialCode = dialCode;
+            userSaveObj.monthNumber = await helper.getMonthNumber();
+            userSaveObj.phoneNumber = phoneNumber;
+            userSaveObj.userId = uniqueId,
+            userSaveObj.weekNumber = await helper.getWeekNumber();
+        }
+
         const resp = await UserModel.findOneAndUpdate({
             phoneNumber
+            // roles: RolesEnum.USER
         }, {
-            $set: {
-                OTP: parseInt(OTP),
-                otpGenerateTime: currentTime
-            }
+            $set: userSaveObj
         }, {
             new: true,
-            session
+            session,
+            upsert: true
         });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);

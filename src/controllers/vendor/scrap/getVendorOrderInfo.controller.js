@@ -2,7 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserPickAddress  from "../../../model/users/userOrder.model.js";
-import UserModel  from "../../../model/users/user.model.js";
+// import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -11,7 +11,7 @@ import {
     ScrapMessage,
     errorAndSuccessCodeConfiguration
 } from "../../../utils/constants.js";
-import OrdersEnum from "../../../utils/orderStatus.js";
+// import OrdersEnum from "../../../utils/orderStatus.js";
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
@@ -27,42 +27,104 @@ const getVendorOrderInfo = asyncHandler(async (req, res) => {
                 }
             },
             {
+                $unwind: "$items" // Unwind the items array
+            },
+            {
                 $lookup: {
-                    as: "scrapInfo",
+                    as: "items.scrapInfo",
                     foreignField: "scrapId",
                     from: "scraps",
-                    localField: "scrapId"
+                    localField: "items.scrapId"
                 }
             },
             {
-                $unwind: "$scrapInfo"
+                $unwind: "$items.scrapInfo"
+            },
+            {
+                $lookup: {
+                    as: "addressInfo",
+                    foreignField: "addressId",
+                    from: "user_addresses",
+                    localField: "addressId"
+                }
+            },
+            {
+                $unwind: "$addressInfo"
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    addressInfo: {
+                        $first: "$addressInfo"
+                    },
+                    addToCartId: {
+                        $first: "$addToCartId" 
+                    },
+                    createdAt: {
+                        $first: "$createdAt" 
+                    },
+                    dialCode: {
+                        $first: "$dialCode"
+                    },
+                    enabled: {
+                        $first: "$enabled" 
+                    },
+                    finalAmount: {
+                        $first: "$finalAmount"
+                    },
+                    fullName: {
+                        $first: "$fullName"
+                    },
+                    items: {
+                        $push: "$items" 
+                    },
+                    orderId: {
+                        $first: "$orderId"
+                    },
+                    orderStatus: {
+                        $first: "$orderStatus"
+                    },
+                    phoneNumber: {
+                        $first: "$phoneNumber"
+                    },
+                    updatedAt: {
+                        $first: "$updatedAt" 
+                    },
+                    userId: {
+                        $first: "$userId" 
+                    },
+                    userIdF_k: {
+                        $first: "$userIdF_k" 
+                    },
+                    vendorId: {
+                        $first: "$vendorId"
+                    }
+                }
+            },
+            {
+                $sort: {
+                    createdAt: -1  // Sort in descending order based on the createdAt field
+                }
             }
         ]);
-
+        
         if (fieldValidator(order)) throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
-
-        for (let index = 0; index < order.length; index++){
-            const url = await generateS3SignedUrl(order[index].scrapInfo.docPath);
-
-            order[index].scrapInfo.docUrl = url;
-
-            if (order[index].orderStatus >= OrdersEnum.ACCEPTED){
-                const user = await UserModel.findOne({
-                    userId: order[index].vendorId
-                });
-
-                const profileUrl = await generateS3SignedUrl(user.profile);
-
-                user.docUrl = profileUrl;
-                order[index].vendorInfo = user;
-            }
+        
+        const orderObj = order[0];
+        
+        for (let index = 0; index < orderObj.items.length; index++){
+            const url = await generateS3SignedUrl(orderObj.items[index].scrapInfo.docPath);
+            
+            orderObj.items[index].scrapInfo.docUrl = url;
         }
+                
+        console.log("order", JSON.stringify(orderObj));
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
-                order[0],
+                orderObj,
                 CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
             )
         );

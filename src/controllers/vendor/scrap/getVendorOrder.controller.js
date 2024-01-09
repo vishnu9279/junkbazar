@@ -25,6 +25,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         let limit = req.query.limit;
         let page = req.query.page;
         let orderStatus = req.query.orderStatus;
+        const filterValue = req.query.key;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -55,13 +56,30 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             );
         }
 
+        const filterObj = {
+            orderStatus: {
+                $in: orderStatus
+            }
+        };
+
+        if (!fieldValidator(filterValue)){
+            filterObj.$or = [
+                {
+                    fullName: new RegExp(filterValue, "i")
+                },
+                {
+                    phoneNumber: new RegExp(filterValue, "i")
+                },
+                {
+                    orderId: new RegExp(filterValue, "i")
+                }
+            ];
+        }
+
+        console.log("filterObj", filterObj);
         const orders = await userOrderModel.aggregate([
             {
-                $match: {
-                    orderStatus: {
-                        $in: orderStatus
-                    }
-                }
+                $match: filterObj
             },
             {
                 $unwind: "$items" // Unwind the items array
