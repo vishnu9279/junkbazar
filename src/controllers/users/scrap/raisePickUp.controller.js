@@ -22,11 +22,13 @@ const uid = new ShortUniqueId();
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
+import OrdersEnum from "../../../utils/orderStatus.js";
 const raisePickUp = asyncHandler (async (req, res) => {
     console.log("UserPickAddress working", req.body);
     let addressResp, session;
     const currentTime = new Date().getTime();
     let finalAmount = 0;
+    let totalQuantity = 0;
 
     try {
         session = await getNewMongoSession();
@@ -109,6 +111,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
             const inidividualOrderPrice = parseFloat((userCartQuantity.quantity * scrap.price).toFixed(2));
 
             finalAmount += inidividualOrderPrice;
+            totalQuantity += userCartQuantity.quantity;
             ordersItemArray.push({
                 amount: inidividualOrderPrice,
                 price: scrap.price,
@@ -121,6 +124,11 @@ const raisePickUp = asyncHandler (async (req, res) => {
         
         ordersObj.items = ordersItemArray;
         ordersObj.finalAmount = finalAmount;
+        ordersObj.totalQuantity = totalQuantity;
+
+        if (ordersObj.totalQuantity >= helper.getCacheElement("CONFIG", "SCRAP_QUANTITY"))
+            ordersObj.orderStatus = OrdersEnum.ASSIGN_TO_ADMIN;
+
         console.log("orderObj", ordersObj);
         const userOrderModelMapping = new UserOrderModel(ordersObj);
         

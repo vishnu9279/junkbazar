@@ -98,10 +98,10 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        
         pincode: {
             type: Number
         },
+        
         // quantity: {
         //     required: true,
         //     type: Number
@@ -121,6 +121,11 @@ const userPickupSchema = new mongoose.Schema(
         // },
         stateCode: {
             type: String
+        },
+        
+        totalQuantity: {
+            required: true,
+            type: Number
         },
         userId: {
             ref: "user",

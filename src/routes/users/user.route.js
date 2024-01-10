@@ -35,6 +35,7 @@ import addReview from "../../controllers/users/scrap/addReview.controller.js";
 import raiseIssues from "../../controllers/users/scrap/raiseIssues.controller.js";
 import addAddress from "../../controllers/users/addAddress.controller.js";
 import getAddress from "../../controllers/users/scrap/getAddress.controller.js";
+import editAddress from "../../controllers/users/scrap/editAdress.controller.js";
 
 // import confirmPickRequest from "../../controllers/users/scrap/confirmPickRequest.controller.js";
 // import upload from "../../utils/multer.js";
@@ -70,5 +71,6 @@ router.route("/addReview").post(authenticateJwtMiddleware, addReview);
 router.route("/raiseIssues").post(authenticateJwtMiddleware, raiseIssues);
 router.route("/addAddress").post(authenticateJwtMiddleware, addAddress);
 router.route("/getAddress").get(authenticateJwtMiddleware, getAddress);
+router.route("/editAddress").post(authenticateJwtMiddleware, editAddress);
 
 export default router;
