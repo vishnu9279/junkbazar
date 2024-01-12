@@ -11,9 +11,19 @@ import ApiError from "../utils/ApiError.js";
 import {
     CommonMessage, statusCodeObject, errorAndSuccessCodeConfiguration
 } from "../utils/constants.js";
+import notificationMessageCountModel from "../model/users/notificationCount.model.js";
+import {
+    getNewMongoSession
+} from "../configuration/dbConnection.js";
 
 const sendNotification = async (notificationData, userId) => {
+    console.log("sendNotification working");
+    let session;
+
     try {
+        session = await getNewMongoSession();
+    
+        session.startTransaction();
         const data = notificationData.data;
         const title = notificationData.title;
         const message = notificationData.message;
@@ -50,7 +60,28 @@ const sendNotification = async (notificationData, userId) => {
         const adminInstance = await initializeFirebase();
         const messagesSend = await adminInstance.messaging().sendToDevice(registrationTokens, payload, options);
         
-        console.log("messageSend", messagesSend);
+        const unreadCount = await notificationMeassageModel.countDocuments({
+            readStatus: false,
+            userId
+        });
+        const totalMessageCount = await notificationMeassageModel.countDocuments({
+            userId
+        });
+        const messageCountResp =  await notificationMessageCountModel.updateOne({
+            userId
+        }, {
+            $set: {
+                readCount: totalMessageCount - unreadCount,
+                totalCount: totalMessageCount,
+                unreadCount
+            }
+        }, {
+            new: true,
+            session: session,
+            upsert: true
+        });
+
+        console.log("messageSend", messagesSend, "messageCountResp", messageCountResp);
     }
     catch (error) {
         console.error("Error While Sending Notification", error);

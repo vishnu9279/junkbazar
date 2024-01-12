@@ -8,6 +8,7 @@ import userRouter from "./routes/users/user.route.js";
 import vendorRouter from "./routes/vendor/vendor.route.js";
 import adminRouter from "./routes/admin/admin.route.js";
 import otherRouter from "./routes/other/other.route.js";
+import watcher from "./routes/watcher/watcher.js";
 import loggerLogs from "./utils/loggerLogs.js";
 import {
     connect
@@ -86,6 +87,7 @@ function setRoutes() {
     app.use("/api/v1/vendor", vendorRouter);
     app.use("/api/v1/admin", adminRouter);
     app.use("/api/v1/other", otherRouter);
+    app.use(watcher);
     app.get("*", (req, res) => {
         res.status(404).send({
             error: CommonMessage.ERROR_MESSAGE_NOT_FOUND 

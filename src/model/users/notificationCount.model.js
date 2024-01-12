@@ -14,7 +14,7 @@ const fcmSchems = new mongoose.Schema(
         totalCount: {
             type: Number
         },
-        un_readCount: {
+        unreadCount: {
             type: Number
         },
         userId: {

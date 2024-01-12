@@ -17,11 +17,16 @@ const notificatioMessageSchems = new mongoose.Schema(
             required: true,
             type: Object
         },
+        readStatus: {
+            default: false,
+            required: true,
+            type: Boolean
+        },
+        
         title: {
             required: true,
             type: String
         },
-        
         userId: {
             required: true,
             type: String 
