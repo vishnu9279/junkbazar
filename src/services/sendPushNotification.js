@@ -17,7 +17,7 @@ import {
 } from "../configuration/dbConnection.js";
 
 const sendNotification = async (notificationData, userId) => {
-    console.log("sendNotification working");
+    console.log("sendNotification working", notificationData, userId);
     let session;
 
     try {
@@ -31,60 +31,76 @@ const sendNotification = async (notificationData, userId) => {
             enabled: true,
             userId
         }).lean();
+
         const registrationTokens = fieldValidator(fcms) ? [] : fcms.map(el => el.fcmToken);
-        const notificatonMessageResp = await notificationMeassageModel.create({
+
+        const mesaagaeModel = new notificationMeassageModel({
             message,
             payload: data,
             title,
             userId
         });
+        const notificatonMessageResp = await mesaagaeModel.save({
+            session
+        });
         
         if (fieldValidator(notificatonMessageResp)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.SOMETHING_WENT_WRONG);
         
-        const payload = {
-            data: {
-                data: JSON.stringify(data)
-            },
-            notification: {
-                body: message,
-                title
-            }
-        };
+        // const payload = {
+        //     data: JSON.stringify(data),
+        //     notification: {
+        //         body: message,
+        //         title
+        //     }
+        // };
         // tokens: registrationTokens
-        const options = {
-            priority: "high",
-            timeToLive: 60 * 60
-        };
+        // const options = {
+        //     priority: "high",
+        //     timeToLive: 60 * 60
+        // };
 
-        console.log("message", payload);
-        const adminInstance = await initializeFirebase();
-        const messagesSend = await adminInstance.messaging().sendToDevice(registrationTokens, payload, options);
+        // console.log("message", payload);
+        // // const adminInstance = await initializeFirebase();
+        // // const messagesSend = await adminInstance.messaging().sendToDevice(registrationTokens, payload, options);
         
-        const unreadCount = await notificationMeassageModel.countDocuments({
-            readStatus: false,
-            userId
-        });
-        const totalMessageCount = await notificationMeassageModel.countDocuments({
-            userId
-        });
-        const messageCountResp =  await notificationMessageCountModel.updateOne({
-            userId
-        }, {
-            $set: {
-                readCount: totalMessageCount - unreadCount,
-                totalCount: totalMessageCount,
-                unreadCount
-            }
-        }, {
-            new: true,
-            session: session,
-            upsert: true
-        });
+        // const unreadCount = await notificationMeassageModel.countDocuments({
+        //     readStatus: false,
+        //     userId
+        // });
+        // const totalMessageCount = await notificationMeassageModel.countDocuments({
+        //     userId
+        // });
+        // const messageCountResp =  await notificationMessageCountModel.updateOne({
+        //     userId
+        // }, {
+        //     $set: {
+        //         readCount: totalMessageCount - unreadCount,
+        //         totalCount: totalMessageCount,
+        //         unreadCount
+        //     }
+        // }, {
+        //     new: true,
+        //     session: session,
+        //     upsert: true
+        // });
+        
+        // console.log({
+        //     messageCountResp,
+        //     // messagesSend,
+        //     readCount: totalMessageCount - unreadCount,
+        //     totalMessageCount,
+        //     unreadCount
+        // });
 
-        console.log("messageSend", messagesSend, "messageCountResp", messageCountResp);
+        await session.commitTransaction();
+        await session.endSession();
+        // console.log("messageSend", messagesSend, "messageCountResp", messageCountResp);
+        // console.log("messageSend", messagesSend.results[0], "messageCountResp", messageCountResp);
     }
     catch (error) {
         console.error("Error While Sending Notification", error);
+        await session.abortTransaction();
+        await session.endSession();
     }
 };
 

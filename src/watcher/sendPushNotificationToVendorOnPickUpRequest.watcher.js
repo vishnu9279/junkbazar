@@ -1,5 +1,6 @@
 import UserOrderModel  from "../model/users/userOrder.model.js";
 import userAddress  from "../model/users/userAdress.model.js";
+import UserModel  from "../model/users/user.model.js";
 import fieldValidator from "../utils/fieldValidator.js";
 import sendNotification from "../services/sendPushNotification.js";
 const addressInfo = async (addressId) => {
@@ -19,7 +20,7 @@ const addressInfo = async (addressId) => {
 
 const vendors = async(city, stateCode) => {
     try {
-        const vendorResp = await userAddress.find({
+        const vendorResp = await UserModel.find({
             $or: [{
                 city: city
             },
@@ -57,16 +58,19 @@ async function sendPushNotificationToVendorOnPickUpRequest() {
             const addressDetail = await addressInfo(doc.addressId);
             const vendorArrayOfObjects = await vendors(addressDetail.city, addressDetail.stateCode);
 
+            console.log("vendorArrayOfObjects", vendorArrayOfObjects);
             const notificationData = {
                 data: {},
                 message: `Pickup Request with Quantity ${doc.scrapSoldCount} Final Amount is ${doc.finalAmount}`,
                 title: "You Have New PickUp Request"
             };
 
-            for (const vendorArrayOfObject of vendorArrayOfObjects)
-
+            for (const vendorArrayOfObject of vendorArrayOfObjects){
+                console.log("====================================");
+                console.log("vendorArrayOfObject", vendorArrayOfObject);
+                console.log("====================================");
                 sendNotification(notificationData, vendorArrayOfObject.userId);
-           
+            }
             // Handle the insert event here
         });
     

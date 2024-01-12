@@ -87,7 +87,7 @@ function setRoutes() {
     app.use("/api/v1/vendor", vendorRouter);
     app.use("/api/v1/admin", adminRouter);
     app.use("/api/v1/other", otherRouter);
-    app.use(watcher);
+    // app.use(watcher);
     app.get("*", (req, res) => {
         res.status(404).send({
             error: CommonMessage.ERROR_MESSAGE_NOT_FOUND 
