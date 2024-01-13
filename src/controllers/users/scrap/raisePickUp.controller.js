@@ -151,11 +151,22 @@ const raisePickUp = asyncHandler (async (req, res) => {
                 } 
             }
         }, {
+            new: true,
             session: session
         });
 
         if (fieldValidator(respValue)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
+
+        await cartModel.deleteOne({
+            $expr: {
+                $eq: [{
+                    $size: "$items" 
+                },
+                0 ]
+            },
+            userId
+        });
 
         const userResp = await UserModel.updateOne({
             userId
