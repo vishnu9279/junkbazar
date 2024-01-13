@@ -6,9 +6,9 @@ import {
 
 const router = Router();
 
-// import sendPushNotificationToVendorOnPickUpRequest from "../../watcher/sendPushNotificationToVendorOnPickUpRequest.watcher.js";
+import sendPushNotificationToVendorOnPickUpRequest from "../../watcher/sendPushNotificationToVendorOnPickUpRequest.watcher.js";
 // import sendPushNotificationToUser from "../../watcher/sendPushNotificationToUser.watcher.js";
 
-// sendPushNotificationToVendorOnPickUpRequest();
+sendPushNotificationToVendorOnPickUpRequest();
 // sendPushNotificationToUser();
 export default router;

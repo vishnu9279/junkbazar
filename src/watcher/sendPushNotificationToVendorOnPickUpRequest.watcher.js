@@ -41,8 +41,6 @@ const vendors = async(city, stateCode) => {
 async function sendPushNotificationToVendorOnPickUpRequest() {
     console.log("sendPushNotificationToVendorOnPickUpRequest working");
     try {
-        // Create a change stream with a filter for insert operations
-        // const collection = UserOrderModel.collection;
         const changeStream = await UserOrderModel.collection.watch([{
             $match: {
                 operationType: "insert" 
@@ -61,16 +59,13 @@ async function sendPushNotificationToVendorOnPickUpRequest() {
             console.log("vendorArrayOfObjects", vendorArrayOfObjects);
             const notificationData = {
                 data: {},
-                message: `Pickup Request with Quantity ${doc.scrapSoldCount} Final Amount is ${doc.finalAmount}`,
+                message: `Pickup Request with Quantity ${doc.totalQuantity} Final Amount is ${doc.finalAmount}`,
                 title: "You Have New PickUp Request"
             };
 
-            for (const vendorArrayOfObject of vendorArrayOfObjects){
-                console.log("====================================");
-                console.log("vendorArrayOfObject", vendorArrayOfObject);
-                console.log("====================================");
+            for (const vendorArrayOfObject of vendorArrayOfObjects)
                 sendNotification(notificationData, vendorArrayOfObject.userId);
-            }
+            
             // Handle the insert event here
         });
     

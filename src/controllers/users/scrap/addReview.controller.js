@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import addReviewModel  from "../../../model/users/addReview.model.js";
+import UserOrderModel  from "../../../model/users/userOrder.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -24,29 +24,30 @@ const addReview = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            rating, comment, vendorId
+            rating, comment, orderId
         } = req.body;
         
-        if (fieldValidator(rating) || fieldValidator(comment) || fieldValidator(vendorId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(rating) || fieldValidator(comment) || fieldValidator(orderId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         const obj = {
             comment,
+            orderId,
             rating,
-            userId,
-            vendorId
+            userId
         };
 
         console.log("obj", obj);
-        const review = new addReviewModel({
-            comment,
-            rating,
-            userId,
-            vendorId
+        const reviewResp =  await UserOrderModel.findOneAndUpdate({
+            orderId,
+            userId
+        }, {
+            $set: {
+                comment,
+                rating
+            }
         });
 
-        const respValue =  await review.save();
-
-        if (fieldValidator(respValue)) 
+        if (fieldValidator(reviewResp)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, registerMessage.ERROR_USER_NOT_FOUND);
        
         await session.commitTransaction();

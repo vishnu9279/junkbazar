@@ -31,6 +31,7 @@ const orderItemSchema = new mongoose.Schema({
 }, {
     _id: false
 });
+
 const userPickupSchema = new mongoose.Schema(
     {
         address: {
@@ -45,6 +46,9 @@ const userPickupSchema = new mongoose.Schema(
         },
         city: {
             type: String 
+        },
+        comment: {
+            type: String
         },
         countryCode: {
             type: String
@@ -78,10 +82,12 @@ const userPickupSchema = new mongoose.Schema(
             type: String
         },
         items: [ orderItemSchema ],
+        
         monthNumber: {
             required: true,
             type: Number
         },
+        
         orderId: {
             required: true,
             type: String
@@ -102,27 +108,13 @@ const userPickupSchema = new mongoose.Schema(
             type: Number
         },
         
-        // quantity: {
-        //     required: true,
-        //     type: Number
-        // },
-        // quantityType: {
-        //     type: String
-        // },
-        // scrapId: {
-        //     ref: "scrap",
-        //     required: true,
-        //     type: String
-        // },
-        // scrapIdF_K: {
-        //     ref: "scrap",
-        //     required: true,
-        //     type: mongoose.Schema.Types.ObjectId
-        // },
+        rating: {
+            type: Number
+        },
+        
         stateCode: {
             type: String
         },
-        
         totalQuantity: {
             required: true,
             type: Number

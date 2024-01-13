@@ -37,6 +37,6 @@ const notificatioMessageSchems = new mongoose.Schema(
     }
 );
 
-const notificationMeassageModel = mongoose.model("push_notification_message", notificatioMessageSchems);
+const notificationMeassageModel = mongoose.model("notification_message", notificatioMessageSchems);
 
 export default notificationMeassageModel;

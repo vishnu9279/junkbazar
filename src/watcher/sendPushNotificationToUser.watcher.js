@@ -5,8 +5,6 @@ import orderStatusMessageResponse from "../utils/orderStatusMessageResponse.js";
 async function sendPushNotificationToUser() {
     console.log("sendPushNotificationToUser working");
     try {
-        // Create a change stream with a filter for insert operations
-        // const collection = UserOrderModel.collection;
         const changeStream = await UserOrderModel.collection.watch([{
             $match: {
                 operationType: "updateLookup" 
@@ -19,9 +17,7 @@ async function sendPushNotificationToUser() {
         changeStream.on("change", async (change) => {
             console.log("Insert:", change);
             const doc = change.fullDocument;
-            // const addressDetail = await addressInfo(doc.addressId);
-            // const vendorArrayOfObjects = await vendors(addressDetail.city, addressDetail.stateCode);
-
+           
             const notificationData = {
                 data: {},
                 message: orderStatusMessageResponse[doc.orderStatus],
