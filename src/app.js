@@ -29,6 +29,10 @@ import {
 import checkForForceUpdate from "./middleware/checkForForceUpdate.js";
 import logHeaders from "./middleware/logHeaders.js";
 
+import {
+    connectToRabbitMQ
+} from "./configuration/rmqConnection.js";
+
 const app = express();
 
 async function connectTomongoDbConn() {
@@ -73,6 +77,7 @@ async function setupMiddleware() {
         await connectTomongoDbConn();
         await fetchConfigCollectionFromDb();
         await initializeFirebasefun();
+        await connectToRabbitMQ();
         // Error handling middleware
         app.use(errorHandlerMiddleware);
     }

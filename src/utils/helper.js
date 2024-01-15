@@ -8,6 +8,13 @@ const oneWeekMillisecond = 7 * 24 * 60 * 60 * 1000;
 import {
     getCache
 } from "../configuration/fetchConfigCollectionFromDb.js";
+
+import {
+    amqConnectionHelper
+} from "../configuration/rmqConnection.js";
+
+const amqpChannel = amqConnectionHelper();
+
 class Helper{
     phoneNumberValidation(phoneNumber){
         const regex = /^[6-9]\d{9}$/;
@@ -124,6 +131,33 @@ class Helper{
         const day_difference = difference / oneDayMillisecond;
 
         return Math.floor(day_difference);
+    }
+
+    publishQueueMessage(queueName, body) {
+        console.log("Publising message in " + queueName, "body", JSON.stringify(body));
+
+        amqpChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(body)), {
+            persistent: true
+        });
+    }
+
+    // socket events
+    emitToUser(client_id, eventName, data) {
+        console.log("emitToUser", client_id, eventName, data);
+    
+        this.publishQueueMessage("sockets", {
+            client_id,
+            data,
+            eventName,
+            module_name: "MODULE_SERVER",
+            type: "emitToUser"
+        });
+    }    
+
+    acknowledgeMessage(messageFromQueue) {
+        console.log("acknowledgeMessage => ", messageFromQueue.fields.routingKey);
+
+        amqpChannel.ack(messageFromQueue);
     }
 }
 

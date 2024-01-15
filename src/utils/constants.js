@@ -30,6 +30,7 @@ export const basicConfigurationObject  = {
     MONGODB_URI: process.env.MONGODB_URI,
     PASSWORD_SECRET_KEY: process.env.PASSWORD_SECRET_KEY,
     PORT_NUMBER: process.env.PORT,
+    RABBIT_MQ_URL: process.env.RABBIT_MQ_URL,
     REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
     TWO_FACTOR_API_SMS_SERVICE: process.env.TWO_FACTOR_API_SMS_SERVICE
