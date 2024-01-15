@@ -11,7 +11,7 @@ import helper from "../../utils/helper.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 
-const saveAddAddressHelper =  async (stateCode, countryCode, pincode, address, city, userId, session ) => {
+const saveAddAddressHelper =  async (stateCode, countryCode, pincode, address, city, userId, fullName, dialCode, phoneNumber, session ) => {
     console.log("saveAddAddressHelper working", stateCode, countryCode, pincode, address, city);
     
     const currentTime = new Date().getTime();
@@ -26,7 +26,10 @@ const saveAddAddressHelper =  async (stateCode, countryCode, pincode, address, c
             countryCode,
             currentTime,
             dayNumber: await helper.getDayNumber(),
+            dialCode,
+            fullName,
             monthNumber: await helper.getMonthNumber(),
+            phoneNumber,
             pincode: parseInt(pincode),
             stateCode,
             userId,

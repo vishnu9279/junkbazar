@@ -25,10 +25,10 @@ const addAddress = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            stateCode, countryCode, pincode, address, city
+            stateCode, countryCode, pincode, address, city, fullName, dialCode, phoneNumber
         } = req.body;
         
-        if ( fieldValidator(pincode) || fieldValidator(city) || fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(address)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if ( fieldValidator(pincode) || fieldValidator(city) || fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(address) || fieldValidator(fullName) || fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
        
         const userAddressResp = await userAddress.find({
             address
@@ -39,7 +39,7 @@ const addAddress = asyncHandler (async (req, res) => {
         if (!fieldValidator(userAddressResp)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, AddAdressMessage.ADDRESS_ALREADY_EXIST);
 
-        const resp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, session);
+        const resp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, fullName, dialCode, phoneNumber, session);
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
       

@@ -76,7 +76,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
         if (fieldValidator(addressId) && (fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(pincode) || fieldValidator(address) || fieldValidator(city))) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         if (fieldValidator(addressId)){
-            addressResp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, session);
+            addressResp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, fullName, dialCode, phoneNumber, session);
             ordersObj.addressId = addressResp.addressId;
         }
         else {

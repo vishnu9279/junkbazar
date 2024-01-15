@@ -13,8 +13,6 @@ import {
     amqConnectionHelper
 } from "../configuration/rmqConnection.js";
 
-const amqpChannel = amqConnectionHelper();
-
 class Helper{
     phoneNumberValidation(phoneNumber){
         const regex = /^[6-9]\d{9}$/;
@@ -134,30 +132,31 @@ class Helper{
     }
 
     publishQueueMessage(queueName, body) {
+        console.log("amqpChannel" );
         console.log("Publising message in " + queueName, "body", JSON.stringify(body));
 
-        amqpChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(body)), {
+        amqConnectionHelper().sendToQueue(queueName, Buffer.from(JSON.stringify(body)), {
             persistent: true
         });
     }
 
     // socket events
-    emitToUser(client_id, eventName, data) {
-        console.log("emitToUser", client_id, eventName, data);
+    emitToUser(userId, eventName, data) {
+        console.log("emitToUser", userId, eventName, data);
     
         this.publishQueueMessage("sockets", {
-            client_id,
             data,
             eventName,
             module_name: "MODULE_SERVER",
-            type: "emitToUser"
+            type: "emitToUser",
+            userId
         });
     }    
 
     acknowledgeMessage(messageFromQueue) {
         console.log("acknowledgeMessage => ", messageFromQueue.fields.routingKey);
 
-        amqpChannel.ack(messageFromQueue);
+        amqConnectionHelper().ack(messageFromQueue);
     }
 }
 

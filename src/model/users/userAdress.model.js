@@ -23,16 +23,28 @@ const userAddressSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        
         dayNumber: {
             required: true,
             type: Number 
+        },
+        dialCode: {
+            required: true,
+            type: String
         },
         enabled: {
             default: true,
             type: Boolean
         },
+        
+        fullName: {
+            required: true,
+            type: String
+        },
         monthNumber: {
+            required: true,
+            type: Number
+        },
+        phoneNumber: {
             required: true,
             type: Number
         },

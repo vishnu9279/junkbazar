@@ -10,8 +10,8 @@ class ApiResponse {
         console.log("basicConfigurationObject.JSON_STRINGIFY", basicConfigurationObject.JSON_STRINGIFY);
         this.statusCode = statusCode;
         this.successCode = successCode;
-        this.data = (!fieldValidator(basicConfigurationObject.JSON_STRINGIFY)) ? data : JSON.stringify(data);
-        // this._data =  JSON.stringify(data);
+        // this.data = (!fieldValidator(basicConfigurationObject.JSON_STRINGIFY)) ? data : JSON.stringify(data);
+        this.data =  JSON.stringify(data);
         this.message = message;
         this.success = statusCode < 400;
     }
