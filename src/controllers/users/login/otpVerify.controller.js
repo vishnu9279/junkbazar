@@ -72,17 +72,17 @@ const otpVerify = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        if (user.isDocumentUploaded){
-            const tokenObj = {       
-                ip,
-                phoneNumber,
-                userId: user.userId,
-                userIdF_k: user._id,
-                userRole: user.roles
-            };
+        // if (user.isDocumentUploaded){
+        const tokenObj = {       
+            ip,
+            phoneNumber,
+            userId: user.userId,
+            userIdF_k: user._id,
+            userRole: user.roles
+        };
     
-            token =  await createJwtToken(tokenObj, req.originalUrl, platform);
-        }
+        token =  await createJwtToken(tokenObj, req.originalUrl, platform);
+        // }
 
         await session.commitTransaction();
 
