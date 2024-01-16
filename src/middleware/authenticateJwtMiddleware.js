@@ -21,13 +21,20 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         if (!authHeader) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Authorization header is missing");
 
         const tokenParts = authHeader.split(" ");
-    
+        
         if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== "bearer") throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Invalid Authorization header format");
-    
+        
         const token = tokenParts[1];
         const currentTime = new Date().getTime();
         // Verify the token using the secret key (replace 'your_secret_key' with your actual secret key)
         const decoded = jsonwebtoken.verify(token, basicConfigurationObject.ACCESS_TOKEN_SECRET);
+
+        console.log({
+            authHeader,
+            decoded,
+            ip,
+            tokenParts
+        });
 
         // console.log("decoded", decoded);
         const encryptObj = await helper.decryptAnyData(decoded.encrypt);
