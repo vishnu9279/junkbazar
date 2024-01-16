@@ -107,6 +107,9 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                     items: {
                         $push: "$items" 
                     },
+                    orderId: {
+                        $first: "$orderId"
+                    },
                     updatedAt: {
                         $first: "$updatedAt" 
                     },

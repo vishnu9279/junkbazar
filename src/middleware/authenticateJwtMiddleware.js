@@ -14,7 +14,7 @@ import RolesEnum from "../utils/roles.js";
 
 const authenticateJwtMiddleware =  async(req, res, next) => {
     const authHeader = req.headers.authorization;
-    const ip = req.headers.ip;
+    // const ip = req.headers.ip;
     let user;
 
     try {
@@ -32,7 +32,7 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         console.log({
             authHeader,
             decoded,
-            ip,
+            // ip,
             tokenParts
         });
 
@@ -40,7 +40,7 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         const encryptObj = await helper.decryptAnyData(decoded.encrypt);
 
         // console.log("encryptObj", encryptObj);
-        if (encryptObj.ip !== ip) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "unauthorized Token");
+        // if (encryptObj.ip !== ip) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "unauthorized Token");
 
         if (currentTime > encryptObj.expiryTime) throw new ApiError(statusCodeObject.HTTP_STATUS_UNAUTHORIZED, errorAndSuccessCodeConfiguration.HTTP_STATUS_UNAUTHORIZED, "Token Expired");
 
