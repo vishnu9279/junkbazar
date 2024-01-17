@@ -73,13 +73,14 @@ const raisePickUp = asyncHandler (async (req, res) => {
 
         if (countryAndStateResp.length === 0)  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        const stateResp = countryAndStateResp[0].states.find(el => el.state_code === stateCode);
+        // const stateResp = countryAndStateResp[0].states.find(el => el.state_code === stateCode);
+
+        const cityResp = countryAndStateResp[0].states[0].cities.find(el => el.name === city);
 
         console.log("countryAndStateResp", {
-            state: countryAndStateResp[0].states,
-            stateResp
+            cityResp,
+            state: countryAndStateResp[0].states
         });
-        const cityResp = stateResp.cities.find(el => el.name === city);
 
         if (fieldValidator(cityResp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
