@@ -73,7 +73,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
 
         if (countryAndStateResp.length === 0)  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        const stateResp = countryAndStateResp[0].states.map(el => el.state_code === stateCode);
+        const stateResp = countryAndStateResp[0].states.find(el => el.state_code === stateCode);
 
         console.log("countryAndStateResp", {
             state: countryAndStateResp[0].states,
