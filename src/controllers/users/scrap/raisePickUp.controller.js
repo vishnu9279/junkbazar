@@ -46,30 +46,35 @@ const raisePickUp = asyncHandler (async (req, res) => {
         
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
         
-        const countryAndStateResp =  await CountryModel.findOne({
-            iso2: countryCode
-        });
+        const countryAndStateResp =  await CountryModel.ggregate([
+            {
+                $match: {
+                    iso2: countryCode,
+                    "states.state_code": stateCode
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    iso2: 1,
+                    states: {
+                        $filter: {
+                            as: "state",
+                            cond: {
+                                $eq: [ "$$state.state_code",
+                                    stateCode ] 
+                            },
+                            input: "$states"
+                        }
+                    }
+                }
+            }
+        ]);
 
-        console.log("countryAndStateResp", countryAndStateResp.states);
+        if (countryAndStateResp.length === 0)  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        if (!countryAndStateResp || !countryAndStateResp.states) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR,
-                CommonMessage.SOMETHING_WENT_WRONG
-            );
-        }
-        
-        const stateResp = countryAndStateResp.states.find(el => el.state_code === stateCode);
-        
-        if (!stateResp || !stateResp.cities) {
-            throw new ApiError(
-                statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR,
-                CommonMessage.SOMETHING_WENT_WRONG
-            );
-        }
-        
+        console.log("countryAndStateResp", countryAndStateResp[0].states);
+        const stateResp = countryAndStateResp[0].states.map(el => el.state_code === stateCode);
         const cityResp = stateResp.cities.find(el => el.name === city);
 
         if (fieldValidator(cityResp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
