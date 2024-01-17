@@ -22,7 +22,7 @@ const removeFormCart = asyncHandler(async (req, res) => {
 
         const scrap = await cartModel.findOne({
             enabled: true,
-            "items.scrapId": scrapId,
+            // "items.scrapId": scrapId,
             userId
         });
 
@@ -31,12 +31,17 @@ const removeFormCart = asyncHandler(async (req, res) => {
         if (fieldValidator(scrap)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
+        const scrapInfo = scrap.items.find(el => el.scrapId === scrapId);
+
+        if (fieldValidator(scrapInfo)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
+
         const scraps = await cartModel.findOneAndUpdate({
-            "items.scrapId": scrapId,
+            // "items.scrapId": scrapId,
             userId
         }, {
             $inc: {
-                finalAmount: -scrap.amount 
+                finalAmount: -scrapInfo.amount 
             },
             $pull: {
                 items: {

@@ -29,12 +29,12 @@ const authenticateJwtMiddleware =  async(req, res, next) => {
         // Verify the token using the secret key (replace 'your_secret_key' with your actual secret key)
         const decoded = jsonwebtoken.verify(token, basicConfigurationObject.ACCESS_TOKEN_SECRET);
 
-        console.log({
-            authHeader,
-            decoded,
-            // ip,
-            tokenParts
-        });
+        // console.log({
+        // authHeader,
+        // decoded,
+        // ip,
+        // tokenParts
+        // });
 
         // console.log("decoded", decoded);
         const encryptObj = await helper.decryptAnyData(decoded.encrypt);
