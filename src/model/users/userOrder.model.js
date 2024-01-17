@@ -87,6 +87,10 @@ const userPickupSchema = new mongoose.Schema(
             type: Number
         },
         
+        markupFeePercentage: {
+            required: true,
+            type: Number
+        },
         monthNumber: {
             required: true,
             type: Number
@@ -103,6 +107,7 @@ const userPickupSchema = new mongoose.Schema(
         paymentType: {
             type: String
         },
+        
         phoneNumber: {
             required: true,
             type: Number
@@ -111,7 +116,6 @@ const userPickupSchema = new mongoose.Schema(
         pincode: {
             type: Number
         },
-        
         rating: {
             type: Number
         },

@@ -166,6 +166,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
         ordersObj.finalAmount = finalAmount;
         ordersObj.totalQuantity = totalQuantity;
         ordersObj.markupFee = markupFee;
+        ordersObj.markupFeePercentage = cityResp.marginFees;
         
         if (ordersObj.totalQuantity >= helper.getCacheElement("CONFIG", "SCRAP_QUANTITY"))
             ordersObj.orderStatus = OrdersEnum.ASSIGN_TO_ADMIN;
