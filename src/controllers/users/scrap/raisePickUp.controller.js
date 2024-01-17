@@ -50,6 +50,8 @@ const raisePickUp = asyncHandler (async (req, res) => {
             iso2: countryCode
         });
 
+        console.log("countryAndStateResp", countryAndStateResp.states);
+
         if (!countryAndStateResp || !countryAndStateResp.states) {
             throw new ApiError(
                 statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -57,8 +59,6 @@ const raisePickUp = asyncHandler (async (req, res) => {
                 CommonMessage.SOMETHING_WENT_WRONG
             );
         }
-        
-        console.log("countryAndStateResp", countryAndStateResp.states);
         
         const stateResp = countryAndStateResp.states.find(el => el.state_code === stateCode);
         
