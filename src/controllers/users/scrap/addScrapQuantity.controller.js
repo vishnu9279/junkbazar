@@ -49,6 +49,9 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
             "items.scrapId": scrapId,
             userId
         }, {
+            $inc: {
+                finalAmount: amount 
+            },
             $set: {
                 "items.$.quantity": quantity
             }
