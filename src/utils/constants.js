@@ -115,6 +115,7 @@ export const OrderMessage = {
 };
 export const AddAdressMessage = {
     ADDRESS_ALREADY_EXIST: "Address already Exist",
+    ADDRESS_LIMIT_REACHED: "You Can Add Only 10 Address",
     ADDRESS_NOT_FOUND: "Address Not Found"
 
 };

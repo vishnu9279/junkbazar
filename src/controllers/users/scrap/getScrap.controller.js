@@ -20,15 +20,21 @@ const getScrap = asyncHandler(async (req, res) => {
     try {
         let limit = req.query.limit;
         let page = req.query.page;
+        const scrapName = req.query.scrapName;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const scraps = await Scrap.find({
+        const filterObj = {
             enabled: true
-        }).sort({
+        };
+
+        if (!fieldValidator(scrapName))
+            filterObj.scrapName = new RegExp(scrapName, "i");
+
+        const scraps = await Scrap.find(filterObj).sort({
             createdAt: -1
         })
             .skip(skip)
@@ -40,7 +46,9 @@ const getScrap = asyncHandler(async (req, res) => {
             scraps[index].docUrl = url;
         }
 
-        const totalScrapCount = await Scrap.countDocuments({});
+        const totalScrapCount = await Scrap.countDocuments({
+            filterObj
+        });
 
         const finalObj = {
             scraps: scraps,

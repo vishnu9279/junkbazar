@@ -15,6 +15,8 @@ import {
     getNewMongoSession
 } from "../../configuration/dbConnection.js";
 
+import helper from "../../utils/helper.js";
+
 const addAddress = asyncHandler (async (req, res) => {
     console.log("addAddress working", req.body);
     let  session;
@@ -29,7 +31,13 @@ const addAddress = asyncHandler (async (req, res) => {
         } = req.body;
         
         if ( fieldValidator(pincode) || fieldValidator(city) || fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(address) || fieldValidator(fullName) || fieldValidator(dialCode) || fieldValidator(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
-       
+
+        const totalAddressCount = await userAddress.countDocuments({
+            userId
+        });
+
+        if (totalAddressCount >= await helper.getCacheElement("CONFIG", "MAX_ADDRESS_COUNT_FROM_USER"))  throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, AddAdressMessage.ADDRESS_LIMIT_REACHED);
+
         const userAddressResp = await userAddress.find({
             address
         });
