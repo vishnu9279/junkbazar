@@ -35,6 +35,9 @@ const removeFormCart = asyncHandler(async (req, res) => {
             "items.scrapId": scrapId,
             userId
         }, {
+            $inc: {
+                finalAmount: -scrap.amount 
+            },
             $pull: {
                 items: {
                     scrapId: scrapId 

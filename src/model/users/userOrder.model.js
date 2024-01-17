@@ -83,11 +83,14 @@ const userPickupSchema = new mongoose.Schema(
         },
         items: [ orderItemSchema ],
         
+        markupFee: {
+            type: Number
+        },
+        
         monthNumber: {
             required: true,
             type: Number
         },
-        
         orderId: {
             required: true,
             type: String
@@ -104,6 +107,7 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        
         pincode: {
             type: Number
         },
@@ -111,7 +115,6 @@ const userPickupSchema = new mongoose.Schema(
         rating: {
             type: Number
         },
-        
         stateCode: {
             type: String
         },

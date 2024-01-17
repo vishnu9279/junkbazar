@@ -103,12 +103,17 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     localField: "addressId",
                     pipeline: [{
                         $match: {
-                            $or: [{
-                                city: user.city
-                            },
-                            {
-                                stateCode: user.stateCode
-                            }]
+                            $or: [
+                                {
+                                    pincode: user.pincode // 1st
+                                },
+                                {
+                                    city: user.city // 2nd
+                                },
+                                {
+                                    stateCode: user.stateCode //3rd
+                                }
+                            ]
                         }
                     }]
                 }

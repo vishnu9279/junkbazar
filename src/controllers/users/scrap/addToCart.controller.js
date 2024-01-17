@@ -72,8 +72,12 @@ const addToCart = asyncHandler (async (req, res) => {
         // else 
         //     addToCartSaveObj.addToCartId = cartResp.addToCartId;
 
+        const quantity = addScrapQuantity || 1;
+        const amount = parseFloat((quantity * scrap.price).toFixed(2));
         const items = [{
-            quantity: addScrapQuantity || 1,
+            amount,
+            price: scrap.price,
+            quantity,
             scrapId,
             scrapIdF_K: scrap._id
 
@@ -83,10 +87,12 @@ const addToCart = asyncHandler (async (req, res) => {
             userId
         }, {
             
+            $inc: {
+                finalAmount: amount 
+            },
             $push: {
                 items
             },
-                
             $set: addToCartSaveObj
         }, {
             new: true,

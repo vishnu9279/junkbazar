@@ -3,6 +3,7 @@
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserOrderModel  from "../../../model/users/userOrder.model.js";
 import userAddress  from "../../../model/users/userAdress.model.js";
+import CountryModel from "../../../model/countries.model.js";
 
 import cartModel  from "../../../model/users/cart.model.js";
 import UserModel  from "../../../model/users/user.model.js";
@@ -45,6 +46,17 @@ const raisePickUp = asyncHandler (async (req, res) => {
         
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.PLEASE_ENTER_VALID_PHONE_NUMBER);
         
+        const countryAndStateResp =  await CountryModel.findOne({
+            iso2: countryCode
+        });
+
+        if (fieldValidator(countryAndStateResp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
+
+        const stateResp = countryAndStateResp.states.map(el => el.state_code === stateCode);
+        const cityResp = stateResp.cities.find(el => el.name === city);
+
+        if (fieldValidator(cityResp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
+
         scrapIds = scrapIds.split(",").map(el => el.trim());
         console.log("scrapIds", scrapIds);
         
@@ -121,11 +133,13 @@ const raisePickUp = asyncHandler (async (req, res) => {
                 scrapIdF_K: scrap._id
             });
         }
-        
+        const markupFee = parseFloat(finalAmount * (cityResp.marginFees / 100));
+
         ordersObj.items = ordersItemArray;
         ordersObj.finalAmount = finalAmount;
         ordersObj.totalQuantity = totalQuantity;
-
+        ordersObj.markupFee = markupFee;
+        
         if (ordersObj.totalQuantity >= helper.getCacheElement("CONFIG", "SCRAP_QUANTITY"))
             ordersObj.orderStatus = OrdersEnum.ASSIGN_TO_ADMIN;
 

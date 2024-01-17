@@ -3,6 +3,14 @@
 import mongoose from "mongoose";
 
 const cartItemSchema = new mongoose.Schema({
+    amount: {
+        required: true,
+        type: Number 
+    },
+    price: {
+        required: true,
+        type: Number
+    },
     quantity: {
         required: true,
         type: Number 
@@ -35,7 +43,10 @@ const cartSchema = new mongoose.Schema(
             default: true,
             type: Boolean
         },
-        
+        finalAmount: {
+            required: true,
+            type: Number
+        },
         items: [ cartItemSchema ],
         // quantity: {
         //     required: true,
