@@ -52,7 +52,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
 
         if (fieldValidator(countryAndStateResp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        console.log("countryAndStateResp", countryAndStateResp);
+        console.log("countryAndStateResp", countryAndStateResp.states);
         const stateResp = countryAndStateResp.states.map(el => el.state_code === stateCode);
         const cityResp = stateResp.cities.find(el => el.name === city);
 
