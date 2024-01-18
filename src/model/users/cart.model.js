@@ -43,10 +43,6 @@ const cartSchema = new mongoose.Schema(
             default: true,
             type: Boolean
         },
-        finalAmount: {
-            required: true,
-            type: Number
-        },
         items: [ cartItemSchema ],
         // quantity: {
         //     required: true,

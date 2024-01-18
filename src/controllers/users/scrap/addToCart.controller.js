@@ -86,10 +86,6 @@ const addToCart = asyncHandler (async (req, res) => {
         const resp = await cartModel.findOneAndUpdate({
             userId
         }, {
-            
-            $inc: {
-                finalAmount: amount 
-            },
             $push: {
                 items
             },
