@@ -2,6 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import cartModel  from "../../../model/users/cart.model.js";
+import Scrap  from "../../../model/users/scrap.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -33,7 +34,7 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
 
         if (fieldValidator(scrapId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
-        const scrap = await cartModel.findOne({
+        const cart = await cartModel.findOne({
             enabled: true,
             "items.scrapId": scrapId,
             userId
@@ -41,19 +42,25 @@ const addScrapQuantity = asyncHandler (async (req, res) => {
 
         // console.log("scrap", scrap);
 
-        if (fieldValidator(scrap)) 
+        if (fieldValidator(cart)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
 
+        const scrap = await Scrap.findOne({
+            scrapId
+        });
+        
+        if (fieldValidator(scrap)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_NOT_FOUND);
+        
+        const amount = parseFloat((quantity * scrap.price).toFixed(2));
         const resp = await cartModel.findOneAndUpdate({
             enabled: true,
             "items.scrapId": scrapId,
             userId
         }, {
-            $inc: {
-                finalAmount: amount 
-            },
             $set: {
-                "items.$.quantity": quantity
+                "items.$.amount": amount,
+                "items.$.quantity": quantity 
             }
         }, {
             session: session
