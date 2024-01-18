@@ -25,12 +25,12 @@ const uploadDocument = asyncHandler (async (req, res) => {
     
         session.startTransaction();
         const {
-            firstName, lastName, aadhaarID, panID, profile, userId, address, city, stateCode, countryCode
+            firstName, lastName, aadhaarID, panID, profile, userId, address, city, stateCode, countryCode, pincode
         } = req.body;
         const platform = req.headers.platform;
         // const ip = req.headers.ip;
 
-        if (fieldValidator(firstName) || fieldValidator(lastName) || fieldValidator(aadhaarID) || fieldValidator(panID) || fieldValidator(profile) || fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(city) || fieldValidator(address) || fieldValidator(userId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(firstName) || fieldValidator(lastName) || fieldValidator(aadhaarID) || fieldValidator(panID) || fieldValidator(profile) || fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(city) || fieldValidator(address) || fieldValidator(userId) || fieldValidator(pincode)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
         const country = await CountryModel.findOne({
             iso2: countryCode
@@ -48,6 +48,7 @@ const uploadDocument = asyncHandler (async (req, res) => {
             isDocumentUploaded: true,
             lastName,
             panID,
+            pincode,
             profile,
             stateCode
         };

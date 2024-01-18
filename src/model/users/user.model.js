@@ -92,6 +92,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
+        pincode: {
+            required: true,
+            type: Number
+        },
         profile: {
             required: false,
             type: String 

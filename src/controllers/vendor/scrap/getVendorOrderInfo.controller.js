@@ -78,6 +78,12 @@ const getVendorOrderInfo = asyncHandler(async (req, res) => {
                     items: {
                         $push: "$items" 
                     },
+                    markupFee: {
+                        $first: "$markupFee"
+                    },
+                    markupFeePercentage: {
+                        $first: "$markupFeePercentage"
+                    },
                     orderId: {
                         $first: "$orderId"
                     },
