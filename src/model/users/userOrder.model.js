@@ -26,6 +26,18 @@ const orderItemSchema = new mongoose.Schema({
         ref: "scrap",
         required: true,
         type: mongoose.Schema.Types.ObjectId
+    },
+    vendorAmount: {
+        required: false,
+        type: Number
+    },
+    vendorPrice: {
+        required: false,
+        type: Number
+    },
+    vendorQuantity: {
+        required: false,
+        type: Number
     }
 
 }, {
@@ -136,8 +148,16 @@ const userPickupSchema = new mongoose.Schema(
             required: true, 
             type: mongoose.Schema.Types.ObjectId
         },
+        vendorFinalAmount: {
+            required: false,
+            type: Number
+        },
         vendorId: {
             type: String  
+        },
+        VendorTotalScrapQuantity: {
+            required: false,
+            type: Number
         },
         weekNumber: {
             required: true,

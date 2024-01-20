@@ -26,6 +26,7 @@ import logout from "../../controllers/vendor/logout.controller.js";
 import updateProfile from "../../controllers/vendor/updateProfile.controller.js";
 import getPaymentType from "../../controllers/vendor/scrap/getPaymentType.controller.js";
 import updatePaymentMethod from "../../controllers/vendor/scrap/updatePaymentMethod.controller.js";
+import vendorScrapOrderConfirmation from "../../controllers/vendor/scrap/vendorScrapOrderConfirmation.controller.js";
 
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
 router.route("/getVendorOrderInfo").get(authenticateJwtMiddleware, getVendorOrderInfo);
@@ -45,5 +46,6 @@ router.route("/updateActiveStatus").post(authenticateJwtMiddleware, updateActive
 router.route("/updateProfile").post(authenticateJwtMiddleware, updateProfile);
 router.route("/getPaymentType").get(authenticateJwtMiddleware, getPaymentType);
 router.route("/updatePaymentMethod").post(authenticateJwtMiddleware, updatePaymentMethod);
+router.route("/vendorScrapOrderConfirmation").post(authenticateJwtMiddleware, vendorScrapOrderConfirmation);
 
 export default router;

@@ -1,6 +1,5 @@
 "use strict";
 
-// import NodeCache from "node-cache";
 import crypto from "crypto";
 const oneDayMillisecond = 24 * 60 * 60 * 1000;
 const oneWeekMillisecond = 7 * 24 * 60 * 60 * 1000;
@@ -12,6 +11,34 @@ import {
 import {
     amqConnectionHelper
 } from "../configuration/rmqConnection.js";
+import BalanceModel from "../model/vendor/balance.model.js";
+import transactionHistoryModel from "../model/vendor/transaction_history.model.js";
+
+function transactionLog(userId, amount, type, currency, transaction_id, before_balance, after_balance, transactionSession, wallet_type, callback) {
+    const queryOptions = {};
+
+    if (transactionSession)
+        queryOptions.session = transactionSession.session;
+
+    const transaction_object = {
+        after_balance,
+        amount,
+        before_balance,
+        currency,
+        transaction_id,
+        type,
+        userId,
+        wallet_type
+    };
+
+    transactionHistoryModel.insertOne(transaction_object, queryOptions, (err) => {
+        if (err)
+            callback(err);
+
+        else
+            callback(null);
+    });
+}
 
 class Helper{
     phoneNumberValidation(phoneNumber){
@@ -157,6 +184,90 @@ class Helper{
         console.log("acknowledgeMessage => ", messageFromQueue.fields.routingKey);
 
         amqConnectionHelper().ack(messageFromQueue);
+    }
+
+    async updateUserBalance(userId, currency, amount, type, transaction_id, transactionSession, wallet_type) {
+        console.log("updateUserBalance", {
+            amount,
+            currency,
+            type,
+            userId,
+            wallet_type
+        });
+    
+        if (isNaN(amount)) 
+            throw new Error("Invalid amount");
+
+        let after_balance = 0;
+        let before_balance = 0;
+        let new_balance = 0;
+        // Step 1: Get before_balance
+        const queryOptions = {};
+    
+        if (transactionSession) 
+            queryOptions.session = transactionSession.session;
+    
+        const beforeBalanceItem = await BalanceModel.collection("balances").findOne({
+            currency: currency,
+            userId: userId,
+            wallet_type: wallet_type
+        }, queryOptions);
+    
+        before_balance = beforeBalanceItem ? parseFloat(beforeBalanceItem.balance) : 0;
+    
+        // Step 2: Update balance
+        const updateOptions = {
+            returnOriginal: false,
+            upsert: true
+        };
+    
+        if (transactionSession) 
+            updateOptions.session = transactionSession.session;
+    
+        const resp = await BalanceModel.findOneAndUpdate({
+            currency: currency,
+            userId: userId,
+            wallet_type: wallet_type
+        }, {
+            $inc: {
+                balance: amount
+            },
+            $set: {
+                updated: new Date().getTime()
+            },
+            $setOnInsert: {
+                currency: currency,
+                userId: userId,
+                wallet_type: wallet_type
+            }
+        }, updateOptions);
+    
+        const balance = parseFloat(resp.value.balance.toString());
+    
+        if (isNaN(balance) || balance < 0) 
+            throw new Error("Insufficient Balance in " + currency.toUpperCase());
+    
+        // Step 3: Get after_balance
+        const afterBalanceItem = await BalanceModel.findOne({
+            currency: currency,
+            userId: userId,
+            wallet_type: wallet_type
+        }, queryOptions);
+    
+        after_balance = afterBalanceItem ? parseFloat(afterBalanceItem.balance) : 0;
+        new_balance = afterBalanceItem ? afterBalanceItem.balance.toString() : 0;
+    
+        // Step 4: Log the transaction
+        await transactionLog(userId, amount, type, currency, transaction_id, before_balance, after_balance, transactionSession, wallet_type);
+    
+        console.log({
+            after_balance,
+            before_balance,
+            new_balance
+        });
+    
+        // Return new_balance
+        return new_balance;
     }
 }
 

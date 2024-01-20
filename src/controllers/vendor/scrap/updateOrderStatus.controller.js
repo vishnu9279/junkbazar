@@ -1,7 +1,7 @@
 "use strict";
 
 import asyncHandler from "../../../utils/asyncHandler.js";
-import UserPickAddress  from "../../../model/users/userOrder.model.js";
+import userOrderModel  from "../../../model/users/userOrder.model.js";
 import vendorBookingModel from "../../../model/vendor/vendorBooking.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
@@ -20,6 +20,7 @@ import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
 import helper from "../../../utils/helper.js";
+import markupFessCalculation from "./orderHelper/markupFessCalculation.js";
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
     console.log("updateOrderStatus working", req.body, req.decoded);
@@ -36,7 +37,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         if (fieldValidator(orderId) || fieldValidator(orderStatus)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
        
         orderStatus = parseInt(orderStatus);
-        const order = await UserPickAddress.findOne({
+        const order = await userOrderModel.findOne({
             orderId
         });
 
@@ -50,13 +51,14 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         };
 
         if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
-
+         
         if (orderStatus !== OrdersEnum.REJECTED){
-            const resp = await UserPickAddress.findOneAndUpdate({
+            const resp = await userOrderModel.findOneAndUpdate({
                 orderId
             }, {
                 $set: obj
             }, {
+                new: true,
                 session: session
             });
 
@@ -67,6 +69,10 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
                     ScrapMessage.SCRAP_ALREADY_EXIST
                 );
             }
+
+            console.log("resp", resp);
+
+            if (orderStatus === OrdersEnum.SCRAP_PICKED) await markupFessCalculation(resp, session);
         }
         else {
             console.log("else condition is working");
