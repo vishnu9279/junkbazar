@@ -11,6 +11,7 @@ import {
     statusCodeObject,
     errorAndSuccessCodeConfiguration
 } from "../../../../utils/constants.js";
+import helper from "../../../../utils/helper.js";
 
 const markupFessCalculation = async (orderObj, session) => {
     console.log("markupFessCalculation working");
@@ -73,6 +74,10 @@ const markupFessCalculation = async (orderObj, session) => {
             new: true,
             session: session
         });
+
+        const balance =  await helper.updateUserBalance(orderObj.vendorId, "inr", markupFee, "PAYMENT_DUE", orderObj.orderId, session, "due_payment");
+
+        console.log("balance", balance);
 
         return resp.value;
     }

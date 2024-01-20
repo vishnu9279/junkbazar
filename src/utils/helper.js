@@ -13,14 +13,15 @@ import {
 } from "../configuration/rmqConnection.js";
 import BalanceModel from "../model/vendor/balance.model.js";
 import transactionHistoryModel from "../model/vendor/transaction_history.model.js";
+import fieldValidator from "./fieldValidator.js";
 
-function transactionLog(userId, amount, type, currency, transaction_id, before_balance, after_balance, transactionSession, wallet_type, callback) {
+function transactionLog(userId, amount, type, currency, transaction_id, before_balance, after_balance, transactionSession, wallet_type) {
     const queryOptions = {};
 
     if (transactionSession)
         queryOptions.session = transactionSession.session;
 
-    const transaction_object = {
+    const transaction_object = new transactionHistoryModel ({
         after_balance,
         amount,
         before_balance,
@@ -29,14 +30,10 @@ function transactionLog(userId, amount, type, currency, transaction_id, before_b
         type,
         userId,
         wallet_type
-    };
+    });
 
-    transactionHistoryModel.insertOne(transaction_object, queryOptions, (err) => {
-        if (err)
-            callback(err);
-
-        else
-            callback(null);
+    transaction_object.save({
+        transactionSession
     });
 }
 
@@ -190,6 +187,7 @@ class Helper{
         console.log("updateUserBalance", {
             amount,
             currency,
+            transaction_id,
             type,
             userId,
             wallet_type
@@ -202,28 +200,26 @@ class Helper{
         let before_balance = 0;
         let new_balance = 0;
         // Step 1: Get before_balance
-        const queryOptions = {};
     
-        if (transactionSession) 
-            queryOptions.session = transactionSession.session;
-    
-        const beforeBalanceItem = await BalanceModel.collection("balances").findOne({
+        const beforeBalanceItem = await BalanceModel.findOne({
             currency: currency,
             userId: userId,
             wallet_type: wallet_type
-        }, queryOptions);
-    
-        before_balance = beforeBalanceItem ? parseFloat(beforeBalanceItem.balance) : 0;
+        }).session(transactionSession);
+
+        before_balance = fieldValidator(beforeBalanceItem) ? 0 : parseFloat(beforeBalanceItem.balance);
+        console.log("beforeBalanceItem", before_balance);
     
         // Step 2: Update balance
         const updateOptions = {
-            returnOriginal: false,
+            new: true,
             upsert: true
         };
     
         if (transactionSession) 
-            updateOptions.session = transactionSession.session;
-    
+            updateOptions.session = transactionSession;
+
+        // console.log(updateOptions);
         const resp = await BalanceModel.findOneAndUpdate({
             currency: currency,
             userId: userId,
@@ -240,9 +236,9 @@ class Helper{
                 userId: userId,
                 wallet_type: wallet_type
             }
-        }, updateOptions);
+        }, updateOptions).session(transactionSession);
     
-        const balance = parseFloat(resp.value.balance.toString());
+        const balance = parseFloat(resp.balance.toString());
     
         if (isNaN(balance) || balance < 0) 
             throw new Error("Insufficient Balance in " + currency.toUpperCase());
@@ -252,7 +248,7 @@ class Helper{
             currency: currency,
             userId: userId,
             wallet_type: wallet_type
-        }, queryOptions);
+        }).session(transactionSession);
     
         after_balance = afterBalanceItem ? parseFloat(afterBalanceItem.balance) : 0;
         new_balance = afterBalanceItem ? afterBalanceItem.balance.toString() : 0;
