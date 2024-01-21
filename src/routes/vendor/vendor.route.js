@@ -46,6 +46,7 @@ router.route("/updateActiveStatus").post(authenticateJwtMiddleware, updateActive
 router.route("/updateProfile").post(authenticateJwtMiddleware, updateProfile);
 router.route("/getPaymentType").get(authenticateJwtMiddleware, getPaymentType);
 router.route("/updatePaymentMethod").post(authenticateJwtMiddleware, updatePaymentMethod);
+
 router.route("/vendorScrapOrderConfirmation").post(authenticateJwtMiddleware, vendorScrapOrderConfirmation);
 
 export default router;

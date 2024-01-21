@@ -75,7 +75,9 @@ const vendorScrapOrderConfirmation = asyncHandler(async (req, res) => {
             new ApiResponse(
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
-                {},
+                {
+                    vendorFinalAmount
+                },
                 OrderMessage.ORDER_UPDATED_SUCCESSFULLY
             )
         );
