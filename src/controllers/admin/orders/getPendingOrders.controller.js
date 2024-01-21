@@ -14,6 +14,7 @@ import {
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
+import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
     console.log("getPendingOrdersAssignToAdmin working");
@@ -30,7 +31,9 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
 
         const skip = page * limit;
-        const filterObj = {};
+        const filterObj = {
+            orderStatus: OrdersEnum.PENDING
+        };
         const scrapFilterObj = {};
 
         if (!fieldValidator(filterValue)){

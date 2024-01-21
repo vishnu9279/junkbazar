@@ -13,6 +13,7 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import {
     getNewMongoSession
 } from "../../../configuration/dbConnection.js";
+import OrdersEnum from "../../../utils/orderStatus.js";
 
 const assignOrderToVendor = asyncHandler (async (req, res) => {
     console.log("assignOrderToVendor working", req.body);
@@ -38,7 +39,7 @@ const assignOrderToVendor = asyncHandler (async (req, res) => {
             orderId
         }, {
             $set: {
-                orderStatus: 0,
+                orderStatus: OrdersEnum.REASSIGNED_TO_VENDOR,
                 vendorId
             }
         }, {
