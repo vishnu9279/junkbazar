@@ -114,11 +114,14 @@ const raisePickUp = asyncHandler (async (req, res) => {
             totalQuantity += userCartQuantity.quantity;
             ordersItemArray.push({
                 amount: inidividualOrderPrice,
+                isVendorUpdatedStatus: false,
                 price: scrap.price,
                 quantity: userCartQuantity.quantity,
                 quantityType: scrap.quantityType,
                 scrapId: scrap.scrapId,
-                scrapIdF_K: scrap._id
+                scrapIdF_K: scrap._id,
+                userAmount: inidividualOrderPrice,
+                userQuantity: userCartQuantity.quantity
             });
         }
 

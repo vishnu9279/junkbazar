@@ -55,8 +55,9 @@ const vendorScrapOrderConfirmation = asyncHandler(async (req, res) => {
             vendorId: userId
         }, {
             $set: {
+                "items.$.amount": vendorAmount,
+                "items.$.quantity": quantity,
                 "items.$.vendorAmount": vendorAmount,
-                "items.$.vendorPrice": price,
                 "items.$.vendorQuantity": quantity,
                 vendorFinalAmount,
                 VendorTotalScrapQuantity

@@ -6,6 +6,9 @@ const orderItemSchema = new mongoose.Schema({
         required: true,
         type: Number 
     },
+    isVendorUpdatedStatus: {
+        type: Boolean
+    },
     price: {
         required: true,
         type: Number
@@ -26,6 +29,14 @@ const orderItemSchema = new mongoose.Schema({
         ref: "scrap",
         required: true,
         type: mongoose.Schema.Types.ObjectId
+    },
+    userAmount: {
+        required: false,
+        type: Number
+    },
+    userQuantity: {
+        required: false,
+        type: Number 
     },
     vendorAmount: {
         required: false,
