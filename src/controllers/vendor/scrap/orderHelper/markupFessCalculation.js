@@ -12,6 +12,7 @@ import {
     errorAndSuccessCodeConfiguration
 } from "../../../../utils/constants.js";
 import helper from "../../../../utils/helper.js";
+import UserOrderModel from "../../../../model/users/userOrder.model.js";
 
 const markupFessCalculation = async (orderObj, session) => {
     console.log("markupFessCalculation working");
@@ -77,6 +78,15 @@ const markupFessCalculation = async (orderObj, session) => {
 
         const balance =  await helper.updateUserBalance(orderObj.vendorId, "inr", markupFee, "PAYMENT_DUE", orderObj.orderId, session, "due_payment");
 
+        await UserOrderModel.findOneAndUpdate({
+            userId: orderObj.vendorId
+        }, {
+            $inc: {
+                platformFee: markupFee
+            }
+        }, {
+            session: session
+        });
         console.log("balance", balance);
 
         return resp.value;
