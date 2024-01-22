@@ -27,7 +27,7 @@ const addScrap = asyncHandler (async (req, res) => {
     
         session.startTransaction();
         const userId = req.decoded.userId;
-        const userIdF_k = req.decoded.userIdF_k;
+        // const userIdF_k = req.decoded.userIdF_k;
         let scrapName = req.body.scrapName;
         const {
             price, quantityType, 
@@ -65,8 +65,8 @@ const addScrap = asyncHandler (async (req, res) => {
             scrapId: uniqueId,
             scrapName,
             // stateCode,
-            userId,
-            userIdF_k
+            userId
+            // userIdF_k
         };
         
         const ScrapModelObj = new Scrap(scrapSaveObj);

@@ -3,14 +3,6 @@
 import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
     {
-        address: {
-            required: false,
-            type: String
-        },
-        countryCode: {
-            required: false,
-            type: String
-        },
         currentTime: {
             required: true,
             type: Number
@@ -63,14 +55,8 @@ const userSchema = new mongoose.Schema(
             type: String
         },
         userId: {
-            ref: "user",
             required: false,
             type: String
-        },
-        userIdF_k: {
-            ref: "user",
-            required: false, 
-            type: mongoose.Schema.Types.ObjectId
         }
     },
     {
