@@ -53,7 +53,7 @@ const editScrap = asyncHandler (async (req, res) => {
         if (fieldValidator(scrapName))
             obj.scrapName = scrapName;
 
-        const resp = await Scrap.findOneAndDelete({
+        const resp = await Scrap.findByIdAndUpdate({
             scrapId
         }, {
             $set: obj
