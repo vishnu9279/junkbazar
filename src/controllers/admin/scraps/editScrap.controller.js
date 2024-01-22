@@ -53,9 +53,6 @@ const editScrap = asyncHandler (async (req, res) => {
         if (!fieldValidator(scrapName))
             obj.scrapName = scrapName;
 
-        console.log("====================================");
-        console.log(obj);
-        console.log("====================================");
         const resp = await Scrap.findOneAndUpdate({
             scrapId
         }, {
