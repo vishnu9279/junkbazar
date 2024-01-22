@@ -16,6 +16,7 @@ const ordersAssignToOrder = CronJob.schedule("* * * * *", async() => {
             orderStatus: OrdersEnum.PENDING
         }, {
             $set: {
+                currentTime: currentTimeStamp,
                 orderStatus: OrdersEnum.ASSIGN_TO_ADMIN
             }
         });
