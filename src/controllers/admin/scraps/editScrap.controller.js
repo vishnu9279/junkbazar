@@ -41,16 +41,16 @@ const editScrap = asyncHandler (async (req, res) => {
 
         const obj = {};
 
-        if (fieldValidator(imageKey))
+        if (!fieldValidator(imageKey))
             obj.docPath = imageKey;
 
-        if (fieldValidator(price))
+        if (!fieldValidator(price))
             obj.price = parseFloat(price);
 
-        if (fieldValidator(quantityType))
+        if (!fieldValidator(quantityType))
             obj.quantityType = quantityType;
 
-        if (fieldValidator(scrapName))
+        if (!fieldValidator(scrapName))
             obj.scrapName = scrapName;
 
         console.log("====================================");
