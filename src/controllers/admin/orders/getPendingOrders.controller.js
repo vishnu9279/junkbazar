@@ -2,7 +2,7 @@
 
 import asyncHandler from "../../../utils/asyncHandler.js";
 import UserOrderModel  from "../../../model/users/userOrder.model.js";
-import UserModel  from "../../../model/users/user.model.js";
+// import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
@@ -23,7 +23,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         let limit = req.query.limit;
         let page = req.query.page;
         const filterValue = req.query.filterValue;
-        const userId = req.decoded.userId;
+        // const userId = req.decoded.userId;
         const scrapName = req.query.scrapName;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
@@ -138,35 +138,35 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         ]);
 
         for (const scrap of scraps){
-            const vendors =  await UserModel.find({
-                $or: [{
-                    city: scrap.addressInfo.city
-                },
-                {
-                    stateCode: scrap.addressInfo.stateCode
-                }],
-                managedBy: userId
-            });
+            // const vendors =  await UserModel.find({
+            //     $or: [{
+            //         city: scrap.addressInfo.city
+            //     },
+            //     {
+            //         stateCode: scrap.addressInfo.stateCode
+            //     }],
+            //     managedBy: userId
+            // });
 
-            if (!fieldValidator(vendors)){
-                vendors.map(async (el) => {
-                    console.log("profile", el);
+            // if (!fieldValidator(vendors)){
+            //     vendors.map(async (el) => {
+            //         console.log("profile", el);
 
-                    if (el.profile){
-                        const url = await generateS3SignedUrl(el.profile);
-                        const pan = await generateS3SignedUrl(el.panID);
-                        const aadhaar = await generateS3SignedUrl(el.aadhaarID);
+            //         if (el.profile){
+            //             const url = await generateS3SignedUrl(el.profile);
+            //             const pan = await generateS3SignedUrl(el.panID);
+            //             const aadhaar = await generateS3SignedUrl(el.aadhaarID);
         
-                        el.profileUrl = url;
-                        el.panUrl = pan;
-                        el.aadhaarUrl = aadhaar;
-                    }
+            //             el.profileUrl = url;
+            //             el.panUrl = pan;
+            //             el.aadhaarUrl = aadhaar;
+            //         }
 
-                    return el;
-                });
+            //         return el;
+            //     });
 
-                scrap.vendors = vendors;
-            }
+            //     scrap.vendors = vendors;
+            // }
 
             scrap.items.map(async(el) => {
                 const url = await generateS3SignedUrl( el.scrapInfo.docPath);
