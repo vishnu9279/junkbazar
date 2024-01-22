@@ -39,7 +39,7 @@ const assignOrderToVendor = asyncHandler (async (req, res) => {
             orderId
         }, {
             $set: {
-                orderStatus: OrdersEnum.REASSIGNED_TO_VENDOR,
+                orderStatus: OrdersEnum.PENDING,
                 vendorId
             }
         }, {
