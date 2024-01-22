@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
         },
         
         price: {
-            required: true,
+            required: false,
             type: Number
         },
         // quantity: {
@@ -46,16 +46,16 @@ const userSchema = new mongoose.Schema(
         // },
         
         quantityType: {
-            required: true,
+            required: false,
             type: String
         },
 
         scrapId: {
-            required: true,
+            required: false,
             type: String
         },
         scrapName: {
-            required: true,
+            required: false,
             type: String   
         },
         stateCode: {
@@ -64,12 +64,12 @@ const userSchema = new mongoose.Schema(
         },
         userId: {
             ref: "user",
-            required: true,
+            required: false,
             type: String
         },
         userIdF_k: {
             ref: "user",
-            required: true, 
+            required: false, 
             type: mongoose.Schema.Types.ObjectId
         }
     },
