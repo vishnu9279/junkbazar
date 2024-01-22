@@ -27,7 +27,7 @@ import getAdminManagedVendor from "../../controllers/admin/vendor/getAdminManage
 import getPendingOrders from "../../controllers/admin/orders/getPendingOrders.controller.js";
 import getCurrentUser from "../../controllers/admin/getCurrentUser.controller.js";
 
-import "../../crons/moveScrapToAdmin.cron.js";
+// import "../../crons/moveScrapToAdmin.cron.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
 

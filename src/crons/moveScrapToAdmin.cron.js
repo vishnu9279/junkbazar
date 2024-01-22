@@ -9,7 +9,11 @@ const ordersAssignToOrder = CronJob.schedule("* * * * *", async() => {
         const currentTimeStamp = new Date().getTime(); 
         const twoHrMillesecond =  currentTimeStamp - (2 * 60 * 60 * 1000);
 
-        await UserOrderModel.updateMany({
+        console.log({
+            currentTimeStamp,
+            twoHrMillesecond
+        });
+        const resp = await UserOrderModel.updateMany({
             currentTime: {
                 $lte: twoHrMillesecond
             },
@@ -20,6 +24,8 @@ const ordersAssignToOrder = CronJob.schedule("* * * * *", async() => {
                 orderStatus: OrdersEnum.ASSIGN_TO_ADMIN
             }
         });
+
+        console.log("Update Value", resp);
     }
     catch (error) {
         console.error("Something went wrong", error);

@@ -15,7 +15,7 @@ import {
 import helper from "../../../utils/helper.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
-import saveAddAddressHelper from "../saveAddressHelper.controller.js";
+// import saveAddAddressHelper from "../saveAddressHelper.controller.js";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 
@@ -25,7 +25,7 @@ import {
 import OrdersEnum from "../../../utils/orderStatus.js";
 const raisePickUp = asyncHandler (async (req, res) => {
     console.log("UserPickAddress working", req.body);
-    let addressResp, session;
+    let session;
     const currentTime = new Date().getTime();
     let finalAmount = 0;
     let totalQuantity = 0;
@@ -75,20 +75,20 @@ const raisePickUp = asyncHandler (async (req, res) => {
 
         if (fieldValidator(addressId) && (fieldValidator(stateCode) || fieldValidator(countryCode) || fieldValidator(pincode) || fieldValidator(address) || fieldValidator(city))) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        if (fieldValidator(addressId)){
-            addressResp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, fullName, dialCode, phoneNumber, session);
-            ordersObj.addressId = addressResp.addressId;
-        }
-        else {
-            const userAddressResp = await userAddress.find({
-                addressId
-            });
+        // if (fieldValidator(addressId)){
+        //     addressResp = await saveAddAddressHelper(stateCode, countryCode, pincode, address, city, userId, fullName, dialCode, phoneNumber, session);
+        //     ordersObj.addressId = addressResp.addressId;
+        // }
+        // else {
+        const userAddressResp = await userAddress.findOne({
+            addressId
+        });
         
-            if (fieldValidator(userAddressResp)) 
-                throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, AddAdressMessage.ADDRESS_NOT_FOUND);
+        if (fieldValidator(userAddressResp)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, AddAdressMessage.ADDRESS_NOT_FOUND);
 
-            ordersObj.addressId = addressId;
-        }
+        ordersObj.addressId = addressId;
+        // }
 
         const userCart = await cartModel.find({
             addToCartId,
