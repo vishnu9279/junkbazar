@@ -53,12 +53,15 @@ const editScrap = asyncHandler (async (req, res) => {
         if (fieldValidator(scrapName))
             obj.scrapName = scrapName;
 
+        console.log("====================================");
+        console.log(obj);
+        console.log("====================================");
         const resp = await Scrap.findOneAndUpdate({
             scrapId
         }, {
             $set: obj
         }, {
-            session
+            session: session
         });
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
