@@ -23,6 +23,8 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         const userId = req.decoded.userId;
         const user = await AdminModel.findOne({
             userId
+        }, {
+            salt: 0
         });
         
         if (fieldValidator(user)) {
@@ -43,11 +45,16 @@ const getCurrentUser = asyncHandler(async (req, res) => {
                 }
             }
         ]);
-       
-        const profileUrl = await generateS3SignedUrl(user.profile);
 
-        user.profileUrl = profileUrl;
-        user.balance = balance ? balance.toFixed(2) : 0;
+        console.log("balance", balance);
+
+        if (!fieldValidator(user.profile)){
+            const profileUrl = await generateS3SignedUrl(user.profile);
+   
+            user.profileUrl = profileUrl;
+        }
+
+        user.balance = balance ? balance[0].totalBalance.toFixed(2) : 0;
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
