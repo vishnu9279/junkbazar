@@ -111,7 +111,7 @@ const userPickupSchema = new mongoose.Schema(
         },
         
         markupFeePercentage: {
-            required: true,
+            required: false,
             type: Number
         },
         monthNumber: {
@@ -146,6 +146,10 @@ const userPickupSchema = new mongoose.Schema(
             type: String
         },
         totalQuantity: {
+            required: true,
+            type: Number
+        },
+        userFinalAmount: {
             required: true,
             type: Number
         },

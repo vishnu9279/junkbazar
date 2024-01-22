@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema(
         appVersion: {
             type: Object
         },
+        balance: {
+            type: Number
+        },
         city: {
             required: false,
             type: String 

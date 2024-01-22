@@ -127,6 +127,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
 
         ordersObj.items = ordersItemArray;
         ordersObj.finalAmount = finalAmount;
+        ordersObj.userFinalAmount = finalAmount;
         ordersObj.totalQuantity = totalQuantity;
         
         if (ordersObj.totalQuantity >= helper.getCacheElement("CONFIG", "SCRAP_QUANTITY"))

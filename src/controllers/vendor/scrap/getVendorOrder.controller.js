@@ -56,11 +56,19 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             );
         }
 
+        const orderEnum = orderStatus.every(el => el > 0);
         const filterObj = {
             orderStatus: {
                 $in: orderStatus
             }
         };
+
+        console.log("====================================");
+        console.log(orderEnum);
+        console.log("====================================");
+
+        if (orderEnum)
+            filterObj.vendorId = userId;
 
         if (!fieldValidator(filterValue)){
             filterObj.$or = [
@@ -147,6 +155,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     },
                     items: {
                         $push: "$items" 
+                    },
+                    markupFee: {
+                        $first: "$markupFee"
                     },
                     orderId: {
                         $first: "$orderId"

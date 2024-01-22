@@ -55,7 +55,9 @@ const vendorScrapOrderConfirmation = asyncHandler(async (req, res) => {
             vendorId: userId
         }, {
             $set: {
+                finalAmount: vendorFinalAmount,
                 "items.$.amount": vendorAmount,
+                "items.$.isVendorUpdatedStatus": true,
                 "items.$.quantity": quantity,
                 "items.$.vendorAmount": vendorAmount,
                 "items.$.vendorQuantity": quantity,

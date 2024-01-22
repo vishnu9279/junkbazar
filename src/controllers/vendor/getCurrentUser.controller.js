@@ -2,6 +2,8 @@
 
 import asyncHandler from "../../utils/asyncHandler.js";
 import UserModel  from "../../model/users/user.model.js";
+import BalanceModel from "../../model/vendor/balance.model.js";
+
 import AppVersion  from "../../model/appVersion.model.js";
 import fieldValidator from "../../utils/fieldValidator.js";
 import ApiError from "../../utils/ApiError.js";
@@ -35,6 +37,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             );
         }
 
+        const balance = await BalanceModel.findOne({
+            userId
+        });
+
         const appVersion = await AppVersion.findOne({
             type: platform
         })
@@ -53,6 +59,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         user.panUrl = panUrl;
         user.aadhaarUrl = aadhaarUrl;
         user.appVersion = appVersion;
+        user.balance = balance ? balance.balance.toFixed(2) : 0;
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
