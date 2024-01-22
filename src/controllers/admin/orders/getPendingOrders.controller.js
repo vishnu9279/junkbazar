@@ -56,6 +56,12 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         if (!fieldValidator(scrapName))
             scrapFilterObj.scrapName = new RegExp(scrapName, "i");
 
+        console.log("====================================");
+        console.log("filterObj", {
+            filterObj,
+            scrapFilterObj
+        });
+        console.log("====================================");
         const scraps = await UserOrderModel.aggregate([
             {
                 $match: filterObj
