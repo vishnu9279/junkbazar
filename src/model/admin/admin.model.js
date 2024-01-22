@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema(
             default: false,
             type: Boolean 
         },
+        balance: {
+            type: Number
+        },
         dialCode: {
             required: true,
             type: String
@@ -21,11 +24,12 @@ const userSchema = new mongoose.Schema(
         docUrl: {
             type: String
         },
+       
         firstName: {
             required: false,
             type: String
         },
-       
+        
         lastName: {
             required: false,
             type: String
@@ -45,13 +49,12 @@ const userSchema = new mongoose.Schema(
                 CommonMessage.PASSWORD_REQUIRED ],
             type: String
         },
-        
+       
         phoneNumber: {
             required: true,
             type: String,
             unique: true
         },
-       
         roles: {
             default: RolesEnum.ADMIN,
             type: Number
