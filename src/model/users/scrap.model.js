@@ -50,10 +50,6 @@ const userSchema = new mongoose.Schema(
             required: false,
             type: String   
         },
-        stateCode: {
-            required: false,
-            type: String
-        },
         userId: {
             required: false,
             type: String
