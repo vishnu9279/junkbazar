@@ -7,7 +7,7 @@ const ordersAssignToOrder = CronJob.schedule("* * * * *", async() => {
     console.log("ordersAssignToOrder working");
     try {
         const currentTimeStamp = new Date().getTime(); 
-        const twoHrMillesecond =  currentTimeStamp + (2 * 60 * 60 * 1000);
+        const twoHrMillesecond =  currentTimeStamp - (2 * 60 * 60 * 1000);
 
         await UserOrderModel.updateMany({
             currentTime: {
