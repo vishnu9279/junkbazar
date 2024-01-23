@@ -3,6 +3,7 @@
 import CountryModel from "../../../../model/countries.model.js";
 import userOrderModel  from "../../../../model/users/userOrder.model.js";
 import userAddress  from "../../../../model/users/userAdress.model.js";
+import UserModel  from "../../../../model/users/user.model.js";
 
 import fieldValidator from "../../../../utils/fieldValidator.js";
 import ApiError from "../../../../utils/ApiError.js";
@@ -12,7 +13,6 @@ import {
     errorAndSuccessCodeConfiguration
 } from "../../../../utils/constants.js";
 import helper from "../../../../utils/helper.js";
-import UserOrderModel from "../../../../model/users/userOrder.model.js";
 
 const markupFessCalculation = async (orderObj, session) => {
     console.log("markupFessCalculation working");
@@ -78,7 +78,7 @@ const markupFessCalculation = async (orderObj, session) => {
 
         const balance =  await helper.updateUserBalance(orderObj.vendorId, "inr", markupFee, "PAYMENT_DUE", orderObj.orderId, session, "due_payment");
 
-        await UserOrderModel.findOneAndUpdate({
+        await UserModel.findOneAndUpdate({
             userId: orderObj.vendorId
         }, {
             $inc: {
