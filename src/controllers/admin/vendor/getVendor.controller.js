@@ -22,6 +22,8 @@ const getVendor = asyncHandler(async (req, res) => {
         let limit = req.query.limit;
         let page = req.query.page;
         const filterValue = req.query.filterValue;
+        const phoneNumber = req.query.phoneNumber;
+        const pincode = req.query.pincode;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -32,6 +34,12 @@ const getVendor = asyncHandler(async (req, res) => {
             roles: RolesEnum.VENDOR
         };
 
+        if (!fieldValidator(phoneNumber))
+            filterObj.phoneNumber = new RegExp(phoneNumber, "i");
+
+        if (!fieldValidator(pincode))
+            filterObj.pincode = new RegExp(pincode, "i");
+        
         if (!fieldValidator(filterValue)){
             filterObj.$or = [
                 {
@@ -39,6 +47,12 @@ const getVendor = asyncHandler(async (req, res) => {
                 },
                 {
                     lastName: new RegExp(filterValue, "i")
+                },
+                {
+                    userId: new RegExp(filterValue, "i")
+                },
+                {
+                    city: new RegExp(filterValue, "i")
                 }
             ];
         }
