@@ -14,7 +14,7 @@ import ApiResponse from "../../../utils/ApiSuccess.js";
 import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 
 const getVendorOrder = asyncHandler(async (req, res) => {
-    console.log("getVendorOrder working");
+    console.log("getVendorOrder working", req.query);
 
     try {
         // const userId = req.decoded.userId;
@@ -28,7 +28,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
     
         if (fieldValidator(page) || isNaN(page)) page = page || 0;
     
-        orderStatus = orderStatus.split(",").map(el => parseInt(el));
+        orderStatus = (!fieldValidator(orderStatus)) ? orderStatus.split(",").map(el => parseInt(el)) : "";
         console.log("orderStatus", orderStatus);
         const skip = page * limit;
        
@@ -36,7 +36,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             vendorId
         };
 
-        if (userOrderModel.length > 0){
+        if (orderStatus.length > 0){
             filterObj.orderStatus = {
                 $in: orderStatus
             };
