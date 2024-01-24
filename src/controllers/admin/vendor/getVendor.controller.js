@@ -38,7 +38,7 @@ const getVendor = asyncHandler(async (req, res) => {
             filterObj.phoneNumber = new RegExp(phoneNumber, "i");
 
         if (!fieldValidator(pincode))
-            filterObj.pincode = new RegExp(pincode, "i");
+            filterObj.pincode = new RegExp(parseInt(pincode), "i");
         
         if (!fieldValidator(filterValue)){
             filterObj.$or = [
