@@ -155,21 +155,13 @@ const getVendorOrder = asyncHandler(async (req, res) => {
             });
         }
                 
-        const totalScrapCount = await userOrderModel.aggregate([
-            {
-                $match: {
-                    orderStatus: {
-                        $in: orderStatus
-                    }
-                }
-            }
-        ]);
+        const totalScrapCount = await userOrderModel.countDocuments(filterObj);
     
         console.log("totalScrapCount", totalScrapCount.length);
        
         const finalObj = {
             orders: orders,
-            totalScrapCount: totalScrapCount.length
+            totalScrapCount
         };
     
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
