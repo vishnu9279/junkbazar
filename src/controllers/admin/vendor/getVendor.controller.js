@@ -16,7 +16,7 @@ import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 import RolesEnum from "../../../utils/roles.js";
 
 const getVendor = asyncHandler(async (req, res) => {
-    console.log("getVendor working");
+    console.log("getVendor working", req.query);
 
     try {
         let limit = req.query.limit;
@@ -57,6 +57,7 @@ const getVendor = asyncHandler(async (req, res) => {
             ];
         }
 
+        console.log("filterObj", filterObj);
         const vendor = await UserModel.find(filterObj)
             .sort({
                 createdAt: -1
