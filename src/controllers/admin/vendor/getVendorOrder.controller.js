@@ -20,7 +20,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         const userId = req.decoded.userId;
         let limit = req.query.limit;
         let page = req.query.page;
-        const vendorId = req.body.vendorId;
+        const vendorId = req.query.vendorId;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
