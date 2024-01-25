@@ -157,36 +157,6 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         ]);
 
         for (const scrap of scraps){
-            // const vendors =  await UserModel.find({
-            //     $or: [{
-            //         city: scrap.addressInfo.city
-            //     },
-            //     {
-            //         stateCode: scrap.addressInfo.stateCode
-            //     }],
-            //     managedBy: userId
-            // });
-
-            // if (!fieldValidator(vendors)){
-            //     vendors.map(async (el) => {
-            //         console.log("profile", el);
-
-            //         if (el.profile){
-            //             const url = await generateS3SignedUrl(el.profile);
-            //             const pan = await generateS3SignedUrl(el.panID);
-            //             const aadhaar = await generateS3SignedUrl(el.aadhaarID);
-        
-            //             el.profileUrl = url;
-            //             el.panUrl = pan;
-            //             el.aadhaarUrl = aadhaar;
-            //         }
-
-            //         return el;
-            //     });
-
-            //     scrap.vendors = vendors;
-            // }
-
             scrap.items.map(async(el) => {
                 const url = await generateS3SignedUrl( el.scrapInfo.docPath);
     
@@ -266,14 +236,17 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                         $first: "$userIdF_k" 
                     } // Push the items back into an array
                 }
+            },
+            {
+                $count: "totalScrapCount"
             }
         ]);
         const finalObj = {
             scrap: scraps,
-            totalScrapCount: totalScrapCount.length
+            totalScrapCount: totalScrapCount
         };
 
-        // console.log("finalObj", finalObj, filterObj);
+        console.log("finalObj", finalObj, filterObj, totalScrapCount);
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
