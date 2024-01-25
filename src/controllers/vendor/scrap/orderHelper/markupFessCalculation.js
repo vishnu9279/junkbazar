@@ -62,7 +62,7 @@ const markupFessCalculation = async (orderObj, session) => {
 
         if (fieldValidator(cityResp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
 
-        const markupFee = parseFloat(orderObj.vendorFinalAmount * (cityResp.marginFees / 100));
+        const markupFee = parseFloat((orderObj.vendorFinalAmount * (cityResp.marginFees / 100)).toFixed(2));
         const resp = await userOrderModel.findOneAndUpdate({
             orderId: orderObj.orderId,
             vendorId: orderObj.vendorId
