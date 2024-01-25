@@ -166,7 +166,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             });
         }
 
-        const totalScrapCount = await UserOrderModel.aggregate([
+        const scrapCount = await UserOrderModel.aggregate([
             {
                 $match: filterObj
             },
@@ -243,10 +243,14 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         ]);
         const finalObj = {
             scrap: scraps,
-            totalScrapCount: totalScrapCount
+            totalScrapCount: scrapCount[0].totalScrapCount
         };
 
-        console.log("finalObj", finalObj, filterObj, totalScrapCount);
+        console.log("finalObj", {
+            filterObj,
+            finalObj,
+            scrapCount
+        });
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
