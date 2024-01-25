@@ -21,7 +21,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         let limit = req.query.limit;
         let page = req.query.page;
         let orderStatus = req.query.orderStatus;
-        const filterValue = req.query.key;
+        const filterValue = req.query.filterValue;
         const vendorId = req.query.vendorId;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
@@ -44,12 +44,6 @@ const getVendorOrder = asyncHandler(async (req, res) => {
     
         if (!fieldValidator(filterValue)){
             filterObj.$or = [
-                {
-                    fullName: new RegExp(filterValue, "i")
-                },
-                {
-                    phoneNumber: new RegExp(filterValue, "i")
-                },
                 {
                     orderId: new RegExp(filterValue, "i")
                 }

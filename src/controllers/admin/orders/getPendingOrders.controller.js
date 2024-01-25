@@ -196,11 +196,81 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             });
         }
 
-        const totalScrapCount = await UserOrderModel.countDocuments(filterObj);
-
+        const totalScrapCount = await UserOrderModel.aggregate([
+            {
+                $match: filterObj
+            },
+            {
+                $unwind: "$items" // Unwind the items array
+            },
+            {
+                $lookup: {
+                    as: "items.scrapInfo",
+                    foreignField: "scrapId",
+                    from: "scraps",
+                    localField: "items.scrapId",
+                    pipeline: [{
+                        $match: scrapFilterObj
+                    }]
+                }
+            },
+            
+            {
+                $unwind: "$items.scrapInfo"
+            },
+            {
+                $lookup: {
+                    as: "addressInfo",
+                    foreignField: "addressId",
+                    from: "user_addresses",
+                    localField: "addressId",
+                    pipeline: [{
+                        $match: addressFilterObj
+                    }]
+                }
+            },
+            {
+                $unwind: "$addressInfo"
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    addressId: {
+                        $first: "$addressId"
+                    },
+                    addressInfo: {
+                        $first: "$addressInfo"
+                    },
+                    addToCartId: {
+                        $first: "$addToCartId" 
+                    },
+                    createdAt: {
+                        $first: "$createdAt" 
+                    },
+                    enabled: {
+                        $first: "$enabled" 
+                    },
+                    items: {
+                        $push: "$items" 
+                    },
+                    orderId: {
+                        $first: "$orderId"
+                    },
+                    updatedAt: {
+                        $first: "$updatedAt" 
+                    },
+                    userId: {
+                        $first: "$userId" 
+                    },
+                    userIdF_k: {
+                        $first: "$userIdF_k" 
+                    } // Push the items back into an array
+                }
+            }
+        ]);
         const finalObj = {
             scrap: scraps,
-            totalScrapCount
+            totalScrapCount: totalScrapCount.length
         };
 
         // console.log("finalObj", finalObj, filterObj);
