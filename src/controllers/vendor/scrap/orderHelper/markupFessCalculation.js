@@ -78,6 +78,8 @@ const markupFessCalculation = async (orderObj, session) => {
 
         const balance =  await helper.updateUserBalance(orderObj.vendorId, "inr", markupFee, "PAYMENT_DUE", orderObj.orderId, session, "due_payment");
 
+        await helper.updateUserBalance("admin", "inr", markupFee, "total_earning", orderObj.orderId, session, "total_earning");
+
         await UserModel.findOneAndUpdate({
             userId: orderObj.vendorId
         }, {
