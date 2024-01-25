@@ -25,6 +25,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         const filterValue = req.query.filterValue;
         // const userId = req.decoded.userId;
         const scrapName = req.query.scrapName;
+        const addressFilter = req.query.addressFilter;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -35,9 +36,10 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             orderStatus: OrdersEnum.PENDING
         };
         const scrapFilterObj = {};
+        const addressFilterObj = {};
 
-        if (!fieldValidator(filterValue)){
-            filterObj.$or = [
+        if (!fieldValidator(addressFilter)){
+            addressFilterObj.$or = [
                 {
                     fullName: new RegExp(filterValue, "i")
                 },
@@ -49,6 +51,14 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                 },
                 {
                     stateCode: new RegExp(filterValue, "i")
+                }
+            ];
+        }
+
+        if (!fieldValidator(filterValue)){
+            filterObj.$or = [
+                {
+                    orderId: new RegExp(filterValue, "i")
                 }
             ];
         }
@@ -89,7 +99,10 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                     as: "addressInfo",
                     foreignField: "addressId",
                     from: "user_addresses",
-                    localField: "addressId"
+                    localField: "addressId",
+                    pipeline: [{
+                        $match: addressFilterObj
+                    }]
                 }
             },
             {
