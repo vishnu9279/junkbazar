@@ -27,7 +27,7 @@ import getAdminManagedVendor from "../../controllers/admin/vendor/getAdminManage
 import getPendingOrders from "../../controllers/admin/orders/getPendingOrders.controller.js";
 import getCurrentUser from "../../controllers/admin/getCurrentUser.controller.js";
 import getVendorOrder from "../../controllers/admin/vendor/getVendorOrder.controller.js";
-
+import stats from "../../controllers/admin/dashboard/stats.controller.js";
 // import "../../crons/moveScrapToAdmin.cron.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
@@ -51,5 +51,6 @@ router.route("/getAdminManagedVendor").get(authenticateJwtMiddleware, getAdminMa
 router.route("/getPendingOrders").get(authenticateJwtMiddleware, getPendingOrders);
 router.route("/getCurrentUser").get(authenticateJwtMiddleware, getCurrentUser);
 router.route("/getVendorOrder").get(authenticateJwtMiddleware, getVendorOrder);
+router.route("/stats").get(authenticateJwtMiddleware, stats);
 
 export default router;
