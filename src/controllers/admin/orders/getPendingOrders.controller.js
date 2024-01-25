@@ -241,11 +241,13 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                 $count: "totalScrapCount"
             }
         ]);
+
+        console.log("scrapCount", scrapCount);
         const finalObj = {
             scrap: scraps,
-            totalScrapCount: scrapCount[0].totalScrapCount
+            totalScrapCount: scrapCount[0]
         };
-
+        
         console.log("finalObj", {
             filterObj,
             finalObj,
