@@ -104,12 +104,18 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        items: [ orderItemSchema ],
+        isAdminApprovedPaymentStatus: {
+            type: Boolean
+        },
         
+        isPaid: {
+            type: Boolean
+        },
+        
+        items: [ orderItemSchema ],
         markupFee: {
             type: Number
         },
-        
         markupFeePercentage: {
             required: false,
             type: Number
@@ -122,20 +128,23 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        
         orderStatus: {
             default: 0,
             required: true,
             type: Number
         },
+        
+        paymentScreenShotImageKey: {
+            type: String
+        },
         paymentType: {
             type: String
         },
-        
         phoneNumber: {
             required: true,
             type: Number
         },
-        
         pincode: {
             type: Number
         },
@@ -148,6 +157,9 @@ const userPickupSchema = new mongoose.Schema(
         totalQuantity: {
             required: true,
             type: Number
+        },
+        transactionOrUtrNumber: {
+            type: String
         },
         userFinalAmount: {
             required: true,

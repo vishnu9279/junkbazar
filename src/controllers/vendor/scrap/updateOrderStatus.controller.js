@@ -33,6 +33,8 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         let orderStatus = req.body.orderStatus;
         const orderId = req.body.orderId;
         const userId =  req.decoded.userId;
+        const paymentScreenShotImageKey = req.body.paymentScreenShotImageKey;
+        const transactionOrUtrNumber = req.body.transactionOrUtrNumber;
 
         if (fieldValidator(orderId) || fieldValidator(orderStatus)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
        
@@ -51,7 +53,14 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         };
 
         if (orderStatus === OrdersEnum.ACCEPTED) obj.vendorId = userId;
-         
+
+        if (!fieldValidator(transactionOrUtrNumber) && !fieldValidator(paymentScreenShotImageKey)){
+            obj.isPaid = true;
+            obj.transactionOrUtrNumber = transactionOrUtrNumber;
+            obj.paymentScreenShotImageKey = paymentScreenShotImageKey;
+            obj.isAdminApprovedPaymentStatus = false;
+        }
+
         if (orderStatus !== OrdersEnum.REJECTED){
             const resp = await userOrderModel.findOneAndUpdate({
                 orderId
