@@ -19,20 +19,31 @@ const stats = asyncHandler(async (req, res) => {
     console.log("stats working");
 
     try {
-        const balanceResp = await BalanceModel.aggregate([
-            {
-                $group: {
-                    _id: null,
-                    totalBalance: {
-                        $sum: "$balance" 
-                    }
-                }
-            }
-        ]);
+        // const balanceResp = await BalanceModel.aggregate([
+        //     {
+        //         $group: {
+        //             _id: null,
+        //             totalBalance: {
+        //                 $sum: "$balance" 
+        //             }
+        //         }
+        //     }
+        // ]);
+        const balanceResp = await BalanceModel.findOne({
+            userId: "admin",
+            wallet_type: "main"
+        });
+
+        console.log("balance", balanceResp);
+        const balanceDueResp = await BalanceModel.findOne({
+            userId: "admin",
+            wallet_type: "total_earning_due"
+        });
 
         console.log("balance", balanceResp);
 
-        const platformFee = balanceResp.length > 0 ? balanceResp[0].totalBalance.toFixed(2) : 0;
+        const platformFee = balanceResp.length ? balanceResp.balance.toFixed(2) : 0;
+        const duePlatformFee = balanceDueResp.length ? balanceDueResp.balance.toFixed(2) : 0;
         const totalSale = await UserOrderModel.aggregate([{
             $group: {
                 _id: null,
@@ -55,6 +66,7 @@ const stats = asyncHandler(async (req, res) => {
                 statusCodeObject.HTTP_STATUS_OK,
                 errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
                 {
+                    duePlatformFee,
                     platformFee,
                     totalPlatformSale,
                     userCount,
