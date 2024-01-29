@@ -124,7 +124,7 @@ const getVendorOrderInfo = asyncHandler(async (req, res) => {
             orderObj.items[index].scrapInfo.docUrl = url;
         }
                 
-        console.log("order", JSON.stringify(orderObj));
+        // console.log("order", JSON.stringify(orderObj));
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(
