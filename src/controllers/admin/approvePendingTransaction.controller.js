@@ -55,12 +55,11 @@ const approvePendingTransaction = async (req, res) => {
             userId: order.vendorId
         }, {
             $inc: {
-                platformFee: -order.markupFee
+                platformFee: order.markupFee
             }
         }, {
             session: session
         });
-
         await session.commitTransaction();
         await session.endSession();
 
