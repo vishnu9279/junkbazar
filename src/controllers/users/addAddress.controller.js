@@ -39,7 +39,8 @@ const addAddress = asyncHandler (async (req, res) => {
         if (totalAddressCount >= await helper.getCacheElement("CONFIG", "MAX_ADDRESS_COUNT_FROM_USER"))  throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, AddAdressMessage.ADDRESS_LIMIT_REACHED);
 
         const userAddressResp = await userAddress.find({
-            address
+            address,
+            userId
         });
 
         console.log("address", userAddressResp, fieldValidator(userAddressResp));
