@@ -40,7 +40,7 @@ const addPaymentDetail = asyncHandler(async (req, res) => {
             obj.isPaid = true;
             obj.transactionOrUtrNumber = transactionOrUtrNumber;
             obj.paymentScreenShotImageKey = paymentScreenShotImageKey;
-            obj.isAdminApprovedPaymentStatus = false;
+            obj.isAdminApprovedPaymentStatus = "pending";
         }
       
         const resp = await userOrderModel.findOneAndUpdate({

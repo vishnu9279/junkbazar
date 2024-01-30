@@ -35,31 +35,34 @@ const approvePendingTransaction = async (req, res) => {
 
         if (fieldValidator(order)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.ORDER_NOT_FOUND);
 
-        await helper.updateUserBalance(order.vendorId, "inr", -order.markupFee, "PAYMENT_DUE", orderId, session, "due_payment");
-        await helper.updateUserBalance(order.vendorId, "inr", order.markupFee, "PAYMENT_CLEAR", orderId, session, "main");
-
-        await helper.updateUserBalance("admin", "inr", -order.markupFee, "total_earning_due", orderId, session, "total_earning_due");
-        await helper.updateUserBalance("admin", "inr", order.markupFee, "total_earning", orderId, session, "main");
-
         await UserOrderModel.findOneAndUpdate({
             orderId
         }, {
             $set: {
-                isAdminApprovedPaymentStatus: true
+                isAdminApprovedPaymentStatus
             }
         }, {
             session: session
         });
 
-        await UserModel.findOneAndUpdate({
-            userId: order.vendorId
-        }, {
-            $inc: {
-                platformFee: -order.markupFee
-            }
-        }, {
-            session: session
-        });
+        if (isAdminApprovedPaymentStatus === "approved"){
+            await helper.updateUserBalance(order.vendorId, "inr", -order.markupFee, "PAYMENT_DUE", orderId, session, "due_payment");
+            await helper.updateUserBalance(order.vendorId, "inr", order.markupFee, "PAYMENT_CLEAR", orderId, session, "main");
+
+            await helper.updateUserBalance("admin", "inr", -order.markupFee, "total_earning_due", orderId, session, "total_earning_due");
+            await helper.updateUserBalance("admin", "inr", order.markupFee, "total_earning", orderId, session, "main");
+
+            await UserModel.findOneAndUpdate({
+                userId: order.vendorId
+            }, {
+                $inc: {
+                    platformFee: -order.markupFee
+                }
+            }, {
+                session: session
+            });
+        }
+
         await session.commitTransaction();
         await session.endSession();
 

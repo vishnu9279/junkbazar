@@ -105,7 +105,7 @@ const userPickupSchema = new mongoose.Schema(
             type: String
         },
         isAdminApprovedPaymentStatus: {
-            type: Boolean
+            type: String
         },
         isPaid: {
             type: Boolean
