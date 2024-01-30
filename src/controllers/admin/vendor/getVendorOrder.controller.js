@@ -94,7 +94,7 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                         $first: "$fullName"
                     },
                     isAdminApprovedPaymentStatus: {
-                        $push: "$isAdminApprovedPaymentStatus"
+                        $first: "$isAdminApprovedPaymentStatus"
                     },
                     isPaid: {
                         $first: "$isPaid"
@@ -110,6 +110,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     },
                     orderStatus: {
                         $first: "$orderStatus"
+                    },
+                    paymentScreenShotImageKey: {
+                        $first: "$paymentScreenShotImageKey"
                     },
                     phoneNumber: {
                         $first: "$phoneNumber"
