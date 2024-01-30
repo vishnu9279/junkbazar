@@ -42,7 +42,7 @@ const stats = asyncHandler(async (req, res) => {
 
         console.log("balance", balanceResp);
 
-        const platformFee = balanceResp.length ? balanceResp.balance.toFixed(2) : 0;
+        const platformFee = balanceResp ? balanceResp.balance.toFixed(2) : 0;
         const duePlatformFee = balanceDueResp.length ? balanceDueResp.balance.toFixed(2) : 0;
         const totalSale = await UserOrderModel.aggregate([{
             $group: {
