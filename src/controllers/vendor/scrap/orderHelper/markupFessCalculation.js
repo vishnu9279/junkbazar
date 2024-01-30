@@ -3,7 +3,7 @@
 import CountryModel from "../../../../model/countries.model.js";
 import userOrderModel  from "../../../../model/users/userOrder.model.js";
 import userAddress  from "../../../../model/users/userAdress.model.js";
-
+import UserModel  from "../../../../model/users/user.model.js";
 import fieldValidator from "../../../../utils/fieldValidator.js";
 import ApiError from "../../../../utils/ApiError.js";
 import {
@@ -78,7 +78,15 @@ const markupFessCalculation = async (orderObj, session) => {
         const balance =  await helper.updateUserBalance(orderObj.vendorId, "inr", markupFee, "PAYMENT_DUE", orderObj.orderId, session, "due_payment");
 
         await helper.updateUserBalance("admin", "inr", markupFee, "total_earning_due", orderObj.orderId, session, "total_earning_due");
-
+        await UserModel.findOneAndUpdate({
+            userId: orderObj.vendorId
+        }, {
+            $inc: {
+                platformFee: markupFee
+            }
+        }, {
+            session: session
+        });
         console.log("balance", balance);
 
         return resp.value;
