@@ -117,6 +117,9 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     phoneNumber: {
                         $first: "$phoneNumber"
                     },
+                    transactionOrUtrNumber: {
+                        $first: "$transactionOrUtrNumber"
+                    },
                     updatedAt: {
                         $first: "$updatedAt" 
                     },
