@@ -93,6 +93,12 @@ const getVendorOrder = asyncHandler(async (req, res) => {
                     fullName: {
                         $first: "$fullName"
                     },
+                    isAdminApprovedPaymentStatus: {
+                        $push: "$isAdminApprovedPaymentStatus"
+                    },
+                    isPaid: {
+                        $first: "$isPaid"
+                    },
                     items: {
                         $push: "$items" 
                     },
@@ -139,7 +145,13 @@ const getVendorOrder = asyncHandler(async (req, res) => {
         // console.log("orders", orders);
         for (let index = 0; index < orders.length; index++){
             console.log("inside if condtionvendor ", orders[index].vendorId);
-    
+
+            if (!fieldValidator(orders[index].paymentScreenShotImageKey)){
+                const url = await generateS3SignedUrl(orders[index].paymentScreenShotImageKey);
+
+                orders[index].paymentDocUrl = url;
+            }
+
             orders[index].items.map(async(el) => {
                 const url = await generateS3SignedUrl(el.scrapInfo.docPath);
     

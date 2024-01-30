@@ -107,12 +107,12 @@ const userPickupSchema = new mongoose.Schema(
         isAdminApprovedPaymentStatus: {
             type: Boolean
         },
-        
         isPaid: {
             type: Boolean
         },
         
         items: [ orderItemSchema ],
+        
         markupFee: {
             type: Number
         },
@@ -128,11 +128,14 @@ const userPickupSchema = new mongoose.Schema(
             required: true,
             type: String
         },
-        
         orderStatus: {
             default: 0,
             required: true,
             type: Number
+        },
+        
+        paymentDocUrl: {
+            type: String 
         },
         
         paymentScreenShotImageKey: {
