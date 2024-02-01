@@ -17,14 +17,14 @@ import generateS3SignedUrl from "../../../services/generateS3SignedUrl.js";
 import OrdersEnum from "../../../utils/orderStatus.js";
 
 const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
-    console.log("getPendingOrdersAssignToAdmin working");
+    console.log("getPendingOrdersAssignToAdmin working", req.query);
 
     try {
         let limit = req.query.limit;
         let page = req.query.page;
         const filterValue = req.query.filterValue;
         const userId = req.decoded.userId;
-        const scrapName = req.query.scrapName;
+        const scrap_name = req.query.scrapName;
 
         if (fieldValidator(limit) || isNaN(page)) limit = 10;
 
@@ -34,8 +34,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         const filterObj = {
             orderStatus: OrdersEnum.ASSIGN_TO_ADMIN
         };
-        const scrapFilterObj = {};
-
+        
         if (!fieldValidator(filterValue)){
             filterObj.$or = [
                 {
@@ -53,10 +52,7 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
             ];
         }
 
-        if (!fieldValidator(scrapName))
-            scrapFilterObj.scrapName = new RegExp(scrapName, "i");
-
-        const scraps = await UserOrderModel.aggregate([
+        let condition = [
             {
                 $match: filterObj
             },
@@ -68,10 +64,8 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                     as: "items.scrapInfo",
                     foreignField: "scrapId",
                     from: "scraps",
-                    localField: "items.scrapId",
-                    pipeline: [{
-                        $match: scrapFilterObj
-                    }]
+                    localField: "items.scrapId"
+                    
                 }
             },
             
@@ -125,18 +119,35 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                 }
             },
             {
-                $sort: {
-                    createdAt: -1  // Sort in descending order based on the createdAt field
-                }
-            },
-            {
                 $skip: parseInt(skip)  // Add the skip stage
             },
             {
                 $limit: parseInt(limit)  // Add the limit stage
+            },
+            {
+                $sort: {
+                    createdAt: -1  // Sort in descending order based on the createdAt field
+                }
             }
-        ]);
+        ];
 
+        if (!fieldValidator(scrap_name)){
+            condition[2].$lookup.pipeline = [{
+                $match: {
+                    scrapName: new RegExp(scrap_name, "i")
+                }
+            }];
+        }
+
+        console.log("filter", {
+            condition: JSON.stringify(condition),
+            filterObj,
+            limit,
+            page
+        });
+        const scraps = await UserOrderModel.aggregate(condition).exec();
+
+        // console.log("scraps", scraps);
         for (const scrap of scraps){
             const vendors =  await UserModel.find({
                 $or: [{
@@ -176,15 +187,19 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
                 return el;
             });
         }
-
-        const totalScrapCount = await UserOrderModel.countDocuments(filterObj);
+        condition = condition.slice(0, -3);
+        condition.push({
+            $count: "totalCount"
+        });
+        // console.log("totalScrapCount", condition);
+        const totalScrapCount = await UserOrderModel.aggregate(condition);
 
         const finalObj = {
             scrap: scraps,
-            totalScrapCount
+            totalScrapCount: totalScrapCount[0].totalCount
         };
 
-        // console.log("finalObj", finalObj, filterObj);
+        console.log("finalObj", filterObj);
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(

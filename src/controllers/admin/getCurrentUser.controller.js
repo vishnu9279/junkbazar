@@ -35,16 +35,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             );
         }
 
-        const balance = await BalanceModel.aggregate([
-            {
-                $group: {
-                    _id: null,
-                    totalBalance: {
-                        $sum: "$balance" 
-                    }
-                }
-            }
-        ]);
+        const balance = await BalanceModel.findOne({
+            userId: "admin",
+            wallet_type: "total_earning_due"
+        });
 
         console.log("balance", balance);
 
@@ -54,7 +48,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             user.profileUrl = profileUrl;
         }
 
-        user.balance = balance ? balance[0].totalBalance.toFixed(2) : 0;
+        user.balance = balance ? balance.balance.toFixed(2) : 0;
 
         return res.status(statusCodeObject.HTTP_STATUS_OK).json(
             new ApiResponse(

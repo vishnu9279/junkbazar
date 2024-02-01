@@ -56,7 +56,7 @@ async function sendPushNotificationToVendorOnPickUpRequest() {
             const addressDetail = await addressInfo(doc.addressId);
             const vendorArrayOfObjects = await vendors(addressDetail.city, addressDetail.stateCode);
 
-            console.log("vendorArrayOfObjects", vendorArrayOfObjects);
+            // console.log("vendorArrayOfObjects", vendorArrayOfObjects);
             const notificationData = {
                 data: {},
                 message: `Pickup Request with Quantity ${doc.totalQuantity} Final Amount is ${doc.finalAmount}`,
