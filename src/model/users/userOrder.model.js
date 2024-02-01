@@ -154,6 +154,9 @@ const userPickupSchema = new mongoose.Schema(
         rating: {
             type: Number
         },
+        rejectionReason: {
+            type: String
+        },
         stateCode: {
             type: String
         },

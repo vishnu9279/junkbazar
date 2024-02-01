@@ -101,6 +101,9 @@ const getUserOrder = asyncHandler(async (req, res) => {
                     phoneNumber: {
                         $first: "$phoneNumber"
                     },
+                    rejectionReason: {
+                        $first: "$rejectionReason"
+                    },
                     updatedAt: {
                         $first: "$updatedAt" 
                     },

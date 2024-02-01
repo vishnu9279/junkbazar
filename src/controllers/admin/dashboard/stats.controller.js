@@ -34,13 +34,13 @@ const stats = asyncHandler(async (req, res) => {
             wallet_type: "main"
         });
 
-        console.log("balance", balanceResp);
+        // console.log("balance", balanceResp);
         const balanceDueResp = await BalanceModel.findOne({
             userId: "admin",
             wallet_type: "total_earning_due"
         });
 
-        console.log("balance", balanceResp);
+        // console.log("balance", balanceResp);
 
         const platformFee = balanceResp ? balanceResp.balance.toFixed(2) : 0;
         const duePlatformFee = balanceDueResp.length ? balanceDueResp.balance.toFixed(2) : 0;

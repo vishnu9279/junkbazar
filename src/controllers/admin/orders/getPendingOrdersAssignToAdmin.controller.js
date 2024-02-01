@@ -194,9 +194,10 @@ const getPendingOrdersAssignToAdmin = asyncHandler(async (req, res) => {
         // console.log("totalScrapCount", condition);
         const totalScrapCount = await UserOrderModel.aggregate(condition);
 
+        console.log("totalScrapCount", totalScrapCount);
         const finalObj = {
             scrap: scraps,
-            totalScrapCount: totalScrapCount[0].totalCount
+            totalScrapCount: (totalScrapCount.length > 0) ? totalScrapCount[0].totalCount : 0
         };
 
         console.log("finalObj", filterObj);

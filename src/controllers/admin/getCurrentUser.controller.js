@@ -40,7 +40,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             wallet_type: "total_earning_due"
         });
 
-        console.log("balance", balance);
+        // console.log("balance", balance);
 
         if (!fieldValidator(user.profile)){
             const profileUrl = await generateS3SignedUrl(user.profile);
