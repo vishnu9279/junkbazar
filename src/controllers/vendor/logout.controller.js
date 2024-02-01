@@ -21,7 +21,14 @@ const logout = asyncHandler(async (req, res) => {
 
         if (count === 0)
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
-    
+
+        await UserModel.findOneAndUpdate({
+            userId
+        }, {
+            $inc: {
+                loginCount: -1
+            }
+        });
         await Session.updateMany({
             userId
         }, {
