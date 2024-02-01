@@ -65,6 +65,7 @@ export const CommonMessage = {
     ERROR_MESSAGE_TOO_MANY_REQUESTS: "Too Many Requests",
     ERROR_MESSAGE_UNAUTHORIZED: "Unauthorized",
     INVALID_EMAIL: "Invalid Email",
+    LOGIN_COUNT_EXCEEDED: "You have reached max login",
     LOGIN_KEY_MISSING: "Login Key is Missing",
     MESSAGE_ERROR: "Error",
     MESSAGE_SUCCESS: "Success",

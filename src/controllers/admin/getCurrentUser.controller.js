@@ -24,6 +24,11 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         const user = await AdminModel.findOne({
             userId
         }, {
+            accountBlocked: 0,
+            createdAt: 0,
+            otpGenerateTime: 0,
+            password: 0,
+            roles: 0,
             salt: 0
         });
         

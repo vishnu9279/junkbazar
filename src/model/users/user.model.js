@@ -67,10 +67,13 @@ const userSchema = new mongoose.Schema(
             type: String
         },
         
+        loginCount: {
+            type: Number
+        },
+
         managedBy: {
             type: String
         },
-
         monthNumber: {
             required: true,
             type: Number
@@ -82,11 +85,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        
         panID: {
             required: false,
             type: String 
         },
-        
         panUrl: {
             type: String
         },

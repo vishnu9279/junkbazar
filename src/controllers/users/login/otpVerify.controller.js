@@ -64,6 +64,9 @@ const otpVerify = asyncHandler (async (req, res) => {
         const resp = await UserModel.findOneAndUpdate({
             phoneNumber
         }, {
+            $inc: {
+                loginCount: 1
+            },
             $set: userOtpObj
         }, {
             new: true,
