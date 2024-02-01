@@ -57,7 +57,7 @@ const login = asyncHandler (async (req, res) => {
     
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.INVALID_PHONE_NUMBER);
 
-        if (user.loginCount <= await helper.getCacheElement("CONFIG", "LOGIN_COUNT")) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.LOGIN_COUNT_EXCEEDED);
+        if (user.loginCount > await helper.getCacheElement("CONFIG", "LOGIN_COUNT")) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.LOGIN_COUNT_EXCEEDED);
 
         const fixOtpUsers = await helper.getCacheElement("CONFIG", "FIXED_OTP_USERS");
 
