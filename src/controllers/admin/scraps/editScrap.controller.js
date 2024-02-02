@@ -27,7 +27,7 @@ const editScrap = asyncHandler (async (req, res) => {
             price, quantityType, imageKey, scrapId
         } = req.body;
 
-        if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        // if (fieldValidator(scrapName) || fieldValidator(price) || fieldValidator(quantityType)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
         
         scrapName = scrapName.toLowerCase();
         const scrap = await Scrap.find({
