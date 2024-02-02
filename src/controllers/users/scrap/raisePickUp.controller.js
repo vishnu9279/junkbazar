@@ -142,7 +142,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
 
         if (fieldValidator(resp))  throw new ApiError(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR, errorAndSuccessCodeConfiguration.HTTP_STATUS_INTERNAL_SERVER_ERROR, CommonMessage.SOMETHING_WENT_WRONG);
         
-        const respValue = await cartModel.updateOne({
+        const respValue = await cartModel.findOneAndUpdate({
             addToCartId,
             enabled: true,
             userId
@@ -162,16 +162,19 @@ const raisePickUp = asyncHandler (async (req, res) => {
         if (fieldValidator(respValue)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        await cartModel.deleteOne({
-            $expr: {
-                $eq: [{
-                    $size: "$items" 
-                },
-                0 ]
-            },
-            userId
-        });
+        console.log("hdfhjsds", respValue, respValue.items.length);
 
+        if (respValue.items.length === 0){
+            console.log("bncbnbbbbbbbbbbbbb");
+            await cartModel.deleteOne({
+                userId: userId  
+            }, {
+                session: session
+            });
+            console.log("wdjbsjdbsjkdbjks");
+        }
+
+        console.log("shdjahsd");
         const userResp = await UserModel.updateOne({
             userId
         }, {

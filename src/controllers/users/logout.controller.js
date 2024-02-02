@@ -14,6 +14,7 @@ import ApiResponse from "../../utils/ApiSuccess.js";
 const logout = asyncHandler(async (req, res) => {
     console.log("decoded", req.decoded);
     const userId = req.decoded.userId;
+    const jwtId = req.decoded.jwtId;
 
     try {
         const count = await UserModel.countDocuments({
@@ -32,6 +33,7 @@ const logout = asyncHandler(async (req, res) => {
         });
 
         await Session.updateMany({
+            jwtId,
             userId
         }, {
             $set: {
