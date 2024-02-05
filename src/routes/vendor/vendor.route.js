@@ -28,6 +28,7 @@ import getPaymentType from "../../controllers/vendor/scrap/getPaymentType.contro
 import updatePaymentMethod from "../../controllers/vendor/scrap/updatePaymentMethod.controller.js";
 import vendorScrapOrderConfirmation from "../../controllers/vendor/scrap/vendorScrapOrderConfirmation.controller.js";
 import addPaymentDetail from "../../controllers/vendor/scrap/addPaymentDetail.controller.js";
+import downloadInvoice from "../../controllers/vendor/scrap/downloadInvoice.controller.js";
 
 router.route("/updateOrderStatus").post(authenticateJwtMiddleware, updateOrderStatus);
 router.route("/getVendorOrderInfo").get(authenticateJwtMiddleware, getVendorOrderInfo);
@@ -50,5 +51,6 @@ router.route("/updatePaymentMethod").post(authenticateJwtMiddleware, updatePayme
 
 router.route("/vendorScrapOrderConfirmation").post(authenticateJwtMiddleware, vendorScrapOrderConfirmation);
 router.route("/addPaymentDetail").post(authenticateJwtMiddleware, addPaymentDetail);
+router.route("/downloadInvoice").get(authenticateJwtMiddleware, downloadInvoice);
 
 export default router;

@@ -30,6 +30,9 @@ const orderItemSchema = new mongoose.Schema({
         required: true,
         type: mongoose.Schema.Types.ObjectId
     },
+    scrapName: {
+        type: String
+    },
     userAmount: {
         required: false,
         type: Number

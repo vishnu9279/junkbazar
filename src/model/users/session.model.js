@@ -2,6 +2,10 @@
 
 import mongoose from "mongoose";
 const userSessionSchema = new mongoose.Schema({
+    created: {
+        required: true,
+        type: Number
+    },
     enabled: {
         default: true,
         required: true,
@@ -48,6 +52,8 @@ const userSessionSchema = new mongoose.Schema({
         required: true, 
         type: mongoose.Schema.Types.ObjectId
     }
+}, {
+    timestamps: true 
 });
 
 const Session = mongoose.model("session", userSessionSchema);

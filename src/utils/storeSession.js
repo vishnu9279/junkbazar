@@ -6,6 +6,7 @@ const storeSession = async(data, jwtOption, exipryHr, milliseconds) => {
     try {
         const currentTime = new Date().getTime();
         const obj = {
+            created: new Date().getTime(),
             encrypt: data.encrypt,
             exipryHr,
             expiryTime: milliseconds + currentTime,

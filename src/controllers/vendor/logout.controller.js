@@ -2,9 +2,9 @@
 
 import asyncHandler from "../../utils/asyncHandler.js";
 import UserModel  from "../../model/users/user.model.js";
+import userFcmModel from "../../model/users/fcm.model.js";
 import Session  from "../../model/users/session.model.js";
 import ApiError from "../../utils/ApiError.js";
-import userFcmModel from "../../model/users/fcm.model.js";
 import {
     CommonMessage, registerMessage, statusCodeObject, errorAndSuccessCodeConfiguration, loginMessage
 } from "../../utils/constants.js";

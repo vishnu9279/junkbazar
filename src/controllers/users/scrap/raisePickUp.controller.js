@@ -162,10 +162,7 @@ const raisePickUp = asyncHandler (async (req, res) => {
         if (fieldValidator(respValue)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, ScrapMessage.SCRAP_ALREADY_EXIST);
 
-        console.log("hdfhjsds", respValue, respValue.items.length);
-
         if (respValue.items.length === 0){
-            console.log("bncbnbbbbbbbbbbbbb");
             await cartModel.deleteOne({
                 userId: userId  
             }, {

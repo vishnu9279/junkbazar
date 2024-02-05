@@ -15,6 +15,7 @@ import {
 } from "../../../configuration/dbConnection.js";
 import sendSms from "../../../services/sendSms.js";
 import RolesEnum from "../../../utils/roles.js";
+import logOutFirstUser from "../../../utils/logOutFirstUser.js";
 const login = asyncHandler (async (req, res) => {
     console.log("login working", req.body);
     let OTP, session;
@@ -41,7 +42,10 @@ const login = asyncHandler (async (req, res) => {
         if (fieldValidator(user)) 
             throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, registerMessage.ERROR_USER_NOT_FOUND);
     
-        if (user.loginCount >= await helper.getCacheElement("CONFIG", "LOGIN_COUNT")) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.LOGIN_COUNT_EXCEEDED);
+        // if (user.loginCount >= await helper.getCacheElement("CONFIG", "LOGIN_COUNT")) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.LOGIN_COUNT_EXCEEDED);
+        console.log("login count", await helper.getCacheElement("CONFIG", "LOGIN_COUNT"));
+
+        if (user.loginCount >= await helper.getCacheElement("CONFIG", "LOGIN_COUNT")) await logOutFirstUser(user.userId, session);
 
         if (!helper.phoneNumberValidation(phoneNumber)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.INVALID_PHONE_NUMBER);
 

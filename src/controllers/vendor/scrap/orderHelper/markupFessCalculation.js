@@ -89,7 +89,7 @@ const markupFessCalculation = async (orderObj, session) => {
         });
         console.log("balance", balance);
 
-        return resp.value;
+        return resp;
     }
     catch (error) {
         console.error("Error on getting scrap", error.message);

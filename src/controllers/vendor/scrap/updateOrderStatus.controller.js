@@ -21,6 +21,7 @@ import {
 } from "../../../configuration/dbConnection.js";
 import helper from "../../../utils/helper.js";
 import markupFessCalculation from "./orderHelper/markupFessCalculation.js";
+import generateInvoice from "../helper/generateInvoice.js";
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
     console.log("updateOrderStatus working", req.body, req.decoded);
@@ -72,7 +73,11 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
             console.log("resp", resp);
 
-            if (orderStatus === OrdersEnum.SCRAP_PICKED) await markupFessCalculation(resp, session);
+            if (orderStatus === OrdersEnum.SCRAP_PICKED){
+                const response = await markupFessCalculation(resp, session);
+
+                if (orderStatus === OrdersEnum.SCRAP_PICKED) await generateInvoice(response, session);
+            }
         }
         else {
             console.log("else condition is working");
