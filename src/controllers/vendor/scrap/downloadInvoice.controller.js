@@ -1,13 +1,15 @@
 import asyncHandler from "../../../utils/asyncHandler.js";
-import userOrderModel  from "../../../model/users/userOrder.model.js";
+import userOrderModel from "../../../model/users/userOrder.model.js";
+import UserModel  from "../../../model/users/user.model.js";
 import fieldValidator from "../../../utils/fieldValidator.js";
-import ScrapModel  from "../../../model/users/scrap.model.js";
+import ScrapModel from "../../../model/users/scrap.model.js";
 import ApiError from "../../../utils/ApiError.js";
 import {
     CommonMessage,
     statusCodeObject,
     errorAndSuccessCodeConfiguration,
-    OrderMessage
+    OrderMessage,
+    registerMessage
 } from "../../../utils/constants.js";
 
 import ApiResponse from "../../../utils/ApiSuccess.js";
@@ -16,32 +18,65 @@ const downloadInvoice = asyncHandler(async (req, res) => {
     console.log("downloadInvoice working");
 
     try {
-        const userId =  req.decoded.userId;
+        const userId = req.decoded.userId;
         const orderId = req.query.orderId;
 
-        if (fieldValidator(orderId)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
+        if (fieldValidator(orderId)) {
+            throw new ApiError(
+                statusCodeObject.HTTP_STATUS_BAD_REQUEST,
+                errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST,
+                CommonMessage.ERROR_FIELD_REQUIRED
+            );
+        }
 
         let pdfData = [];
         const order = await userOrderModel.findOne({
             orderId,
             vendorId: userId
         });
-        
-        if (fieldValidator(order)) throw new ApiError(statusCodeObject.HTTP_STATUS_CONFLICT, errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT, OrderMessage.ORDER_NOT_FOUND);
-        
-        for (const item of order.items){
+
+        if (fieldValidator(order)) {
+            throw new ApiError(
+                statusCodeObject.HTTP_STATUS_CONFLICT,
+                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+                OrderMessage.ORDER_NOT_FOUND
+            );
+        }
+
+        const user = await UserModel.findOne({
+            userId: order.vendorId
+        });
+
+        if (fieldValidator(user)) {
+            throw new ApiError(
+                statusCodeObject.HTTP_STATUS_CONFLICT,
+                errorAndSuccessCodeConfiguration.HTTP_STATUS_CONFLICT,
+                registerMessage.ERROR_USER_NOT_FOUND
+            );
+        }
+
+        for (const item of order.items) {
             const scrap = await ScrapModel.findOne({
                 scrapId: item.scrapId
             });
-            
+
             item.scrapName = scrap.scrapName;
         }
         pdfData = [ ...order.items ];
-        
+
         console.log({
-        //     items: order.items,
+            //     items: order.items,
             pdfData
         });
+
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        const formattedDate = `${day}-${month}-${year}`;
+
+        console.log(formattedDate);
         const browser = await puppeteer.launch({
             headless: "new"
         });
@@ -49,66 +84,91 @@ const downloadInvoice = asyncHandler(async (req, res) => {
         // Replace the following line with the actual path to your HTML file
         const htmlContent = `<!DOCTYPE html>
         <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Invoice</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-            }
-            .invoice-header {
-              text-align: center;
-              margin-bottom: 20px;
-            }
-            .billing-info {
-              margin-bottom: 20px;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 20px;
-            }
-            th, td {
-              border: 1px solid #ddd;
-              padding: 8px;
-              text-align: left;
-            }
-            th {
-              background-color: #f2f2f2;
-            }
-            .total {
-              text-align: right;
-              font-weight: bold;
-            }
-          </style>
-        </head>
-        <body>
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Invoice</title>
+            <style>
+              body {
+                font-family: sans-serif;
+                padding: 20px;
+              }
         
-        <div class="invoice-header">
-          <img src="https://junkbazarassets.s3.ap-south-1.amazonaws.com/junk_bazar.png" alt="Logo" width="100">
-          <h1>Invoice</h1>
-        </div>
+              h1 {
+                text-align: end;
+                font-size: 58px;
+              }
         
-        <div class="billing-info">
-          <p><strong>Billing Information:</strong></p>
-          <p>Name: John Doe</p>
-          <p>Address: 123 Main Street, City, Country</p>
-        </div>
+              table {
+                border-collapse: collapse;
+                width: 100%;
+              }
         
-        <table>
-          <thead>
-            <tr>
-              <th>Order Id</th>
-              <th>Product Details</th>
-              <th>Quantity</th>
-              <th>Quantity Type</th>
-              <th>Price</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${pdfData.map((el) => `
+              th,
+              td {
+                border: 1px solid black;
+                padding: 5px;
+              }
+        
+              th {
+                text-align: left;
+              }
+              .container {
+                width: 80%;
+                position: relative;
+                margin: 0 auto;
+              }
+              .__second_parent {
+                width: 100%;
+                display: flex;
+              }
+              .__second_parent_child {
+                text-align: end;
+                width: 100%;
+              }
+              .__second_parent_child__ {
+                width: 100%;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="__parent">
+                <img
+                  src="https://junkbazarassets.s3.ap-south-1.amazonaws.com/junk_bazar.png"
+                  alt="invoice"
+                />
+                <h1 class="__parent_title">Invoice</h1>
+              </div>
+              <div class="__second_parent">
+                <div class="__second_parent_child__">
+                  <p>Customer:</p>
+                  <ul>
+                    <li>${user.firstName} ${user.lastName}</li>
+                    <li>${user.dialCode} ${user.phoneNumber}</li>
+                    <li>${user.address} ${user.city} ${user.stateCode} ${user.pincode}</li>
+                  </ul>
+                </div>
+                <div class="__second_parent_child">
+                  <p>Invoice number: ${order.orderId}</p>
+                  <p>Date: ${formattedDate}</p>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>OrderId</th>
+                    <th>Product Detail</th>
+                    <th>Quantity</th>
+                    <th>Quantity Type</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+            ${pdfData
+        .map(
+            (el) => `
                 <tr>
                 <td>${orderId}</td>
                 <td>${el.scrapName}</td>
@@ -117,18 +177,50 @@ const downloadInvoice = asyncHandler(async (req, res) => {
                 <td>${el.price}</td>
                 <td>${el.vendorAmount}</td>
                 </tr>
-            `).join("")}
+            `
+        )
+        .join("")}
             </tbody>
-        </table>
-        
-        <div class="total">
-          <p>Total: $100.00</p>
-        </div>
-        <div class="total">
-          <p>Platform Fee: ${order.markupFee}</p>
-        </div>
-        
-        </body>
+                <tfoot>
+                <tr>
+                <td></td>
+                <td></td>
+                </tr>
+                  <tr>
+                    <th>PlatForm Fee</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>${order.markupFee}</td>
+                  </tr>
+                  <tr>
+                    <th>Total</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>${order.vendorFinalAmount}</td>
+                  </tr>
+                </tfoot>
+              </table>
+              <p>Thank you!</p>
+              <div class="__second_parent">
+                <div class="__second_parent_child__">
+                  <p>PAYMENT INFORMATION:</p>
+                  <ul>
+                    <li>Briard Bank</li>
+                    <li>Account Name: Samira Hadid</li>
+                    <li>Account No: 123-456-7890</li>
+                  </ul>
+                </div>
+                <div class="__second_parent_child">
+                  <p>Junk Bazar</p>
+                  <p>Patna</p>
+                </div>
+              </div>
+            </div>
+          </body>
         </html>`;
 
         await page.setContent(htmlContent);
@@ -140,16 +232,18 @@ const downloadInvoice = asyncHandler(async (req, res) => {
         // Set response headers for PDF download
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", "attachment; filename=invoice.pdf");
-      
-        res.status(statusCodeObject.HTTP_STATUS_OK).json(
-            new ApiResponse(
-                statusCodeObject.HTTP_STATUS_OK,
-                errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
-                pdfBuffer,
-                CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
-            )
-        );
-        // res.status(statusCodeObject.HTTP_STATUS_OK).send();
+
+        res
+            .status(statusCodeObject.HTTP_STATUS_OK)
+            .json(
+                new ApiResponse(
+                    statusCodeObject.HTTP_STATUS_OK,
+                    errorAndSuccessCodeConfiguration.HTTP_STATUS_OK,
+                    pdfBuffer,
+                    CommonMessage.DETAIL_FETCHED_SUCCESSFULLY
+                )
+            );
+    // res.status(statusCodeObject.HTTP_STATUS_OK).send();
     }
     catch (error) {
         console.error("Error on getting scrap", error.message);
@@ -164,12 +258,13 @@ const downloadInvoice = asyncHandler(async (req, res) => {
         else {
             console.error("Error in downloadInvoice:", error);
 
-            return res.status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
-                error: CommonMessage.SOMETHING_WENT_WRONG
-            });
+            return res
+                .status(statusCodeObject.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+                .json({
+                    error: CommonMessage.SOMETHING_WENT_WRONG
+                });
         }
     }
 });
 
 export default downloadInvoice;
-

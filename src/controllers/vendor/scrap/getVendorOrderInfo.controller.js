@@ -75,6 +75,12 @@ const getVendorOrderInfo = asyncHandler(async (req, res) => {
                     fullName: {
                         $first: "$fullName"
                     },
+                    isAdminApprovedPaymentStatus: {
+                        $first: "$isAdminApprovedPaymentStatus"
+                    },
+                    isPaid: {
+                        $first: "$isPaid"
+                    },
                     items: {
                         $push: "$items" 
                     },
