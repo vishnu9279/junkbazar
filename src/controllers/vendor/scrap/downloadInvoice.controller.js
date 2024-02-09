@@ -78,7 +78,8 @@ const downloadInvoice = asyncHandler(async (req, res) => {
 
         console.log(formattedDate);
         const browser = await puppeteer.launch({
-            headless: "new"
+            args: [ "--no-sandbox",
+                "--disable-setuid-sandbox" ]
         });
         const page = await browser.newPage();
         // Replace the following line with the actual path to your HTML file
