@@ -163,7 +163,7 @@ const downloadInvoice = asyncHandler(async (req, res) => {
                     <th>Product Detail</th>
                     <th>Quantity</th>
                     <th>Quantity Type</th>
-                    <th>Platform Fee</th>
+                    <th>Platform Fee Paid</th>
                     <th>Price</th>
                     <th>Total</th>
                   </tr>
