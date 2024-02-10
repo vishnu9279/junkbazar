@@ -162,6 +162,7 @@ const downloadInvoice = asyncHandler(async (req, res) => {
                     <th>Product Detail</th>
                     <th>Quantity</th>
                     <th>Quantity Type</th>
+                    <th>Platform Fee</th>
                     <th>Price</th>
                     <th>Total</th>
                   </tr>
@@ -175,6 +176,7 @@ const downloadInvoice = asyncHandler(async (req, res) => {
                 <td>${el.scrapName}</td>
                 <td>${el.vendorQuantity}</td>
                 <td>${el.quantityType}</td>
+                <td>${(order.isPaid) ? "Yes" : "No"}
                 <td>${el.price}</td>
                 <td>${el.vendorAmount}</td>
                 </tr>
@@ -207,23 +209,26 @@ const downloadInvoice = asyncHandler(async (req, res) => {
               </table>
               <p>Thank you!</p>
               <div class="__second_parent">
-                <div class="__second_parent_child__">
-                  <p>PAYMENT INFORMATION:</p>
-                  <ul>
-                    <li>Briard Bank</li>
-                    <li>Account Name: Samira Hadid</li>
-                    <li>Account No: 123-456-7890</li>
-                  </ul>
-                </div>
+               
+
                 <div class="__second_parent_child">
-                  <p>Junk Bazar</p>
-                  <p>Patna</p>
+                  <p>Address</p>
+                  <p>Kankarbagh Main Rd, Kumhar Toli,
+                  Ghrounda, Patna, Bihar India 800020</p>
                 </div>
               </div>
             </div>
           </body>
         </html>`;
 
+        //   <div class="__second_parent_child__">
+        //   <p>PAYMENT INFORMATION:</p>
+        //   <ul>
+        //     <li>Briard Bank</li>
+        //     <li>Account Name: Samira Hadid</li>
+        //     <li>Account No: 123-456-7890</li>
+        //   </ul>
+        // </div>
         await page.setContent(htmlContent);
         // Generate PDF buffer
         const pdfBuffer = await page.pdf();
