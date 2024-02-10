@@ -131,6 +131,9 @@ const downloadInvoice = asyncHandler(async (req, res) => {
               .__second_parent_child__ {
                 width: 100%;
               }
+              .__gross_total {
+                text-align: end;
+              }
             </style>
           </head>
           <body>
@@ -185,29 +188,11 @@ const downloadInvoice = asyncHandler(async (req, res) => {
         )
         .join("")}
             </tbody>
-                <tfoot>
-                <tr>
-                <td></td>
-                <td></td>
-                </tr>
-                  <tr>
-                    <th>PlatForm Fee</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>${order.markupFee}</td>
-                  </tr>
-                  <tr>
-                    <th>Total</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>${order.vendorFinalAmount}</td>
-                  </tr>
-                </tfoot>
               </table>
+              <div class="__gross_total">
+              <p>Platform Fee: ${order.markupFee}</p>
+              <p>Final Amount : ${order.vendorFinalAmount}</p>
+              </div>
               <p>Thank you!</p>
               <div class="__second_parent">
                
