@@ -86,6 +86,7 @@ export const registerMessage = {
 };
 
 export const loginMessage = {
+    ACCOUNT_BLOCKED: "Your Account is Blocked Please Contact Our Support",
     EITHER_PHONE_NUMBER_OR_PASSWORD_WRONG: "Either Phone Number or Password Wrong",
     LOGIN_OTP_SENT_SUCCESSFULLY: "login OTP sent successfully"
    

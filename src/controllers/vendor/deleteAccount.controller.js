@@ -14,8 +14,8 @@ import {
     getNewMongoSession
 } from "../../configuration/dbConnection.js";
 
-const updateProfile = asyncHandler (async (req, res) => {
-    console.log("updateProfile working", req.body);
+const deleteAccount = asyncHandler (async (req, res) => {
+    console.log("deleteAccount working", req.body);
     let session;
 
     try {
@@ -24,28 +24,21 @@ const updateProfile = asyncHandler (async (req, res) => {
         session.startTransaction();
         const userId = req.decoded.userId;
         const {
-            firstName, lastName, profile
+            deletionReason
         } = req.body;
         
-        const obj = {};
+        if (fieldValidator(deletionReason) ) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
 
-        if (!fieldValidator(firstName))
-            obj.firstName = firstName;
-        
-        if (!fieldValidator(lastName))
-            obj.lastName = lastName;
- 
-        if (!fieldValidator(profile)) 
-            obj.profile = profile;
-
-        if (fieldValidator(obj) ) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.ERROR_FIELD_REQUIRED);
-
-        console.log("updating obj", obj);
+        console.log("updating obj", deletionReason);
         const respValue = await UserModel.updateOne({
             accountBlocked: false,
             userId
         }, {
-            $set: obj
+            $set: {
+                accountBlocked: true,
+                deleteTime: new Date().getTime(),
+                deletionReason
+            }
         }, {
             session: session
         });
@@ -84,4 +77,4 @@ const updateProfile = asyncHandler (async (req, res) => {
     }
 });
 
-export default updateProfile;
+export default deleteAccount;

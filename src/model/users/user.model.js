@@ -40,6 +40,12 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number 
         },
+        deleteTime: {
+            type: Number
+        },
+        deletionReason: {
+            type: String
+        },
         dialCode: {
             required: true,
             type: String
@@ -47,10 +53,12 @@ const userSchema = new mongoose.Schema(
         docUrl: {
             type: String
         },
+        
         firstName: {
             required: false,
             type: String
         },
+        
         isActive: {
             default: false,
             type: Boolean
@@ -61,16 +69,14 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Boolean 
         },
-        
+
         lastName: {
             required: false,
             type: String
         },
-        
         loginCount: {
             type: Number
         },
-
         managedBy: {
             type: String
         },
@@ -78,6 +84,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
+        
         OTP: {
             type: Number
         },
@@ -85,7 +92,6 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: Number
         },
-        
         panID: {
             required: false,
             type: String 
