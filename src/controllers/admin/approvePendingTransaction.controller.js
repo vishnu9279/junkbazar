@@ -35,6 +35,9 @@ const approvePendingTransaction = async (req, res) => {
 
         if (fieldValidator(order)) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.ORDER_NOT_FOUND);
 
+        if (fieldValidator(order.isPaid)) 
+            throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, OrderMessage.AMOUNT_DUE);
+
         if (order.isAdminApprovedPaymentStatus === "approved" || order.isAdminApprovedPaymentStatus === "rejected") throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, `Payment Already ${order.isAdminApprovedPaymentStatus}`);
 
         await UserOrderModel.findOneAndUpdate({

@@ -110,6 +110,7 @@ export const AddToCartMessage = {
     SCRAP_SUCCESSFULLY_SAVED_IN_CART: "Scrap Added In Cart"
 };
 export const OrderMessage = {
+    AMOUNT_DUE: "Amount due from vendor side",
     ORDER_ALREADY_ACCEPTED: "Order Already Accepted",
     ORDER_NOT_FOUND: "Order Not Found",
     ORDER_UPDATED_SUCCESSFULLY: "Order Updated Succesfully",
