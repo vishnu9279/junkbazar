@@ -44,8 +44,7 @@ const register = asyncHandler (async (req, res) => {
                 {
                     phoneNumber
                 }  
-            ],
-            roles: RolesEnum.VENDOR
+            ]
         });
 
         console.log("user", user);
