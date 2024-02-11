@@ -64,7 +64,7 @@ const otpVerify = asyncHandler (async (req, res) => {
             phoneNumber
         }, {
             $inc: {
-                loginCount: 1
+                loginCount: (user.verified) ? 1 : 0
             },
             $set: userOtpObj
         }, {
