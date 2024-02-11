@@ -60,8 +60,6 @@ const otpVerify = asyncHandler (async (req, res) => {
             otpVerifyTime: currentTime
         };
 
-        if (!user.verified) userOtpObj.verified = true;
-
         const resp = await userModel.findOneAndUpdate({
             phoneNumber
         }, {
