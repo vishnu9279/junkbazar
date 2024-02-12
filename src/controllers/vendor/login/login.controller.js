@@ -44,7 +44,7 @@ const login = asyncHandler (async (req, res) => {
     
         if (user.accountBlocked) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, loginMessage.ACCOUNT_BLOCKED);
 
-        if (user.isDocumentUploaded && !user.verified) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, loginMessage.ACCOUNT_VERIFICATION_PENDING);
+        if (user.isDocumentUploaded && (user.verified.toLowerCase() === "approved")) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, loginMessage.ACCOUNT_VERIFICATION_PENDING);
 
         // if (user.loginCount >= await helper.getCacheElement("CONFIG", "LOGIN_COUNT")) throw new ApiError(statusCodeObject.HTTP_STATUS_BAD_REQUEST, errorAndSuccessCodeConfiguration.HTTP_STATUS_BAD_REQUEST, CommonMessage.LOGIN_COUNT_EXCEEDED);
         console.log("login count", await helper.getCacheElement("CONFIG", "LOGIN_COUNT"));
