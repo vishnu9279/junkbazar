@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema(
         aadhaarUrl: {
             type: String
         },
+        accountApprovedTime: {
+            type: Number
+        },
         accountBlocked: {
             default: false,
             type: Boolean 
@@ -50,6 +53,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             type: String
         },
+        
         docUrl: {
             type: String
         },
@@ -63,13 +67,12 @@ const userSchema = new mongoose.Schema(
             default: false,
             type: Boolean
         },
-        
+
         isDocumentUploaded: {
             default: false,
             required: true,
             type: Boolean 
         },
-
         lastName: {
             required: false,
             type: String
@@ -80,11 +83,11 @@ const userSchema = new mongoose.Schema(
         managedBy: {
             type: String
         },
+        
         monthNumber: {
             required: true,
             type: Number
         },
-        
         OTP: {
             type: Number
         },
@@ -135,8 +138,8 @@ const userSchema = new mongoose.Schema(
             unique: true
         },
         verified: {
-            default: false,
-            type: Boolean
+            default: "Pending",
+            type: String
         },
         weekNumber: {
             required: true,

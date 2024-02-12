@@ -32,6 +32,9 @@ import approvePendingTransaction from "../../controllers/admin/approvePendingTra
 import rejectOrder from "../../controllers/admin/orders/rejectOrder.controller.js";
 
 import downloadCsv from "../../controllers/admin/vendor/downloadCsv.controller.js";
+import updateAccountStatus from "../../controllers/admin/vendor/updateAccountStatus.controller.js";
+import getVendorInfo from "../../controllers/admin/vendor/getVendorInfo.controller.js";
+
 // import "../../crons/moveScrapToAdmin.cron.js";
 
 router.route("/addScrap").post(authenticateJwtMiddleware, addScrap);
@@ -58,6 +61,8 @@ router.route("/getVendorOrder").get(authenticateJwtMiddleware, getVendorOrder);
 router.route("/stats").get(authenticateJwtMiddleware, stats);
 router.route("/approvePendingTransaction").post(authenticateJwtMiddleware, approvePendingTransaction);
 router.route("/rejectOrder").post(authenticateJwtMiddleware, rejectOrder);
-router.route("/downloadCsv").get(downloadCsv);
+router.route("/updateAccountStatus").post(authenticateJwtMiddleware, updateAccountStatus);
+router.route("/getVendorInfo").get(authenticateJwtMiddleware, getVendorInfo);
+router.route("/downloadCsv").get(authenticateJwtMiddleware, downloadCsv);
 
 export default router;
